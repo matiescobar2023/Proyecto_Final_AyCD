@@ -1,0 +1,13 @@
+{
+  "tiempoSimulacion_s": 279.52,
+  "etapa": 9,
+  "x_m": 22.430430079975935,
+  "y_m": 8.489827965150889,
+  "modo": 3,
+  "cargado": true,
+  "falla": 0,
+  "terminado": true,
+  "entregaConfirmada": false,
+  "causa": "Detencion diagnostica: PLC vacio y twistlocks abiertos, pero PICK/PLACE conserva carga por tension de cable superior al umbral de descarga",
+  "horaReal": "06-Oct-2026 23:20:04"
+}

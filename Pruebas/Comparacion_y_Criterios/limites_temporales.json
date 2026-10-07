@@ -1,0 +1,38 @@
+{
+  "pruebas": [
+    "CODESYS manual sin antisway",
+    "CODESYS manual con antisway",
+    "CODESYS automático sin antisway",
+    "CODESYS automático con antisway"
+  ],
+  "cortes": [
+    187.2,
+    168.92,
+    180,
+    169.24
+  ],
+  "tiemposPerfil": [
+    130.72,
+    168.92,
+    180,
+    169.23999999999998
+  ],
+  "variacionPerfil": [
+    [
+      -2.59,
+      0
+    ],
+    [
+      -2.59,
+      0
+    ],
+    [
+      -2.59,
+      0
+    ],
+    [
+      -2.59,
+      0
+    ]
+  ]
+}

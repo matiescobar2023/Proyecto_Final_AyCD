@@ -1,0 +1,13 @@
+{
+  "tiempoSimulacion_s": 187.2,
+  "etapa": 7,
+  "x_m": 22.369614783200909,
+  "y_m": 24.079556784279529,
+  "modo": 4,
+  "cargado": true,
+  "falla": 0,
+  "terminado": true,
+  "entregaConfirmada": false,
+  "causa": "Limite de 180 s indicado por el usuario: traslado sin antisway sin estabilizacion ni entrega",
+  "horaReal": "06-Oct-2026 21:53:46"
+}

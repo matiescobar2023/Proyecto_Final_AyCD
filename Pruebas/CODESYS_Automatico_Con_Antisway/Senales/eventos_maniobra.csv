@@ -1,0 +1,16 @@
+tiempo_s,etapa_codigo,x_m,y_m,carga,descripcion
+3.24,1,-26.34,24.9766235094102,0,Solicitud START
+3.76,3,-26.3400003569216,24.976624947702,0,Toma manual
+46.64,4,-26.3401154143239,2.58991826614406,0,Solicitud cierre twistlocks
+47.68,5,-26.3401180809107,2.58991827791667,0,Despegue manual y seleccion slot 22
+49.52,-1,-26.3401230419183,2.59015485817836,1,Masa fisica cargada confirmada
+49.52,-1,-26.3401230419183,2.59015485817836,1,Masa fisica cargada confirmada
+50,-1,-26.3401240382489,2.70131552690928,1,Despegue fisico: spreader 0.10 m sobre altura de toma
+50,-1,-26.3401240382489,2.70131552690928,1,Despegue fisico: spreader 0.10 m sobre altura de toma
+75.32,6,-26.3401915083025,11.5632302843028,1,Solicitud automatico
+75.4,7,-26.3401917432152,11.5617709741756,1,Entrada efectiva automatico
+105.76,-1,22.4943230904962,24.1123280916165,1,Llegada horizontal: no implica fin de descenso ni entrega
+105.76,-1,22.4943230904962,24.1123280916165,1,Llegada horizontal: no implica fin de descenso ni entrega
+133.2,7,NaN,NaN,1,Solicitud manual
+133.56,8,22.4317340351327,21.7146915906911,1,Entrada efectiva manual
+169.24,9,22.4304993368803,8.48820426511386,1,Apoyo y solicitud apertura twistlocks

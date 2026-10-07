@@ -1,0 +1,34 @@
+[
+  {
+    "prueba": "CODESYS manual sin antisway",
+    "fin": 187.2,
+    "auto": 75.44,
+    "finNativoTorque": 177.30533333333332,
+    "correccionMax": 0,
+    "masaFinal": 51863
+  },
+  {
+    "prueba": "CODESYS manual con antisway",
+    "fin": 169.2,
+    "auto": 75.44,
+    "finNativoTorque": 169.2,
+    "correccionMax": 0.46245050464552712,
+    "masaFinal": 15000
+  },
+  {
+    "prueba": "CODESYS automático sin antisway",
+    "fin": 180,
+    "auto": 75.36,
+    "finNativoTorque": 180,
+    "correccionMax": 0,
+    "masaFinal": 51863
+  },
+  {
+    "prueba": "CODESYS automático con antisway",
+    "fin": 279.52,
+    "auto": 75.44,
+    "finNativoTorque": 279.52,
+    "correccionMax": 0.4670201345406354,
+    "masaFinal": 51863
+  }
+]

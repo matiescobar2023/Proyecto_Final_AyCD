@@ -1,0 +1,13 @@
+{
+  "tiempoSimulacion_s": 180,
+  "etapa": 7,
+  "x_m": 22.399919635982208,
+  "y_m": 24.074137328278848,
+  "modo": null,
+  "cargado": null,
+  "falla": null,
+  "terminado": true,
+  "entregaConfirmada": false,
+  "causa": "Limite de 180 s: sin antisway, prueba valida sin entrega",
+  "horaReal": "06-Oct-2026 22:57:15"
+}
