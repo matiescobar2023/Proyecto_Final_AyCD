@@ -1,0 +1,2 @@
+caso,nombre,tipo,criterio,tiempo_s,esperado,observado,cumple
+S53,Cambio WD relativo al vencimiento -0.02 s,LOGICA,Cambio previo renueva temporizador,5.2,[1 1 1 1 1 1 0 0],[1 1 1 1 1 1 0 0],1

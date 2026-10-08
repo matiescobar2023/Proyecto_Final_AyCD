@@ -1,0 +1,2 @@
+caso,nombre,tipo,criterio,tiempo_s,esperado,observado,cumple
+S73,Limite activo desde arranque - Altura maxima izaje,ROBUSTEZ,Eje peligroso inhibido al arrancar,0.1,0,1,0

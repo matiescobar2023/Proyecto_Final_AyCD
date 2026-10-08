@@ -1,0 +1,2 @@
+caso,nombre,tipo,criterio,tiempo_s,esperado,observado,cumple
+S65,Entrada fisica no valida NaN - canal 7,ROBUSTEZ,Medicion NaN no debe autorizar su eje,0.24,0,1,0

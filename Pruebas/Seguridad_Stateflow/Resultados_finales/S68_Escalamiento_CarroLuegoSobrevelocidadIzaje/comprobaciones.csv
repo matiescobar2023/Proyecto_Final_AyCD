@@ -1,0 +1,2 @@
+caso,nombre,tipo,criterio,tiempo_s,esperado,observado,cumple
+S68,Escalamiento - Carro luego sobrevelocidad izaje,LOGICA,Escalamiento por la causa restante del otro eje,0.34,[0 0 0 0 0 0 1 0],[0 0 0 0 0 0 1 0],1

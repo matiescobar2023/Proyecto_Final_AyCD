@@ -1,0 +1,2 @@
+caso,nombre,tipo,criterio,tiempo_s,esperado,observado,cumple
+S56,Reinicio normal no sustituye latido WD,LOGICA,Reset en W0 no realimenta el watchdog,5.2,[0 0 0 0 0 0 1 1],[0 0 0 0 0 0 1 1],1

@@ -1,0 +1,3 @@
+caso,nombre,tipo,criterio,tiempo_s,esperado,observado,cumple
+S36,Pulsador durante emergencia - Carro luego izaje,LOGICA,Emergencia parcial previa,0.24,[1 0 1 0 1 1 1 0],[1 0 1 0 1 1 1 0],1
+S36,Pulsador durante emergencia - Carro luego izaje,LOGICA,Boton escala a total,0.34,[0 0 0 0 0 0 1 0],[0 0 0 0 0 0 1 0],1

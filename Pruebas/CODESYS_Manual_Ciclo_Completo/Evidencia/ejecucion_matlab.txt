@@ -1,0 +1,4 @@
+feature('HotLinks',0);cd('D:\AyCD\Chat\Proyecto_grua\Prueba_Completa_CODESYS_Manual_20261007')
+feature('HotLinks',0);cd('D:\AyCD\Chat\Proyecto_grua\Prueba_Completa_CODESYS_Manual_20261007')
+feature('HotLinks',0);cd('D:\AyCD\Chat\Proyecto_grua\Prueba_Completa_CODESYS_Manual_20261007')
+feature('HotLinks',0);cd('D:\AyCD\Chat\Proyecto_grua\Prueba_Completa_CODESYS_Manual_20261007')

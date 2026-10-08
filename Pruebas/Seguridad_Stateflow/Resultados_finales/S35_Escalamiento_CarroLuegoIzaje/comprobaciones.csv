@@ -1,0 +1,4 @@
+caso,nombre,tipo,criterio,tiempo_s,esperado,observado,cumple
+S35,Escalamiento - Carro luego izaje,LOGICA,Primera emergencia parcial,0.24,[1 0 1 0 1 1 1 0],[1 0 1 0 1 1 1 0],1
+S35,Escalamiento - Carro luego izaje,LOGICA,Segundo eje escala a total,0.34,[0 0 0 0 0 0 1 0],[0 0 0 0 0 0 1 0],1
+S35,Escalamiento - Carro luego izaje,LOGICA,Rearme total con todas las causas despejadas,0.62,[1 1 1 1 1 1 0 0],[1 1 1 1 1 1 0 0],1

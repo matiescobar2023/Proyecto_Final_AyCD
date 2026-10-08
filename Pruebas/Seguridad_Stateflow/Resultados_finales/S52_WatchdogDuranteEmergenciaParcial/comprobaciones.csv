@@ -1,0 +1,3 @@
+caso,nombre,tipo,criterio,tiempo_s,esperado,observado,cumple
+S52,Watchdog durante emergencia parcial,LOGICA,Parcial antes del watchdog,0.24,[1 1 0 1 0 0 1 0],[1 1 0 1 0 0 1 0],1
+S52,Watchdog durante emergencia parcial,LOGICA,Watchdog escala parcial a total,5.2,[0 0 0 0 0 0 1 1],[0 0 0 0 0 0 1 1],1

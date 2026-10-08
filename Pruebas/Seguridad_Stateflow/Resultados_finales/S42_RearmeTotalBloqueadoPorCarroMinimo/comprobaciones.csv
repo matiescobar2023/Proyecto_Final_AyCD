@@ -1,0 +1,4 @@
+caso,nombre,tipo,criterio,tiempo_s,esperado,observado,cumple
+S42,Rearme total bloqueado por carro minimo,LOGICA,Una sola causa activa impide rearme total,0.32,[0 0 0 0 0 0 1 0],[0 0 0 0 0 0 1 0],1
+S42,Rearme total bloqueado por carro minimo,LOGICA,La desaparicion no rearma sola,0.6,[0 0 0 0 0 0 1 0],[0 0 0 0 0 0 1 0],1
+S42,Rearme total bloqueado por carro minimo,LOGICA,Rearme tras eliminar la ultima causa,0.72,[1 1 1 1 1 1 0 0],[1 1 1 1 1 1 0 0],1

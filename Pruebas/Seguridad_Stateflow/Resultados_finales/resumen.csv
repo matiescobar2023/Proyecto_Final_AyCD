@@ -1,0 +1,76 @@
+caso,nombre,duracion_s,muestras,tiempo_real_s,criterios_logica_cumplen,criterios_logica_no_cumplen,hallazgos_robustez,primer_fallo_WD_s,primera_total_s,carpeta
+S01,Normal y actividad de watchdog,6,301,0.7105976,1,0,0,NaN,NaN,D:\AyCD\Chat\Proyecto_grua\Prueba_Seguridad_Stateflow_20261007\Resultados_finales\S01_NormalYActividadDeWatchdog
+S02,Posicion minima carro - interior,0.6,31,0.4932213,2,0,0,NaN,NaN,D:\AyCD\Chat\Proyecto_grua\Prueba_Seguridad_Stateflow_20261007\Resultados_finales\S02_PosicionMinimaCarro_Interior
+S03,Posicion minima carro - igualdad,0.6,31,0.4646484,2,0,0,NaN,NaN,D:\AyCD\Chat\Proyecto_grua\Prueba_Seguridad_Stateflow_20261007\Resultados_finales\S03_PosicionMinimaCarro_Igualdad
+S04,Posicion minima carro - exterior,0.6,31,0.4721897,2,0,0,NaN,NaN,D:\AyCD\Chat\Proyecto_grua\Prueba_Seguridad_Stateflow_20261007\Resultados_finales\S04_PosicionMinimaCarro_Exterior
+S05,Posicion minima carro - retencion y rearme,0.8,41,0.4768695,4,0,0,NaN,NaN,D:\AyCD\Chat\Proyecto_grua\Prueba_Seguridad_Stateflow_20261007\Resultados_finales\S05_PosicionMinimaCarro_RetencionYRearme
+S06,Posicion maxima carro - interior,0.6,31,0.4697756,2,0,0,NaN,NaN,D:\AyCD\Chat\Proyecto_grua\Prueba_Seguridad_Stateflow_20261007\Resultados_finales\S06_PosicionMaximaCarro_Interior
+S07,Posicion maxima carro - igualdad,0.6,31,0.4739864,2,0,0,NaN,NaN,D:\AyCD\Chat\Proyecto_grua\Prueba_Seguridad_Stateflow_20261007\Resultados_finales\S07_PosicionMaximaCarro_Igualdad
+S08,Posicion maxima carro - exterior,0.6,31,0.4751362,2,0,0,NaN,NaN,D:\AyCD\Chat\Proyecto_grua\Prueba_Seguridad_Stateflow_20261007\Resultados_finales\S08_PosicionMaximaCarro_Exterior
+S09,Posicion maxima carro - retencion y rearme,0.8,41,0.4891283,4,0,0,NaN,NaN,D:\AyCD\Chat\Proyecto_grua\Prueba_Seguridad_Stateflow_20261007\Resultados_finales\S09_PosicionMaximaCarro_RetencionYRearme
+S10,Velocidad negativa carro - interior,0.6,31,0.4857238,2,0,0,NaN,NaN,D:\AyCD\Chat\Proyecto_grua\Prueba_Seguridad_Stateflow_20261007\Resultados_finales\S10_VelocidadNegativaCarro_Interior
+S11,Velocidad negativa carro - igualdad,0.6,31,0.4654783,2,0,0,NaN,NaN,D:\AyCD\Chat\Proyecto_grua\Prueba_Seguridad_Stateflow_20261007\Resultados_finales\S11_VelocidadNegativaCarro_Igualdad
+S12,Velocidad negativa carro - exterior,0.6,31,0.4625138,2,0,0,NaN,NaN,D:\AyCD\Chat\Proyecto_grua\Prueba_Seguridad_Stateflow_20261007\Resultados_finales\S12_VelocidadNegativaCarro_Exterior
+S13,Velocidad negativa carro - retencion y rearme,0.8,41,0.4862113,4,0,0,NaN,NaN,D:\AyCD\Chat\Proyecto_grua\Prueba_Seguridad_Stateflow_20261007\Resultados_finales\S13_VelocidadNegativaCarro_RetencionYRearme
+S14,Velocidad positiva carro - interior,0.6,31,0.4764307,2,0,0,NaN,NaN,D:\AyCD\Chat\Proyecto_grua\Prueba_Seguridad_Stateflow_20261007\Resultados_finales\S14_VelocidadPositivaCarro_Interior
+S15,Velocidad positiva carro - igualdad,0.6,31,0.4674223,2,0,0,NaN,NaN,D:\AyCD\Chat\Proyecto_grua\Prueba_Seguridad_Stateflow_20261007\Resultados_finales\S15_VelocidadPositivaCarro_Igualdad
+S16,Velocidad positiva carro - exterior,0.6,31,0.509448,2,0,0,NaN,NaN,D:\AyCD\Chat\Proyecto_grua\Prueba_Seguridad_Stateflow_20261007\Resultados_finales\S16_VelocidadPositivaCarro_Exterior
+S17,Velocidad positiva carro - retencion y rearme,0.8,41,0.4614414,4,0,0,NaN,NaN,D:\AyCD\Chat\Proyecto_grua\Prueba_Seguridad_Stateflow_20261007\Resultados_finales\S17_VelocidadPositivaCarro_RetencionYRearme
+S18,Altura minima izaje - interior,0.6,31,0.4655396,2,0,0,NaN,NaN,D:\AyCD\Chat\Proyecto_grua\Prueba_Seguridad_Stateflow_20261007\Resultados_finales\S18_AlturaMinimaIzaje_Interior
+S19,Altura minima izaje - igualdad,0.6,31,0.4677586,2,0,0,NaN,NaN,D:\AyCD\Chat\Proyecto_grua\Prueba_Seguridad_Stateflow_20261007\Resultados_finales\S19_AlturaMinimaIzaje_Igualdad
+S20,Altura minima izaje - exterior,0.6,31,0.4586,2,0,0,NaN,NaN,D:\AyCD\Chat\Proyecto_grua\Prueba_Seguridad_Stateflow_20261007\Resultados_finales\S20_AlturaMinimaIzaje_Exterior
+S21,Altura minima izaje - retencion y rearme,0.8,41,0.4667668,4,0,0,NaN,NaN,D:\AyCD\Chat\Proyecto_grua\Prueba_Seguridad_Stateflow_20261007\Resultados_finales\S21_AlturaMinimaIzaje_RetencionYRearme
+S22,Altura maxima izaje - interior,0.6,31,0.454966,2,0,0,NaN,NaN,D:\AyCD\Chat\Proyecto_grua\Prueba_Seguridad_Stateflow_20261007\Resultados_finales\S22_AlturaMaximaIzaje_Interior
+S23,Altura maxima izaje - igualdad,0.6,31,0.4572238,2,0,0,NaN,NaN,D:\AyCD\Chat\Proyecto_grua\Prueba_Seguridad_Stateflow_20261007\Resultados_finales\S23_AlturaMaximaIzaje_Igualdad
+S24,Altura maxima izaje - exterior,0.6,31,0.4609007,2,0,0,NaN,NaN,D:\AyCD\Chat\Proyecto_grua\Prueba_Seguridad_Stateflow_20261007\Resultados_finales\S24_AlturaMaximaIzaje_Exterior
+S25,Altura maxima izaje - retencion y rearme,0.8,41,0.462578,4,0,0,NaN,NaN,D:\AyCD\Chat\Proyecto_grua\Prueba_Seguridad_Stateflow_20261007\Resultados_finales\S25_AlturaMaximaIzaje_RetencionYRearme
+S26,Velocidad negativa izaje - interior,0.6,31,0.4664156,2,0,0,NaN,NaN,D:\AyCD\Chat\Proyecto_grua\Prueba_Seguridad_Stateflow_20261007\Resultados_finales\S26_VelocidadNegativaIzaje_Interior
+S27,Velocidad negativa izaje - igualdad,0.6,31,0.4658729,2,0,0,NaN,NaN,D:\AyCD\Chat\Proyecto_grua\Prueba_Seguridad_Stateflow_20261007\Resultados_finales\S27_VelocidadNegativaIzaje_Igualdad
+S28,Velocidad negativa izaje - exterior,0.6,31,0.4675904,2,0,0,NaN,NaN,D:\AyCD\Chat\Proyecto_grua\Prueba_Seguridad_Stateflow_20261007\Resultados_finales\S28_VelocidadNegativaIzaje_Exterior
+S29,Velocidad negativa izaje - retencion y rearme,0.8,41,0.4668761,4,0,0,NaN,NaN,D:\AyCD\Chat\Proyecto_grua\Prueba_Seguridad_Stateflow_20261007\Resultados_finales\S29_VelocidadNegativaIzaje_RetencionYRearme
+S30,Velocidad positiva izaje - interior,0.6,31,0.4701485,2,0,0,NaN,NaN,D:\AyCD\Chat\Proyecto_grua\Prueba_Seguridad_Stateflow_20261007\Resultados_finales\S30_VelocidadPositivaIzaje_Interior
+S31,Velocidad positiva izaje - igualdad,0.6,31,0.4608653,2,0,0,NaN,NaN,D:\AyCD\Chat\Proyecto_grua\Prueba_Seguridad_Stateflow_20261007\Resultados_finales\S31_VelocidadPositivaIzaje_Igualdad
+S32,Velocidad positiva izaje - exterior,0.6,31,0.4608146,2,0,0,NaN,NaN,D:\AyCD\Chat\Proyecto_grua\Prueba_Seguridad_Stateflow_20261007\Resultados_finales\S32_VelocidadPositivaIzaje_Exterior
+S33,Velocidad positiva izaje - retencion y rearme,0.8,41,0.5080463,4,0,0,NaN,NaN,D:\AyCD\Chat\Proyecto_grua\Prueba_Seguridad_Stateflow_20261007\Resultados_finales\S33_VelocidadPositivaIzaje_RetencionYRearme
+S34,Pulsador de emergencia y rearme,0.8,41,0.4646902,4,0,0,NaN,0.2,D:\AyCD\Chat\Proyecto_grua\Prueba_Seguridad_Stateflow_20261007\Resultados_finales\S34_PulsadorDeEmergenciaYRearme
+S35,Escalamiento - Carro luego izaje,0.8,41,0.4592361,3,0,0,NaN,0.3,D:\AyCD\Chat\Proyecto_grua\Prueba_Seguridad_Stateflow_20261007\Resultados_finales\S35_Escalamiento_CarroLuegoIzaje
+S36,Pulsador durante emergencia - Carro luego izaje,0.6,31,0.4566099,2,0,0,NaN,0.3,D:\AyCD\Chat\Proyecto_grua\Prueba_Seguridad_Stateflow_20261007\Resultados_finales\S36_PulsadorDuranteEmergencia_CarroLuegoIzaje
+S37,Escalamiento - Izaje luego carro,0.8,41,0.4588163,3,0,0,NaN,0.3,D:\AyCD\Chat\Proyecto_grua\Prueba_Seguridad_Stateflow_20261007\Resultados_finales\S37_Escalamiento_IzajeLuegoCarro
+S38,Pulsador durante emergencia - Izaje luego carro,0.6,31,0.4721865,2,0,0,NaN,0.3,D:\AyCD\Chat\Proyecto_grua\Prueba_Seguridad_Stateflow_20261007\Resultados_finales\S38_PulsadorDuranteEmergencia_IzajeLuegoCarro
+S39,Limites de ambos ejes simultaneos,0.8,41,0.4721094,2,0,1,NaN,NaN,D:\AyCD\Chat\Proyecto_grua\Prueba_Seguridad_Stateflow_20261007\Resultados_finales\S39_LimitesDeAmbosEjesSimultaneos
+S40,Pulsador y limites simultaneos,0.6,31,0.4590959,1,0,0,NaN,0.2,D:\AyCD\Chat\Proyecto_grua\Prueba_Seguridad_Stateflow_20261007\Resultados_finales\S40_PulsadorYLimitesSimultaneos
+S41,Rearme total bloqueado por boton,0.9,46,0.4656775,3,0,0,NaN,0.1,D:\AyCD\Chat\Proyecto_grua\Prueba_Seguridad_Stateflow_20261007\Resultados_finales\S41_RearmeTotalBloqueadoPorBoton
+S42,Rearme total bloqueado por carro minimo,0.9,46,0.4974964,3,0,0,NaN,0.1,D:\AyCD\Chat\Proyecto_grua\Prueba_Seguridad_Stateflow_20261007\Resultados_finales\S42_RearmeTotalBloqueadoPorCarroMinimo
+S43,Rearme total bloqueado por carro maximo,0.9,46,0.4885599,3,0,0,NaN,0.1,D:\AyCD\Chat\Proyecto_grua\Prueba_Seguridad_Stateflow_20261007\Resultados_finales\S43_RearmeTotalBloqueadoPorCarroMaximo
+S44,Rearme total bloqueado por izaje minimo,0.9,46,0.4677083,3,0,0,NaN,0.1,D:\AyCD\Chat\Proyecto_grua\Prueba_Seguridad_Stateflow_20261007\Resultados_finales\S44_RearmeTotalBloqueadoPorIzajeMinimo
+S45,Rearme total bloqueado por izaje maximo,0.9,46,0.4676168,3,0,0,NaN,0.1,D:\AyCD\Chat\Proyecto_grua\Prueba_Seguridad_Stateflow_20261007\Resultados_finales\S45_RearmeTotalBloqueadoPorIzajeMaximo
+S46,Rearme total bloqueado por sobrevelocidad izaje,0.9,46,0.4568153,3,0,0,NaN,0.1,D:\AyCD\Chat\Proyecto_grua\Prueba_Seguridad_Stateflow_20261007\Resultados_finales\S46_RearmeTotalBloqueadoPorSobrevelocidadIzaje
+S47,Reinicio sostenido requiere nuevo flanco,0.9,46,0.5495994,3,0,0,NaN,NaN,D:\AyCD\Chat\Proyecto_grua\Prueba_Seguridad_Stateflow_20261007\Resultados_finales\S47_ReinicioSostenidoRequiereNuevoFlanco
+S48,Pulso de limite de un ciclo queda enclavado,0.7,36,0.4675397,2,0,0,NaN,NaN,D:\AyCD\Chat\Proyecto_grua\Prueba_Seguridad_Stateflow_20261007\Resultados_finales\S48_PulsoDeLimiteDeUnCicloQuedaEnclavado
+S49,Watchdog congelado en 0,5.9,296,0.4748051,3,0,0,5.2,5.22,D:\AyCD\Chat\Proyecto_grua\Prueba_Seguridad_Stateflow_20261007\Resultados_finales\S49_WatchdogCongeladoEn0
+S50,Watchdog congelado en 1,5.9,296,0.4752283,3,0,0,5.1,5.12,D:\AyCD\Chat\Proyecto_grua\Prueba_Seguridad_Stateflow_20261007\Resultados_finales\S50_WatchdogCongeladoEn1
+S51,Watchdog durante emergencia parcial,5.5,276,0.5028168,2,0,0,5.1,5.12,D:\AyCD\Chat\Proyecto_grua\Prueba_Seguridad_Stateflow_20261007\Resultados_finales\S51_WatchdogDuranteEmergenciaParcial
+S52,Watchdog durante emergencia parcial,5.5,276,0.4746173,2,0,0,5.1,5.12,D:\AyCD\Chat\Proyecto_grua\Prueba_Seguridad_Stateflow_20261007\Resultados_finales\S52_WatchdogDuranteEmergenciaParcial
+S53,Cambio WD relativo al vencimiento -0.02 s,5.25,263,0.5774412,1,0,0,NaN,NaN,D:\AyCD\Chat\Proyecto_grua\Prueba_Seguridad_Stateflow_20261007\Resultados_finales\S53_CambioWDRelativoAlVencimiento_0_02S
+S54,Cambio WD relativo al vencimiento +0.00 s,5.25,263,0.4679331,1,0,0,5.1,5.12,D:\AyCD\Chat\Proyecto_grua\Prueba_Seguridad_Stateflow_20261007\Resultados_finales\S54_CambioWDRelativoAlVencimiento_0_00S
+S55,Cambio WD relativo al vencimiento +0.02 s,5.25,263,0.4795324,1,0,0,5.1,5.12,D:\AyCD\Chat\Proyecto_grua\Prueba_Seguridad_Stateflow_20261007\Resultados_finales\S55_CambioWDRelativoAlVencimiento_0_02S
+S56,Reinicio normal no sustituye latido WD,5.4,271,0.5106645,1,0,0,5.1,5.12,D:\AyCD\Chat\Proyecto_grua\Prueba_Seguridad_Stateflow_20261007\Resultados_finales\S56_ReinicioNormalNoSustituyeLatidoWD
+S57,Reinicio del WD sin restaurar actividad,10.7,536,0.4741776,2,0,0,5.1,5.12,D:\AyCD\Chat\Proyecto_grua\Prueba_Seguridad_Stateflow_20261007\Resultados_finales\S57_ReinicioDelWDSinRestaurarActividad
+S58,Limite activo desde arranque - Posicion minima carro,0.4,21,0.4916533,0,0,1,NaN,NaN,D:\AyCD\Chat\Proyecto_grua\Prueba_Seguridad_Stateflow_20261007\Resultados_finales\S58_LimiteActivoDesdeArranque_PosicionMinimaCarro
+S59,Limite activo desde arranque - Altura minima izaje,0.4,21,0.4710242,0,0,1,NaN,NaN,D:\AyCD\Chat\Proyecto_grua\Prueba_Seguridad_Stateflow_20261007\Resultados_finales\S59_LimiteActivoDesdeArranque_AlturaMinimaIzaje
+S60,Limite activo desde arranque - Velocidad negativa izaje,0.4,21,0.4686296,0,0,1,NaN,NaN,D:\AyCD\Chat\Proyecto_grua\Prueba_Seguridad_Stateflow_20261007\Resultados_finales\S60_LimiteActivoDesdeArranque_VelocidadNegativaIzaje
+S61,Pulsador activo desde arranque,0.4,21,0.4641731,1,0,0,NaN,0.02,D:\AyCD\Chat\Proyecto_grua\Prueba_Seguridad_Stateflow_20261007\Resultados_finales\S61_PulsadorActivoDesdeArranque
+S62,Entrada fisica no valida NaN - canal 4,0.5,26,0.4638473,0,0,1,NaN,NaN,D:\AyCD\Chat\Proyecto_grua\Prueba_Seguridad_Stateflow_20261007\Resultados_finales\S62_EntradaFisicaNoValidaNaN_Canal4
+S63,Entrada fisica no valida NaN - canal 5,0.5,26,0.4627621,0,0,1,NaN,NaN,D:\AyCD\Chat\Proyecto_grua\Prueba_Seguridad_Stateflow_20261007\Resultados_finales\S63_EntradaFisicaNoValidaNaN_Canal5
+S64,Entrada fisica no valida NaN - canal 6,0.5,26,0.4571398,0,0,1,NaN,NaN,D:\AyCD\Chat\Proyecto_grua\Prueba_Seguridad_Stateflow_20261007\Resultados_finales\S64_EntradaFisicaNoValidaNaN_Canal6
+S65,Entrada fisica no valida NaN - canal 7,0.5,26,0.4580852,0,0,1,NaN,NaN,D:\AyCD\Chat\Proyecto_grua\Prueba_Seguridad_Stateflow_20261007\Resultados_finales\S65_EntradaFisicaNoValidaNaN_Canal7
+S66,Pulso entre instantes de muestreo,0.5,26,0.4791048,1,0,0,NaN,NaN,D:\AyCD\Chat\Proyecto_grua\Prueba_Seguridad_Stateflow_20261007\Resultados_finales\S66_PulsoEntreInstantesDeMuestreo
+S67,Escalamiento - Carro luego limite inferior izaje,0.6,31,0.6556992,1,0,0,NaN,0.3,D:\AyCD\Chat\Proyecto_grua\Prueba_Seguridad_Stateflow_20261007\Resultados_finales\S67_Escalamiento_CarroLuegoLimiteInferiorIzaje
+S68,Escalamiento - Carro luego sobrevelocidad izaje,0.6,31,0.4823375,1,0,0,NaN,0.3,D:\AyCD\Chat\Proyecto_grua\Prueba_Seguridad_Stateflow_20261007\Resultados_finales\S68_Escalamiento_CarroLuegoSobrevelocidadIzaje
+S69,Escalamiento - Izaje luego limite derecho carro,0.6,31,0.4816446,1,0,0,NaN,0.3,D:\AyCD\Chat\Proyecto_grua\Prueba_Seguridad_Stateflow_20261007\Resultados_finales\S69_Escalamiento_IzajeLuegoLimiteDerechoCarro
+S70,Limite activo desde arranque - Posicion maxima carro,0.4,21,0.4593095,0,0,1,NaN,NaN,D:\AyCD\Chat\Proyecto_grua\Prueba_Seguridad_Stateflow_20261007\Resultados_finales\S70_LimiteActivoDesdeArranque_PosicionMaximaCarro
+S71,Limite activo desde arranque - Velocidad negativa carro,0.4,21,0.4641254,0,0,1,NaN,NaN,D:\AyCD\Chat\Proyecto_grua\Prueba_Seguridad_Stateflow_20261007\Resultados_finales\S71_LimiteActivoDesdeArranque_VelocidadNegativaCarro
+S72,Limite activo desde arranque - Velocidad positiva carro,0.4,21,0.4675439,0,0,1,NaN,NaN,D:\AyCD\Chat\Proyecto_grua\Prueba_Seguridad_Stateflow_20261007\Resultados_finales\S72_LimiteActivoDesdeArranque_VelocidadPositivaCarro
+S73,Limite activo desde arranque - Altura maxima izaje,0.4,21,0.4599922,0,0,1,NaN,NaN,D:\AyCD\Chat\Proyecto_grua\Prueba_Seguridad_Stateflow_20261007\Resultados_finales\S73_LimiteActivoDesdeArranque_AlturaMaximaIzaje
+S74,Limite activo desde arranque - Velocidad positiva izaje,0.4,21,0.4783987,0,0,1,NaN,NaN,D:\AyCD\Chat\Proyecto_grua\Prueba_Seguridad_Stateflow_20261007\Resultados_finales\S74_LimiteActivoDesdeArranque_VelocidadPositivaIzaje
+S75,Limite carro y sobrevelocidad izaje simultaneos,0.6,31,0.4778451,1,0,1,NaN,NaN,D:\AyCD\Chat\Proyecto_grua\Prueba_Seguridad_Stateflow_20261007\Resultados_finales\S75_LimiteCarroYSobrevelocidadIzajeSimultaneos

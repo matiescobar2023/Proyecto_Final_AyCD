@@ -1,0 +1,2 @@
+caso,nombre,tipo,criterio,tiempo_s,esperado,observado,cumple
+S70,Limite activo desde arranque - Posicion maxima carro,ROBUSTEZ,Eje peligroso inhibido al arrancar,0.1,0,1,0

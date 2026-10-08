@@ -1,0 +1,2 @@
+caso,nombre,tipo,criterio,tiempo_s,esperado,observado,cumple
+S72,Limite activo desde arranque - Velocidad positiva carro,ROBUSTEZ,Eje peligroso inhibido al arrancar,0.1,0,1,0

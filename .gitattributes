@@ -1,6 +1,10 @@
 /Pruebas/CODESYS_Automatico_Con_Antisway/Senales/datos_brutos.mat filter=lfs diff=lfs merge=lfs -text
 /Pruebas/CODESYS_Automatico_Sin_Antisway/Senales/datos_brutos.mat filter=lfs diff=lfs merge=lfs -text
+/Pruebas/CODESYS_Manual_Ciclo_Completo/Incidencias/Intento_Barrido_Incompleto/datos_brutos.mat filter=lfs diff=lfs merge=lfs -text
+/Pruebas/CODESYS_Manual_Ciclo_Completo/Incidencias/Intento_Barrido_Incompleto/senales_originales.mat filter=lfs diff=lfs merge=lfs -text
+/Pruebas/CODESYS_Manual_Ciclo_Completo/Senales/datos_brutos.mat filter=lfs diff=lfs merge=lfs -text
+/Pruebas/CODESYS_Manual_Ciclo_Completo/Senales/senales_originales.mat filter=lfs diff=lfs merge=lfs -text
 /Pruebas/CODESYS_Manual_Con_Antisway/Senales/datos_brutos.mat filter=lfs diff=lfs merge=lfs -text
 /Pruebas/CODESYS_Manual_Sin_Antisway/Senales/datos_brutos.mat filter=lfs diff=lfs merge=lfs -text
-/Pruebas/Prueba_1_Barrido_y_Dos_Transferencias/Senales/datos_brutos.mat filter=lfs diff=lfs merge=lfs -text
-/Pruebas/Prueba_1_Barrido_y_Dos_Transferencias/Senales/senales_originales.mat filter=lfs diff=lfs merge=lfs -text
+/Pruebas/Prueba_ciclo_completo_en_simulink/Senales/datos_brutos.mat filter=lfs diff=lfs merge=lfs -text
+/Pruebas/Prueba_ciclo_completo_en_simulink/Senales/senales_originales.mat filter=lfs diff=lfs merge=lfs -text

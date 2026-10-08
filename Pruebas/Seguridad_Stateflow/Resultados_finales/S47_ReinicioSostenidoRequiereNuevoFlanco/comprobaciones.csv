@@ -1,0 +1,4 @@
+caso,nombre,tipo,criterio,tiempo_s,esperado,observado,cumple
+S47,Reinicio sostenido requiere nuevo flanco,LOGICA,Limite dispara aun con reset alto,0.24,[1 0 1 0 1 1 1 0],[1 0 1 0 1 1 1 0],1
+S47,Reinicio sostenido requiere nuevo flanco,LOGICA,Reset alto no equivale a flanco nuevo,0.5,[1 0 1 0 1 1 1 0],[1 0 1 0 1 1 1 0],1
+S47,Reinicio sostenido requiere nuevo flanco,LOGICA,Rearme por nuevo flanco,0.72,[1 1 1 1 1 1 0 0],[1 1 1 1 1 1 0 0],1

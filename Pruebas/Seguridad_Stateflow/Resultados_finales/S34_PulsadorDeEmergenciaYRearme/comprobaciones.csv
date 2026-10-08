@@ -1,0 +1,5 @@
+caso,nombre,tipo,criterio,tiempo_s,esperado,observado,cumple
+S34,Pulsador de emergencia y rearme,LOGICA,Boton inhibe ambos ejes,0.24,[0 0 0 0 0 0 1 0],[0 0 0 0 0 0 1 0],1
+S34,Pulsador de emergencia y rearme,LOGICA,Boton activo impide rearme,0.32,[0 0 0 0 0 0 1 0],[0 0 0 0 0 0 1 0],1
+S34,Pulsador de emergencia y rearme,LOGICA,Soltar boton no rearma,0.5,[0 0 0 0 0 0 1 0],[0 0 0 0 0 0 1 0],1
+S34,Pulsador de emergencia y rearme,LOGICA,Rearme intencional,0.62,[1 1 1 1 1 1 0 0],[1 1 1 1 1 1 0 0],1

@@ -1,0 +1,3 @@
+caso,nombre,tipo,criterio,tiempo_s,esperado,observado,cumple
+S06,Posicion maxima carro - interior,LOGICA,Respuesta del umbral inclusivo,0.24,[1 1 1 1 1 1 0 0],[1 1 1 1 1 1 0 0],1
+S06,Posicion maxima carro - interior,LOGICA,Indicacion del sensor correspondiente,0.24,0,0,1

@@ -1,0 +1,166 @@
+{
+  "paso_s": 0.02,
+  "watchdog_s": 5,
+  "entradas": [
+    "watchdogPulse",
+    "resetSafety",
+    "emergencyStop",
+    "xTrolley",
+    "vTrolley",
+    "yHoist",
+    "vHoist"
+  ],
+  "salidas": [
+    "permitGlobal",
+    "permitTrolley",
+    "permitHoist",
+    "brakeTrolleyOpen",
+    "brakeHoistOpen",
+    "emergencyBrakeHoistOpen",
+    "emergency",
+    "hmiWatchdogFault",
+    "hmiUltimate1",
+    "hmiUltimate2",
+    "hmiUltimate3",
+    "hmiUltimate4"
+  ],
+  "estados_y_transiciones": {
+    "decomposicion": "PARALLEL_AND",
+    "actualizacion": "DISCRETE",
+    "periodo": "T_s0",
+    "states": [
+      {
+        "name": "SALTOS_EMERGENCIAS",
+        "label": "SALTOS_EMERGENCIAS",
+        "order": 1,
+        "decomposition": "EXCLUSIVE_OR"
+      },
+      {
+        "name": "WATCHDOG",
+        "label": "WATCHDOG",
+        "order": 2,
+        "decomposition": "EXCLUSIVE_OR"
+      },
+      {
+        "name": "FUNCIONAMIENTO_NORMAL",
+        "label": "FUNCIONAMIENTO_NORMAL\nentry:\nEMERGENCIA=false;\nBRK_t=true;\nBRK_h=true;\nBRK_hE=true;\n",
+        "order": 0,
+        "decomposition": "EXCLUSIVE_OR"
+      },
+      {
+        "name": "EMERGENCIA_IZAJE",
+        "label": "EMERGENCIA_IZAJE\nentry:\nEMERGENCIA=true;\nBRK_t=true;\nBRK_h=false;\nBRK_hE=false;\n",
+        "order": 0,
+        "decomposition": "EXCLUSIVE_OR"
+      },
+      {
+        "name": "EMERGENCIA_CARRO",
+        "label": "EMERGENCIA_CARRO\nentry:\nEMERGENCIA=true;\nBRK_t=false;\nBRK_h=true;\nBRK_hE=true;\n",
+        "order": 0,
+        "decomposition": "EXCLUSIVE_OR"
+      },
+      {
+        "name": "EMERGENCIA_TOTAL",
+        "label": "EMERGENCIA_TOTAL\nentry:\nEMERGENCIA=true;\nBRK_t=false;\nBRK_h=false;\nBRK_hE=false;\n",
+        "order": 0,
+        "decomposition": "EXCLUSIVE_OR"
+      },
+      {
+        "name": "FUNCIONAMIENTO_NORMAL",
+        "label": "FUNCIONAMIENTO_NORMAL\nentry:\nPARADA_EMERGENCIA_WD=false;\n",
+        "order": 0,
+        "decomposition": "EXCLUSIVE_OR"
+      },
+      {
+        "name": "FALLO_WD",
+        "label": "FALLO_WD\nentry:\nPARADA_EMERGENCIA_WD=true;\n",
+        "order": 0,
+        "decomposition": "EXCLUSIVE_OR"
+      }
+    ],
+    "transitions": [
+      {
+        "from": "DEFAULT",
+        "to": "FUNCIONAMIENTO_NORMAL",
+        "label": "",
+        "order": 1
+      },
+      {
+        "from": "FUNCIONAMIENTO_NORMAL",
+        "to": "EMERGENCIA_CARRO",
+        "label": "[hasChangedTo(LST_MAXU,1) || hasChangedTo(LST_MINU,1)]",
+        "order": 3
+      },
+      {
+        "from": "FUNCIONAMIENTO_NORMAL",
+        "to": "EMERGENCIA_IZAJE",
+        "label": "[hasChangedTo(LSH_MAXU,1) || hasChangedTo(LSH_MINU,1) || hasChangedTo(VH_MAX,1)]",
+        "order": 2
+      },
+      {
+        "from": "EMERGENCIA_CARRO",
+        "to": "FUNCIONAMIENTO_NORMAL",
+        "label": "[~BOTON_EMERGENCIA && ~LST_MAXU && ~LST_MINU && hasChangedTo(REINICIO,1)]",
+        "order": 2
+      },
+      {
+        "from": "EMERGENCIA_IZAJE",
+        "to": "FUNCIONAMIENTO_NORMAL",
+        "label": "[~BOTON_EMERGENCIA && ~LSH_MAXU && ~LSH_MINU && ~VH_MAX && hasChangedTo(REINICIO,1)]",
+        "order": 2
+      },
+      {
+        "from": "FUNCIONAMIENTO_NORMAL",
+        "to": "EMERGENCIA_TOTAL",
+        "label": "[BOTON_EMERGENCIA || PARADA_EMERGENCIA_WD]",
+        "order": 1
+      },
+      {
+        "from": "EMERGENCIA_TOTAL",
+        "to": "FUNCIONAMIENTO_NORMAL",
+        "label": "[~BOTON_EMERGENCIA && ~PARADA_EMERGENCIA_WD && ~LST_MAXU && ~LST_MINU && ~LSH_MAXU && ~LSH_MINU && ~VH_MAX && hasChangedTo(REINICIO,1)]",
+        "order": 1
+      },
+      {
+        "from": "EMERGENCIA_CARRO",
+        "to": "EMERGENCIA_TOTAL",
+        "label": "[hasChangedTo(LSH_MAXU,1) || hasChangedTo(LSH_MINU,1) || hasChangedTo(VH_MAX,1) || BOTON_EMERGENCIA || PARADA_EMERGENCIA_WD]",
+        "order": 1
+      },
+      {
+        "from": "EMERGENCIA_IZAJE",
+        "to": "EMERGENCIA_TOTAL",
+        "label": "[hasChangedTo(LST_MAXU,1) || hasChangedTo(LST_MINU,1) || BOTON_EMERGENCIA || PARADA_EMERGENCIA_WD]",
+        "order": 1
+      },
+      {
+        "from": "DEFAULT",
+        "to": "FUNCIONAMIENTO_NORMAL",
+        "label": "",
+        "order": 1
+      },
+      {
+        "from": "FALLO_WD",
+        "to": "FUNCIONAMIENTO_NORMAL",
+        "label": "[hasChangedTo(REINICIO,1)]",
+        "order": 1
+      },
+      {
+        "from": "FUNCIONAMIENTO_NORMAL",
+        "to": "FUNCIONAMIENTO_NORMAL",
+        "label": "[hasChanged(pulso_WD)]",
+        "order": 2
+      },
+      {
+        "from": "FUNCIONAMIENTO_NORMAL",
+        "to": "FALLO_WD",
+        "label": "[after(TiempoMaxWD, sec)]",
+        "order": 1
+      }
+    ]
+  },
+  "sensor_original": "function [LST_MINU,LST_MAXU,LSH_MINU,LSH_MAXU,VH_MAX] = detectar(xT,vT,yH,vH)\n%#codegen\nLST_MINU = (xT <= -30.5) || (vT <= -4.6);\nLST_MAXU = (xT >=  50.5) || (vT >=  4.6);\nLSH_MINU = yH <= -20.5;\nLSH_MAXU = yH >=  40.5;\nVH_MAX = abs(vH) >= 3.45;\nend\n",
+  "chart_copia_identico": true,
+  "sensores_copia_identicos": true,
+  "ejecutado_en": "MATLAB R2025b"
+}

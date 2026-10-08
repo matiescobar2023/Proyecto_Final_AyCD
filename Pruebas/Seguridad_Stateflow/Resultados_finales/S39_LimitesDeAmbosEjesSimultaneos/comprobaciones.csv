@@ -1,0 +1,4 @@
+caso,nombre,tipo,criterio,tiempo_s,esperado,observado,cumple
+S39,Limites de ambos ejes simultaneos,LOGICA,Prioridad de izaje implementada,0.24,[1 1 0 1 0 0 1 0],[1 1 0 1 0 0 1 0],1
+S39,Limites de ambos ejes simultaneos,LOGICA,El flanco de carro no se vuelve a evaluar,0.6,[1 1 0 1 0 0 1 0],[1 1 0 1 0 0 1 0],1
+S39,Limites de ambos ejes simultaneos,ROBUSTEZ,Ambos ejes peligrosos deben quedar inhibidos,0.24,[0 0],[1 0],0

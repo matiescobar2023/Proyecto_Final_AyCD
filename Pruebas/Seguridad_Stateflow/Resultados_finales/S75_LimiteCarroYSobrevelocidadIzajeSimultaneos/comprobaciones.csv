@@ -1,0 +1,3 @@
+caso,nombre,tipo,criterio,tiempo_s,esperado,observado,cumple
+S75,Limite carro y sobrevelocidad izaje simultaneos,LOGICA,Prioridad de izaje tambien ante exceso de velocidad,0.24,[1 1 0 1 0 0 1 0],[1 1 0 1 0 0 1 0],1
+S75,Limite carro y sobrevelocidad izaje simultaneos,ROBUSTEZ,Ambos ejes peligrosos deben quedar inhibidos,0.24,[0 0],[1 0],0

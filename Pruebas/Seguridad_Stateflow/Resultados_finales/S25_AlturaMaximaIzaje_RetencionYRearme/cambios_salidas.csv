@@ -1,0 +1,4 @@
+tiempo_s,permitGlobal,permitTrolley,permitHoist,brakeTrolleyOpen,brakeHoistOpen,emergencyBrakeHoistOpen,emergency,hmiWatchdogFault,hmiUltimate1,hmiUltimate2,hmiUltimate3,hmiUltimate4,hmiHoistOverspeed
+0.2,1,1,0,1,0,0,1,0,0,0,0,1,0
+0.4,1,1,0,1,0,0,1,0,0,0,0,0,0
+0.62,1,1,1,1,1,1,0,0,0,0,0,0,0

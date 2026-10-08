@@ -1,0 +1,75 @@
+{
+  "completo": true,
+  "causa": "",
+  "duracion_s": 611.07999999999993,
+  "ruta": [
+    6,
+    23,
+    32,
+    1
+  ],
+  "perfilErrorMaximo_m": 0,
+  "balancePerfilErrorMaximo_m": 0,
+  "cantidadSenales": 534,
+  "registroCompleto": true,
+  "videoVelocidad": [],
+  "muestreoHMI_s": 0.04,
+  "muestreoVideo_s": [],
+  "decimacionRegistro": 10,
+  "contactos_s": [
+    200.79999999999998,
+    315.8,
+    445.24,
+    608.6
+  ],
+  "transferencias_s": [
+    203.68,
+    316.24,
+    448.12,
+    609.04
+  ],
+  "emergencia": 1,
+  "fallaSeguimiento": 0,
+  "barridoCompleto": true,
+  "finRegistroFisico_s": 639.997,
+  "codigoFalla": 12,
+  "masaFinal_kg": 15000,
+  "codigoFallaDespuesInicio": 0,
+  "emergenciaDespuesInicio": 0,
+  "fallaSeguimientoDespuesInicio": 0,
+  "numeroTomas": 2,
+  "numeroEntregas": 2,
+  "maximosAbsolutos": {
+    "v_carro_fisica": 2.4187535863863854,
+    "v_izaje_fisica": 1.9827812888385545,
+    "aceleracion_carro_fisica": 1.6393299710969802,
+    "aceleracion_izaje_fisica": 144.62834437093343,
+    "angulo_fisico": 0.1929257947142472,
+    "velocidad_angular_fisica": 0.22772929553118529,
+    "torque_carro_fisico_motor": 1698.813644655417,
+    "torque_izaje_fisico_motor": 15212.34391684856
+  },
+  "picoAceleracionIzaje": {
+    "tiempo_s": 608.66051962087329,
+    "valor_m_s2": 144.62834437093343
+  },
+  "trasladosCargados": [
+    {
+      "tramo": 2,
+      "inicio_s": 215.56,
+      "fin_s": 278.84,
+      "anguloMaximo_rad": 0.028765016498727151,
+      "velocidadCarroMaxima_m_s": 2.4187535863863854
+    },
+    {
+      "tramo": 4,
+      "inicio_s": 512.64,
+      "fin_s": 597.72,
+      "anguloMaximo_rad": 0.014250841820935303,
+      "velocidadCarroMaxima_m_s": 1.672684631101458
+    }
+  ],
+  "videoDisponible": false,
+  "videoCubreEnsayo": false,
+  "videoOmitidoPorPedidoUsuario": true
+}

@@ -1,0 +1,2 @@
+caso,nombre,tipo,criterio,tiempo_s,esperado,observado,cumple
+S59,Limite activo desde arranque - Altura minima izaje,ROBUSTEZ,Eje peligroso inhibido al arrancar,0.1,0,1,0

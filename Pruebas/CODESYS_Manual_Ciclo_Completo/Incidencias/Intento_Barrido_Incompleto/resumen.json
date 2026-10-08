@@ -1,0 +1,45 @@
+{
+  "completo": false,
+  "causa": "El barrido finalizo sin muestras del slot 1; perfil no valido. No se iniciaron traslados.",
+  "duracion_s": 175.44,
+  "ruta": [
+    6,
+    23,
+    32,
+    1
+  ],
+  "perfilErrorMaximo_m": 25.18,
+  "balancePerfilErrorMaximo_m": 2.59,
+  "cantidadSenales": 534,
+  "registroCompleto": true,
+  "videoVelocidad": [],
+  "muestreoHMI_s": 0.04,
+  "muestreoVideo_s": [],
+  "decimacionRegistro": 10,
+  "emergencia": 1,
+  "fallaSeguimiento": 0,
+  "barridoCompleto": false,
+  "finRegistroFisico_s": 175.559,
+  "codigoFalla": 12,
+  "masaFinal_kg": 15000,
+  "numeroTomas": 0,
+  "numeroEntregas": 0,
+  "maximosAbsolutos": {
+    "v_carro_fisica": 2.0222714229649625,
+    "v_izaje_fisica": 0.7034331433030292,
+    "aceleracion_carro_fisica": 1.5223794916282425,
+    "aceleracion_izaje_fisica": 9.80665,
+    "angulo_fisico": 0.19329790521298609,
+    "velocidad_angular_fisica": 0.21870561867238139,
+    "torque_carro_fisico_motor": 1699.7545080195027,
+    "torque_izaje_fisico_motor": 8543.7988005483912
+  },
+  "picoAceleracionIzaje": {
+    "tiempo_s": 0,
+    "valor_m_s2": -9.80665
+  },
+  "trasladosCargados": [],
+  "videoDisponible": false,
+  "videoCubreEnsayo": false,
+  "videoOmitidoPorPedidoUsuario": true
+}

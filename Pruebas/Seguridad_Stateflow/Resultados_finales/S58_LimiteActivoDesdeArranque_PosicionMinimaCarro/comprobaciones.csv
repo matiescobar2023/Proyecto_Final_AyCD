@@ -1,0 +1,2 @@
+caso,nombre,tipo,criterio,tiempo_s,esperado,observado,cumple
+S58,Limite activo desde arranque - Posicion minima carro,ROBUSTEZ,Eje peligroso inhibido al arrancar,0.1,0,1,0

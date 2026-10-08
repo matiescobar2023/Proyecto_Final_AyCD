@@ -1,0 +1,2 @@
+caso,nombre,tipo,criterio,tiempo_s,esperado,observado,cumple
+S54,Cambio WD relativo al vencimiento +0.00 s,LOGICA,Al vencer prevalece fallo sobre cambio,5.2,[0 0 0 0 0 0 1 1],[0 0 0 0 0 0 1 1],1

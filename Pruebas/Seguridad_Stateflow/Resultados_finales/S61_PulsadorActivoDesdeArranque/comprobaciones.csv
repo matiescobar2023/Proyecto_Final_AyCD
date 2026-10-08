@@ -1,0 +1,2 @@
+caso,nombre,tipo,criterio,tiempo_s,esperado,observado,cumple
+S61,Pulsador activo desde arranque,LOGICA,Boton por nivel protege desde el arranque,0.04,[0 0 0 0 0 0 1 0],[0 0 0 0 0 0 1 0],1

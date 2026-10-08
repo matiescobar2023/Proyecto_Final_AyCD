@@ -1,0 +1,134 @@
+% Borrador independiente: no se ha incorporado al informe.
+\subsection{Validación funcional del autómata de seguridad en Stateflow}
+\label{sec:validacion_seguridad_stateflow}
+Se ensayó una copia del subsistema de seguridad de la última planta probada, manteniendo los sensores, acciones, guardas, prioridades y compuertas originales. El banco recibió medidas y órdenes controladas, con un período de activación de $20~\mathrm{ms}$ y un tiempo máximo de watchdog de $5~\mathrm{s}$. La planta mecánica quedó fuera del ensayo: las salidas corresponden a permisos y autorizaciones de apertura, no a mediciones del frenado físico.
+
+Se ejecutaron 75 escenarios de funcionamiento normal, umbrales, emergencias parciales y totales, enclavamiento, escalamiento, reinicio, watchdog y robustez. Se guardaron todas las entradas y salidas sin decimación, junto con los tiempos de estímulo y de cambio de salida. Los criterios de correspondencia con la lógica actual se distinguieron de los desafíos de robustez; estos últimos permiten identificar limitaciones que no deben confundirse con una aprobación general.
+
+\subsubsection{Umbrales, polaridad y retención}
+Los límites últimos de carro se activan para $x\leq-30.5~\mathrm{m}$ o $v_t\leq-4.6~\mathrm{m/s}$, y para $x\geq50.5~\mathrm{m}$ o $v_t\geq4.6~\mathrm{m/s}$. Los límites verticales corresponden a $y\leq-20.5~\mathrm{m}$ y $y\geq40.5~\mathrm{m}$; la sobrevelocidad de izaje exige $|v_h|\geq3.45~\mathrm{m/s}$. La igualdad dispara el sensor. Cada condición se contrastó también a una distancia de $0.001$ unidades a ambos lados del umbral.
+Una emergencia parcial inhibe el eje afectado y conserva el otro. El permiso global es el OR de ambos permisos, por lo que permanece verdadero en una intervención parcial. El fin de la causa no libera el enclavamiento: se requiere un nuevo flanco de reinicio con las causas correspondientes inactivas. El pulsador de emergencia por nivel inhibe ambos ejes y bloquea su rearme mientras siga activo.
+
+\subsubsection{Escalamiento y simultaneidad}
+Las emergencias sucesivas de ambos ejes escalaron a total, tanto por límites como por sobrevelocidad. En cambio, al aparecer un fallo horizontal y otro vertical dentro de la misma activación, prevaleció la transición a emergencia de izaje. El fallo horizontal ya no produjo un flanco nuevo en las activaciones siguientes y el carro conservó permiso. Se trata de una limitación observada de la combinación de prioridades con guardas por flanco, por lo que no se afirma que toda doble falla produzca inhibición total.
+
+\subsubsection{Temporización y recuperación watchdog}
+El latido congelado en uno produjo fallo a $5.10~\mathrm{s}$ después de su último cambio a $0.10~\mathrm{s}$; la emergencia total apareció a $5.12~\mathrm{s}$. Congelado en cero, los tiempos correspondientes fueron $5.20$ y $5.22~\mathrm{s}$. El retardo adicional de $20~\mathrm{ms}$ procede del orden de las regiones: emergencia se evalúa antes que watchdog.
+El cambio de latido a $5.08~\mathrm{s}$ evitó el vencimiento; un cambio exactamente a $5.10~\mathrm{s}$ no lo evitó, pues la transición de timeout tiene prioridad. En la recuperación, el primer flanco de reinicio borró el fallo watchdog después de evaluar la región de emergencias; un segundo flanco liberó total. El reinicio del watchdog no exige recuperar actividad: sin nuevos cambios, vuelve a vencer cinco segundos después.
+
+\subsubsection{Arranque, validez de sensores y resolución temporal}
+Las ocho variantes de límites o sobrevelocidad presentes desde el instante inicial no provocaron intervención, porque no se produjo un flanco posterior a la inicialización. El pulsador, evaluado por nivel, sí produjo emergencia total en la activación de $0.02~\mathrm{s}$. La muestra inicial todavía contenía las acciones normales de entrada.
+Las medidas NaN de posición o velocidad no activaron los comparadores y dejaron autorizado el eje correspondiente. El nivel ensayado carece de diagnóstico de validez para estas medidas. Un pulso de límite entre $0.205$ y $0.215~\mathrm{s}$ tampoco fue detectado, al quedar entre activaciones a $0.20$ y $0.22~\mathrm{s}$; un pulso coincidente con una activación sí quedó enclavado.
+
+\subsubsection{Cobertura y alcance del resultado}
+Las 143 comprobaciones de correspondencia con la lógica se cumplieron. Los desafíos de robustez dieron lugar a 14 comprobaciones no satisfechas: dos por simultaneidad, ocho por fallos presentes al arrancar y cuatro por medidas no finitas. La cobertura estructural sin filtros fue de $29/29$ resultados de decisión, $76/78$ resultados de condición y $37/39$ condiciones MC/DC. Se ejercitaron las cuatro situaciones de emergencia, las dos situaciones watchdog y los trece enlaces del chart, incluidas sus dos entradas por defecto. Las dos condiciones pendientes corresponden al pulsador dentro de los rearmes parciales: cuando está activo, la transición previa a total impide evaluar esas guardas. No se declara cobertura MC/DC del cien por ciento.
+Estos resultados verifican la función lógica aislada y documentan sus límites. No demuestran equivalencia con CODESYS, detección de fallos de los sensores de una máquina real, tiempos físicos de parada ni seguridad certificada de la grúa. El supervisor y sus protecciones de proceso requieren ensayos distintos.
+
+\subsubsection{Evidencia temporal de los escenarios representativos}
+
+\begin{figure}[!htbp]
+\centering
+\includegraphics[width=0.98\textwidth]{pruebas_seguridad/figuras/S05_permisos.pdf}
+\caption{Retención de la emergencia de carro y rearme después de retirar la causa.}
+\label{fig:seguridad_S05_permisos}
+\end{figure}
+
+\begin{figure}[!htbp]
+\centering
+\includegraphics[width=0.98\textwidth]{pruebas_seguridad/figuras/S05_entrada_4.pdf}
+\caption{Límite último mínimo del carro: condición aplicada y posteriormente retirada.}
+\label{fig:seguridad_S05_entrada_4}
+\end{figure}
+
+\begin{figure}[!htbp]
+\centering
+\includegraphics[width=0.98\textwidth]{pruebas_seguridad/figuras/S34_permisos.pdf}
+\caption{Parada por pulsador: bloqueo del reinicio con causa activa y recuperación intencional.}
+\label{fig:seguridad_S34_permisos}
+\end{figure}
+
+\begin{figure}[!htbp]
+\centering
+\includegraphics[width=0.98\textwidth]{pruebas_seguridad/figuras/S35_permisos.pdf}
+\caption{Escalamiento a total cuando los fallos de carro e izaje aparecen sucesivamente.}
+\label{fig:seguridad_S35_permisos}
+\end{figure}
+
+\begin{figure}[!htbp]
+\centering
+\includegraphics[width=0.98\textwidth]{pruebas_seguridad/figuras/S39_permisos.pdf}
+\caption{Fallos simultáneos: prioridad de izaje y conservación del permiso del carro.}
+\label{fig:seguridad_S39_permisos}
+\end{figure}
+
+\begin{figure}[!htbp]
+\centering
+\includegraphics[width=0.98\textwidth]{pruebas_seguridad/figuras/S50_detalle_watchdog.pdf}
+\caption{Retardo de un ciclo entre solicitud watchdog y emergencia total.}
+\label{fig:seguridad_S50_detalle_watchdog}
+\end{figure}
+
+\begin{figure}[!htbp]
+\centering
+\includegraphics[width=0.98\textwidth]{pruebas_seguridad/figuras/S50_permisos.pdf}
+\caption{Recuperación watchdog: el primer reinicio no libera la emergencia total.}
+\label{fig:seguridad_S50_permisos}
+\end{figure}
+
+\begin{figure}[!htbp]
+\centering
+\includegraphics[width=0.98\textwidth]{pruebas_seguridad/figuras/S50_mandos.pdf}
+\caption{Latido congelado y los dos flancos de reinicio usados para la recuperación.}
+\label{fig:seguridad_S50_mandos}
+\end{figure}
+
+\begin{figure}[!htbp]
+\centering
+\includegraphics[width=0.98\textwidth]{pruebas_seguridad/figuras/S54_detalle_watchdog.pdf}
+\caption{Coincidencia entre cambio de latido y vencimiento: prevalece el fallo.}
+\label{fig:seguridad_S54_detalle_watchdog}
+\end{figure}
+
+\begin{figure}[!htbp]
+\centering
+\includegraphics[width=0.98\textwidth]{pruebas_seguridad/figuras/S58_permisos.pdf}
+\caption{Límite presente desde el arranque: ausencia de intervención por falta de flanco.}
+\label{fig:seguridad_S58_permisos}
+\end{figure}
+
+\begin{figure}[!htbp]
+\centering
+\includegraphics[width=0.98\textwidth]{pruebas_seguridad/figuras/S58_entrada_4.pdf}
+\caption{Posición fuera del límite desde el instante inicial de la prueba.}
+\label{fig:seguridad_S58_entrada_4}
+\end{figure}
+
+\begin{figure}[!htbp]
+\centering
+\includegraphics[width=0.98\textwidth]{pruebas_seguridad/figuras/S62_entrada_4_valida.pdf}
+\caption{Inyección de medida no finita de posición del carro.}
+\label{fig:seguridad_S62_entrada_4_valida}
+\end{figure}
+
+\begin{figure}[!htbp]
+\centering
+\includegraphics[width=0.98\textwidth]{pruebas_seguridad/figuras/S62_permisos.pdf}
+\caption{Permanencia de permisos ante una medida de posición no finita.}
+\label{fig:seguridad_S62_permisos}
+\end{figure}
+
+\begin{figure}[!htbp]
+\centering
+\includegraphics[width=0.98\textwidth]{pruebas_seguridad/figuras/S66_pulso_original.pdf}
+\caption{Pulso último inyectado entre instantes de muestreo del chart.}
+\label{fig:seguridad_S66_pulso_original}
+\end{figure}
+
+\begin{figure}[!htbp]
+\centering
+\includegraphics[width=0.98\textwidth]{pruebas_seguridad/figuras/S66_entrada_4.pdf}
+\caption{Valores presentes en las activaciones del chart: el pulso intermedio no se muestrea.}
+\label{fig:seguridad_S66_entrada_4}
+\end{figure}
+
+\clearpage

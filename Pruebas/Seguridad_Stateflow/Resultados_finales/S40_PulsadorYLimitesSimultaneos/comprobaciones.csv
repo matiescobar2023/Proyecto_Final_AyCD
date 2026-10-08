@@ -1,0 +1,2 @@
+caso,nombre,tipo,criterio,tiempo_s,esperado,observado,cumple
+S40,Pulsador y limites simultaneos,LOGICA,Prioridad total del boton,0.24,[0 0 0 0 0 0 1 0],[0 0 0 0 0 0 1 0],1

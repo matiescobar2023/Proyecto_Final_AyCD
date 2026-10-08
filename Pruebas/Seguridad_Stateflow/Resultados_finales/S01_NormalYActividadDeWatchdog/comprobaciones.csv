@@ -1,0 +1,2 @@
+caso,nombre,tipo,criterio,tiempo_s,esperado,observado,cumple
+S01,Normal y actividad de watchdog,LOGICA,Funcionamiento normal con conmutaciones,5.9,[1 1 1 1 1 1 0 0],[1 1 1 1 1 1 0 0],1

@@ -1,0 +1,5 @@
+caso,nombre,tipo,criterio,tiempo_s,esperado,observado,cumple
+S17,Velocidad positiva carro - retencion y rearme,LOGICA,Intervencion de eje,0.24,[1 0 1 0 1 1 1 0],[1 0 1 0 1 1 1 0],1
+S17,Velocidad positiva carro - retencion y rearme,LOGICA,Reinicio rechazado con causa activa,0.32,[1 0 1 0 1 1 1 0],[1 0 1 0 1 1 1 0],1
+S17,Velocidad positiva carro - retencion y rearme,LOGICA,Retencion tras desaparecer la causa,0.5,[1 0 1 0 1 1 1 0],[1 0 1 0 1 1 1 0],1
+S17,Velocidad positiva carro - retencion y rearme,LOGICA,Nuevo flanco con causa inactiva,0.62,[1 1 1 1 1 1 0 0],[1 1 1 1 1 1 0 0],1

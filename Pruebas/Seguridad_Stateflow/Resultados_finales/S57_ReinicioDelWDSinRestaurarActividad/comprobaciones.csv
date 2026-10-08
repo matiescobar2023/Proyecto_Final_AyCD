@@ -1,0 +1,3 @@
+caso,nombre,tipo,criterio,tiempo_s,esperado,observado,cumple
+S57,Reinicio del WD sin restaurar actividad,LOGICA,Dos flancos permiten rearme aun sin latido,5.72,[1 1 1 1 1 1 0 0],[1 1 1 1 1 1 0 0],1
+S57,Reinicio del WD sin restaurar actividad,LOGICA,Nuevo vencimiento tras rearme sin actividad,10.5,[0 0 0 0 0 0 1 1],[0 0 0 0 0 0 1 1],1

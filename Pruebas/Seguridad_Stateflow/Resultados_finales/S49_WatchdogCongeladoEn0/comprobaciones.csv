@@ -1,0 +1,4 @@
+caso,nombre,tipo,criterio,tiempo_s,esperado,observado,cumple
+S49,Watchdog congelado en 0,LOGICA,"Sin cambios aparece fallo y total",5.26,[0 0 0 0 0 0 1 1],[0 0 0 0 0 0 1 1],1
+S49,Watchdog congelado en 0,LOGICA,"Primer reset limpia WD, total permanece",5.42,[0 0 0 0 0 0 1 0],[0 0 0 0 0 0 1 0],1
+S49,Watchdog congelado en 0,LOGICA,"Segundo flanco rearma emergencia total",5.72,[1 1 1 1 1 1 0 0],[1 1 1 1 1 1 0 0],1

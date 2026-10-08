@@ -1,0 +1,3 @@
+caso,nombre,tipo,criterio,tiempo_s,esperado,observado,cumple
+S38,Pulsador durante emergencia - Izaje luego carro,LOGICA,Emergencia parcial previa,0.24,[1 1 0 1 0 0 1 0],[1 1 0 1 0 0 1 0],1
+S38,Pulsador durante emergencia - Izaje luego carro,LOGICA,Boton escala a total,0.34,[0 0 0 0 0 0 1 0],[0 0 0 0 0 0 1 0],1

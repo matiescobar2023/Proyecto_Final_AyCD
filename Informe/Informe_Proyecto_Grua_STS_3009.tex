@@ -1485,7 +1485,7 @@ La representación del contenedor tomado se realiza sin líneas verticales super
 
 
 \section{Pruebas de simulación}
-\subsection{Prueba 1: barrido y dos transferencias completas}
+\subsection{Prueba ciclo completo en simulink}
 
 Se ensayó en una única corrida el relevamiento LiDAR y dos transferencias consecutivas en sentidos opuestos. La planta, el controlador de movimiento, el supervisor y el nivel de seguridad se ejecutaron íntegramente en Simulink. Un operador programado accionó los controles reales de la HMI, sin forzar estados ni sustituir las decisiones de los autómatas.
 
@@ -1497,7 +1497,7 @@ Los posicionamientos se solicitaron en automático. Las tomas, aproximaciones fi
 
 \begin{longtable}{C{1.6cm} C{1.0cm} L{6.4cm} L{4.4cm}}
 
-\caption{Eventos efectivos de la Prueba 1.}\label{tab:cronologia_prueba1}\\
+\caption{Eventos efectivos de la Prueba ciclo completo en simulink.}\label{tab:cronologia_prueba_ciclo_completo_en_simulink}\\
 
 \toprule Tiempo [s] & Tramo & Evento & Destino\\\midrule\endfirsthead
 
@@ -1575,25 +1575,25 @@ El perfil final conserva el balance de los dos contenedores: disminuye $2.59~\ma
 
 \begin{figure}[!htbp]
 \centering
-\includegraphics[width=0.98\textwidth]{resultados_prueba1_actual/perfil.pdf}
+\includegraphics[width=0.98\textwidth]{resultados_prueba_ciclo_completo_en_simulink/perfil.pdf}
 \caption{Perfil físico inicial, perfil relevado por LiDAR y perfil físico final después de las dos entregas.}
-\label{fig:prueba1_actual_perfil}
+\label{fig:prueba_ciclo_completo_en_simulink_perfil}
 \end{figure}
 
 
 \begin{figure}[!htbp]
 \centering
-\includegraphics[width=0.98\textwidth]{resultados_prueba1_actual/balance_perfil.pdf}
+\includegraphics[width=0.98\textwidth]{resultados_prueba_ciclo_completo_en_simulink/balance_perfil.pdf}
 \caption{Variación física por slot al finalizar las dos transferencias.}
-\label{fig:prueba1_actual_balance_perfil}
+\label{fig:prueba_ciclo_completo_en_simulink_balance_perfil}
 \end{figure}
 
 
 \begin{figure}[!htbp]
 \centering
-\includegraphics[width=0.98\textwidth]{resultados_prueba1_actual/01_barrido.png}
+\includegraphics[width=0.98\textwidth]{resultados_prueba_ciclo_completo_en_simulink/01_barrido.png}
 \caption{Visualización y HMI al finalizar el barrido real.}
-\label{fig:prueba1_actual_01_barrido}
+\label{fig:prueba_ciclo_completo_en_simulink_01_barrido}
 \end{figure}
 
 
@@ -1605,41 +1605,41 @@ La velocidad física máxima absoluta del carro en toda la corrida fue de $2.355
 
 \begin{figure}[!htbp]
 \centering
-\includegraphics[width=0.98\textwidth]{resultados_prueba1_actual/x.pdf}
+\includegraphics[width=0.98\textwidth]{resultados_prueba_ciclo_completo_en_simulink/x.pdf}
 \caption{Posición horizontal del carro y referencia durante todo el ensayo.}
-\label{fig:prueba1_actual_x}
+\label{fig:prueba_ciclo_completo_en_simulink_x}
 \end{figure}
 
 
 \begin{figure}[!htbp]
 \centering
-\includegraphics[width=0.98\textwidth]{resultados_prueba1_actual/vx.pdf}
+\includegraphics[width=0.98\textwidth]{resultados_prueba_ciclo_completo_en_simulink/vx.pdf}
 \caption{Velocidad física del carro y referencia.}
-\label{fig:prueba1_actual_vx}
+\label{fig:prueba_ciclo_completo_en_simulink_vx}
 \end{figure}
 
 
 \begin{figure}[!htbp]
 \centering
-\includegraphics[width=0.98\textwidth]{resultados_prueba1_actual/ax.pdf}
+\includegraphics[width=0.98\textwidth]{resultados_prueba_ciclo_completo_en_simulink/ax.pdf}
 \caption{Aceleración física del carro y referencia.}
-\label{fig:prueba1_actual_ax}
+\label{fig:prueba_ciclo_completo_en_simulink_ax}
 \end{figure}
 
 
 \begin{figure}[!htbp]
 \centering
-\includegraphics[width=0.98\textwidth]{resultados_prueba1_actual/error_x.pdf}
+\includegraphics[width=0.98\textwidth]{resultados_prueba_ciclo_completo_en_simulink/error_x.pdf}
 \caption{Error horizontal de posición, calculado como referencia menos posición física.}
-\label{fig:prueba1_actual_error_x}
+\label{fig:prueba_ciclo_completo_en_simulink_error_x}
 \end{figure}
 
 
 \begin{figure}[!htbp]
 \centering
-\includegraphics[width=0.98\textwidth]{resultados_prueba1_actual/ax_carga.pdf}
+\includegraphics[width=0.98\textwidth]{resultados_prueba_ciclo_completo_en_simulink/ax_carga.pdf}
 \caption{Aceleración horizontal física de la carga suspendida.}
-\label{fig:prueba1_actual_ax_carga}
+\label{fig:prueba_ciclo_completo_en_simulink_ax_carga}
 \end{figure}
 
 
@@ -1653,41 +1653,41 @@ El máximo absoluto de aceleración física de izaje fue de $149.77~\mathrm{m/s^
 
 \begin{figure}[!htbp]
 \centering
-\includegraphics[width=0.98\textwidth]{resultados_prueba1_actual/y.pdf}
+\includegraphics[width=0.98\textwidth]{resultados_prueba_ciclo_completo_en_simulink/y.pdf}
 \caption{Altura física de la carga y referencia.}
-\label{fig:prueba1_actual_y}
+\label{fig:prueba_ciclo_completo_en_simulink_y}
 \end{figure}
 
 
 \begin{figure}[!htbp]
 \centering
-\includegraphics[width=0.98\textwidth]{resultados_prueba1_actual/vy.pdf}
+\includegraphics[width=0.98\textwidth]{resultados_prueba_ciclo_completo_en_simulink/vy.pdf}
 \caption{Velocidad física de izaje y referencia.}
-\label{fig:prueba1_actual_vy}
+\label{fig:prueba_ciclo_completo_en_simulink_vy}
 \end{figure}
 
 
 \begin{figure}[!htbp]
 \centering
-\includegraphics[width=0.98\textwidth]{resultados_prueba1_actual/ay.pdf}
+\includegraphics[width=0.98\textwidth]{resultados_prueba_ciclo_completo_en_simulink/ay.pdf}
 \caption{Aceleración física de izaje y referencia, con escala completa.}
-\label{fig:prueba1_actual_ay}
+\label{fig:prueba_ciclo_completo_en_simulink_ay}
 \end{figure}
 
 
 \begin{figure}[!htbp]
 \centering
-\includegraphics[width=0.98\textwidth]{resultados_prueba1_actual/ay_zoom.pdf}
+\includegraphics[width=0.98\textwidth]{resultados_prueba_ciclo_completo_en_simulink/ay_zoom.pdf}
 \caption{Aceleración de izaje con zoom vertical; los extremos fuera del recuadro se conservan en la figura anterior.}
-\label{fig:prueba1_actual_ay_zoom}
+\label{fig:prueba_ciclo_completo_en_simulink_ay_zoom}
 \end{figure}
 
 
 \begin{figure}[!htbp]
 \centering
-\includegraphics[width=0.98\textwidth]{resultados_prueba1_actual/error_y.pdf}
+\includegraphics[width=0.98\textwidth]{resultados_prueba_ciclo_completo_en_simulink/error_y.pdf}
 \caption{Error de altura, calculado como referencia menos altura física.}
-\label{fig:prueba1_actual_error_y}
+\label{fig:prueba_ciclo_completo_en_simulink_error_y}
 \end{figure}
 
 
@@ -1703,49 +1703,49 @@ Además del registro completo, se incluyen ampliaciones del intervalo posterior 
 
 \begin{figure}[!htbp]
 \centering
-\includegraphics[width=0.98\textwidth]{resultados_prueba1_actual/theta.pdf}
+\includegraphics[width=0.98\textwidth]{resultados_prueba_ciclo_completo_en_simulink/theta.pdf}
 \caption{Ángulo físico del péndulo y referencia angular: registro completo.}
-\label{fig:prueba1_actual_theta}
+\label{fig:prueba_ciclo_completo_en_simulink_theta}
 \end{figure}
 
 
 \begin{figure}[!htbp]
 \centering
-\includegraphics[width=0.98\textwidth]{resultados_prueba1_actual/theta_operativo.pdf}
+\includegraphics[width=0.98\textwidth]{resultados_prueba_ciclo_completo_en_simulink/theta_operativo.pdf}
 \caption{Ángulo físico y referencia después del relevamiento, con escala ajustada a este intervalo.}
-\label{fig:prueba1_actual_theta_operativo}
+\label{fig:prueba_ciclo_completo_en_simulink_theta_operativo}
 \end{figure}
 
 
 \begin{figure}[!htbp]
 \centering
-\includegraphics[width=0.98\textwidth]{resultados_prueba1_actual/omega.pdf}
+\includegraphics[width=0.98\textwidth]{resultados_prueba_ciclo_completo_en_simulink/omega.pdf}
 \caption{Velocidad angular física y referencia derivada: registro completo.}
-\label{fig:prueba1_actual_omega}
+\label{fig:prueba_ciclo_completo_en_simulink_omega}
 \end{figure}
 
 
 \begin{figure}[!htbp]
 \centering
-\includegraphics[width=0.98\textwidth]{resultados_prueba1_actual/omega_operativo.pdf}
+\includegraphics[width=0.98\textwidth]{resultados_prueba_ciclo_completo_en_simulink/omega_operativo.pdf}
 \caption{Velocidad angular física y referencia derivada después del relevamiento.}
-\label{fig:prueba1_actual_omega_operativo}
+\label{fig:prueba_ciclo_completo_en_simulink_omega_operativo}
 \end{figure}
 
 
 \begin{figure}[!htbp]
 \centering
-\includegraphics[width=0.98\textwidth]{resultados_prueba1_actual/antisway.pdf}
+\includegraphics[width=0.98\textwidth]{resultados_prueba_ciclo_completo_en_simulink/antisway.pdf}
 \caption{Contribución antisway aplicada y sus ramas de realimentación y anticipación.}
-\label{fig:prueba1_actual_antisway}
+\label{fig:prueba_ciclo_completo_en_simulink_antisway}
 \end{figure}
 
 
 \begin{figure}[!htbp]
 \centering
-\includegraphics[width=0.98\textwidth]{resultados_prueba1_actual/comando.pdf}
+\includegraphics[width=0.98\textwidth]{resultados_prueba_ciclo_completo_en_simulink/comando.pdf}
 \caption{Referencia de velocidad base y comando del controlador del carro.}
-\label{fig:prueba1_actual_comando}
+\label{fig:prueba_ciclo_completo_en_simulink_comando}
 \end{figure}
 
 
@@ -1757,41 +1757,41 @@ La masa física final fue de $15000.0~\mathrm{kg}$, correspondiente al conjunto 
 
 \begin{figure}[!htbp]
 \centering
-\includegraphics[width=0.98\textwidth]{resultados_prueba1_actual/tx.pdf}
+\includegraphics[width=0.98\textwidth]{resultados_prueba_ciclo_completo_en_simulink/tx.pdf}
 \caption{Torque solicitado y torque físico del carro: registro completo.}
-\label{fig:prueba1_actual_tx}
+\label{fig:prueba_ciclo_completo_en_simulink_tx}
 \end{figure}
 
 
 \begin{figure}[!htbp]
 \centering
-\includegraphics[width=0.98\textwidth]{resultados_prueba1_actual/tx_operativo.pdf}
+\includegraphics[width=0.98\textwidth]{resultados_prueba_ciclo_completo_en_simulink/tx_operativo.pdf}
 \caption{Torque del carro desde el arranque: ampliación del intervalo operativo.}
-\label{fig:prueba1_actual_tx_operativo}
+\label{fig:prueba_ciclo_completo_en_simulink_tx_operativo}
 \end{figure}
 
 
 \begin{figure}[!htbp]
 \centering
-\includegraphics[width=0.98\textwidth]{resultados_prueba1_actual/ty.pdf}
+\includegraphics[width=0.98\textwidth]{resultados_prueba_ciclo_completo_en_simulink/ty.pdf}
 \caption{Torque solicitado y torque físico del izaje.}
-\label{fig:prueba1_actual_ty}
+\label{fig:prueba_ciclo_completo_en_simulink_ty}
 \end{figure}
 
 
 \begin{figure}[!htbp]
 \centering
-\includegraphics[width=0.98\textwidth]{resultados_prueba1_actual/tension.pdf}
+\includegraphics[width=0.98\textwidth]{resultados_prueba_ciclo_completo_en_simulink/tension.pdf}
 \caption{Tensión física del cable durante relevamiento, tomas y entregas.}
-\label{fig:prueba1_actual_tension}
+\label{fig:prueba_ciclo_completo_en_simulink_tension}
 \end{figure}
 
 
 \begin{figure}[!htbp]
 \centering
-\includegraphics[width=0.98\textwidth]{resultados_prueba1_actual/masa.pdf}
+\includegraphics[width=0.98\textwidth]{resultados_prueba_ciclo_completo_en_simulink/masa.pdf}
 \caption{Masa física suspendida durante las dos transferencias.}
-\label{fig:prueba1_actual_masa}
+\label{fig:prueba_ciclo_completo_en_simulink_masa}
 \end{figure}
 
 
@@ -1799,7 +1799,7 @@ La masa física final fue de $15000.0~\mathrm{kg}$, correspondiente al conjunto 
 
 \begin{table}[!htbp]\centering
 
-\caption{Comprobaciones de la Prueba 1.}\label{tab:criterios_prueba1}
+\caption{Comprobaciones de la Prueba ciclo completo en simulink.}\label{tab:criterios_prueba_ciclo_completo_en_simulink}
 
 \begin{tabular}{L{10.8cm} C{2.6cm}}\toprule Criterio & Resultado\\\midrule
 
@@ -1821,25 +1821,25 @@ Las bandas de las figuras distinguen el relevamiento y los intervalos entre toma
 
 \begin{figure}[!htbp]
 \centering
-\includegraphics[width=0.98\textwidth]{resultados_prueba1_actual/transferencia_2.png}
+\includegraphics[width=0.98\textwidth]{resultados_prueba_ciclo_completo_en_simulink/transferencia_2.png}
 \caption{Primera entrega física en la posición central del barco.}
-\label{fig:prueba1_actual_transferencia_2}
+\label{fig:prueba_ciclo_completo_en_simulink_transferencia_2}
 \end{figure}
 
 
 \begin{figure}[!htbp]
 \centering
-\includegraphics[width=0.98\textwidth]{resultados_prueba1_actual/transferencia_4.png}
+\includegraphics[width=0.98\textwidth]{resultados_prueba_ciclo_completo_en_simulink/transferencia_4.png}
 \caption{Segunda entrega física en el extremo izquierdo del muelle.}
-\label{fig:prueba1_actual_transferencia_4}
+\label{fig:prueba_ciclo_completo_en_simulink_transferencia_4}
 \end{figure}
 
 
 \begin{figure}[!htbp]
 \centering
-\includegraphics[width=0.98\textwidth]{resultados_prueba1_actual/05_final.png}
+\includegraphics[width=0.98\textwidth]{resultados_prueba_ciclo_completo_en_simulink/05_final.png}
 \caption{Estado final de la visualización y HMI después de las dos transferencias y la parada normal.}
-\label{fig:prueba1_actual_05_final}
+\label{fig:prueba_ciclo_completo_en_simulink_05_final}
 \end{figure}
 
 

@@ -1,0 +1,3 @@
+caso,nombre,tipo,criterio,tiempo_s,esperado,observado,cumple
+S48,Pulso de limite de un ciclo queda enclavado,LOGICA,Un pulso muestreado queda retenido,0.24,[1 0 1 0 1 1 1 0],[1 0 1 0 1 1 1 0],1
+S48,Pulso de limite de un ciclo queda enclavado,LOGICA,Rearme posterior,0.52,[1 1 1 1 1 1 0 0],[1 1 1 1 1 1 0 0],1
