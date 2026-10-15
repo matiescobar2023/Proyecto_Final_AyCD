@@ -1,0 +1,47 @@
+% Síntesis del banco aislado; resultados preservados y figuras retiradas del documento.
+\Needspace{5\baselineskip}
+\subsection{Validación funcional del autómata de seguridad en Stateflow}
+\label{sec:validacion_seguridad_stateflow}
+Se evaluó una copia del subsistema de seguridad mediante \textbf{25 escenarios de prueba seleccionados} para evaluar la respuesta del autómata de seguridad ante límites de posición, sobrevelocidad, parada de emergencia, pérdida de comunicación y solicitudes de reinicio. También se estudiaron fallas sucesivas, fallas simultáneas y condiciones peligrosas presentes desde el arranque.
+
+Las pruebas se realizaron sobre el subsistema de seguridad aislado, mediante entradas programadas y con un período de ejecución de $20~\mathrm{ms}$. Se verificaron los permisos de movimiento y las autorizaciones de apertura de los frenos, sin incluir la respuesta mecánica de la planta. La \cref{tab:resumen_pruebas_seguridad} resume los principales resultados.
+
+\begin{table}[!htb]
+	\centering
+	\small
+	\renewcommand{\arraystretch}{1.2}
+	\caption{Resumen de los resultados de las pruebas del autómata de seguridad.}
+	\label{tab:resumen_pruebas_seguridad}
+	\begin{tabular}{L{0.26\textwidth}L{0.66\textwidth}}
+		\toprule
+		\textbf{Aspecto evaluado} & \textbf{Resultado observado} \\
+		\midrule
+		
+		Límites y sobrevelocidad &
+		Los sensores se activaron al alcanzar el umbral, incluida la igualdad. \\
+		
+		Retención y reinicio &
+		La emergencia permaneció enclavada después de retirar la causa. Un nuevo flanco de reinicio permitió recuperar los permisos cuando se cumplieron las condiciones correspondientes. \\
+		
+		Fallas sucesivas en ambos ejes &
+		La segunda falla provocó el escalamiento a emergencia total. \\
+		
+		Fallas simultáneas en ambos ejes &
+		Prevaleció la emergencia de izaje y el carro conservó su permiso. La prioridad de las transiciones y la detección por flanco impidieron reconocer posteriormente la falla horizontal. \\
+		
+		Pérdida del latido de comunicación &
+		El watchdog detectó el vencimiento de los $5~\mathrm{s}$ sin cambios del latido. La emergencia total se activó $20~\mathrm{ms}$ después, debido al orden de ejecución de las regiones. \\
+		
+		Recuperación del watchdog &
+		Fueron necesarios dos flancos de reinicio: uno para borrar la falla y otro para liberar la emergencia. Sin restablecer el latido, el fallo volvió a aparecer cinco segundos después. \\
+		
+		Fallas presentes al arrancar &
+		Los límites y la sobrevelocidad inicialmente activos no provocaron intervención, porque la lógica esperaba un nuevo flanco. El pulsador, evaluado por nivel, sí produjo emergencia total. \\
+		
+		\bottomrule
+	\end{tabular}
+\end{table}
+
+Los ensayos confirmaron la respuesta prevista ante las condiciones habituales y permitieron identificar limitaciones en la detección de fallas simultáneas, la protección durante el arranque y la recuperación del watchdog.
+
+\par

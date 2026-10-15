@@ -1,0 +1,37 @@
+Compilador: pdfLaTeX (MiKTeX o TeX Live).
+Clase local incluida: ieeeconf.cls.
+Clase base: article.
+Paquetes de la distribucion LaTeX:
+- adjustbox
+- amsmath
+- amssymb
+- array
+- babel
+- booktabs
+- caption
+- cleveref
+- courier
+- fancyhdr
+- float
+- fontenc
+- geometry
+- graphicx
+- helvet
+- hyphenat
+- inputenc
+- lastpage
+- listings
+- longtable
+- mathptmx
+- multirow
+- needspace
+- placeins
+- tabularx
+- textcomp
+- titlesec
+- titletoc
+- url
+- xcolor
+
+Fuentes estandar PSNFSS: Times, Helvetica y Courier, provistas por LaTeX.
+No se necesita MATLAB, Simulink ni CODESYS para compilar el informe.

@@ -1,0 +1,33 @@
+{
+  "fuente": "Paquete_Senales_Medio_Ciclo_CODESYS_Manual_y_Automatico_20261008.zip",
+  "pruebas": [
+    "SFC manual con antisway",
+    "ST autogenerado con antisway",
+    "SFC manual sin antisway"
+  ],
+  "posicion": "mc_encoder_x",
+  "altura": "45-longitud_cable_estimada",
+  "velocidades": [
+    "mc_encoder_vT",
+    "-mc_encoder_lengthRate"
+  ],
+  "aceleraciones": "Derivadas numéricas de las velocidades reconstruidas; sin filtro adicional",
+  "angulo": "mc_diag_theta_medida",
+  "velocidad_angular": "mon_thetaRate",
+  "torque": "Consigna del controlador y torque físico del motor",
+  "ventana_metricas_s": [
+    120,
+    130.72
+  ],
+  "graficas_principales_fin_s": [
+    169.2,
+    169.24
+  ],
+  "exclusion_inicial_torques_s": [
+    0,
+    3.24
+  ],
+  "consigna_carro_inicial_Nm": -139400,
+  "instante_s": 0.025,
+  "simulaciones_nuevas": false
+}

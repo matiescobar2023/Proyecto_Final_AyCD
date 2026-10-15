@@ -1,0 +1,18 @@
+{
+  "fuente": "C:/Users/tinch/OneDrive/Desktop/overhead crane - local/chatgpt/tmp/pdfs/revision_13_2_paneles/datos/senales_originales.mat",
+  "puntos": "mon_lidarX, mon_lidarY durante mon_scanActive",
+  "fin_barrido_s": 111.99833333333333,
+  "cantidad_puntos": 36711,
+  "puntos_representados": 115,
+  "representacion": "Muestras originales representativas por celda espacial de 0.8 m horizontal y 0.1 m vertical; sin promediar",
+  "perfil": "perfiles.csv, columna relevado_m, unido con segmentos horizontales y verticales; cotas neutras incluidas",
+  "tomas": [
+    6,
+    32
+  ],
+  "entregas": [
+    23,
+    1
+  ],
+  "simulacion_nueva": false
+}

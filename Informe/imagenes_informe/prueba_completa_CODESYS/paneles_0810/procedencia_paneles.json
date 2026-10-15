@@ -1,0 +1,18 @@
+{
+  "posicion_carro": "mc_encoder_x",
+  "altura": "45-longitud_cable_estimada",
+  "velocidad_carro": "mc_encoder_vT",
+  "velocidad_izaje": "-mc_encoder_lengthRate",
+  "aceleraciones": "Derivada numérica de velocidades reconstruidas en sus tiempos nativos; sin filtro adicional",
+  "angulo": "mc_diag_theta_medida",
+  "velocidad_angular": "mon_thetaRate",
+  "torque_carro_antes": "torque_carro_consigna_controlador",
+  "torque_carro_despues": "T_tmlim_",
+  "torque_izaje_antes": "torque_izaje_consigna_controlador",
+  "torque_izaje_despues": "Thm_sat",
+  "torques_fisicos": "torque_carro_fisico_motor y torque_izaje_fisico_motor",
+  "division_barrido_s": 130.04,
+  "fin_graficas_s": 611.08,
+  "simulacion_repetida": false,
+  "velocidad_angular_comparacion": "Solo señal sensada y umbrales del supervisor ±0.012 rad/s; sin referencia derivada"
+}

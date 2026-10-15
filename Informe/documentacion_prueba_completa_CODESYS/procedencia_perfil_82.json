@@ -1,0 +1,17 @@
+{
+  "puntos": "mon_lidarX, mon_lidarY durante mon_scanActive",
+  "fin_barrido_s": 130.08,
+  "cantidad_puntos": 39932,
+  "puntos_representados": 118,
+  "representacion": "Muestras originales representativas por celda espacial de 0.8 m horizontal y 0.1 m vertical; sin promediar",
+  "perfil": "perfiles.csv, columna relevado_m",
+  "tomas": [
+    6,
+    32
+  ],
+  "entregas": [
+    23,
+    1
+  ],
+  "simulacion_nueva": false
+}

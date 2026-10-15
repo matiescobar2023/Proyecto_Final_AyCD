@@ -1,0 +1,1 @@
+Los paneles se generaron únicamente a partir de los registros guardados del ZIP fuente. Los scripts conservan las rutas de trabajo utilizadas; no forman parte de las dependencias de compilación del informe. El registro voluminoso se conserva en el ZIP original. No se extrajo ni se analizó la prueba ST autogenerada sin antisway.

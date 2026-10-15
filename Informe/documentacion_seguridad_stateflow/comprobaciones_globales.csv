@@ -1,0 +1,158 @@
+caso,nombre,tipo,criterio,tiempo_s,esperado,observado,cumple
+S01,Normal y actividad de watchdog,LOGICA,"Funcionamiento normal con conmutaciones",5.9,[1 1 1 1 1 1 0 0],[1 1 1 1 1 1 0 0],1
+S02,Posicion minima carro - interior,LOGICA,"Respuesta del umbral inclusivo",0.24,[1 1 1 1 1 1 0 0],[1 1 1 1 1 1 0 0],1
+S02,Posicion minima carro - interior,LOGICA,"Indicacion del sensor correspondiente",0.24,0,0,1
+S03,Posicion minima carro - igualdad,LOGICA,"Respuesta del umbral inclusivo",0.24,[1 0 1 0 1 1 1 0],[1 0 1 0 1 1 1 0],1
+S03,Posicion minima carro - igualdad,LOGICA,"Indicacion del sensor correspondiente",0.24,1,1,1
+S04,Posicion minima carro - exterior,LOGICA,"Respuesta del umbral inclusivo",0.24,[1 0 1 0 1 1 1 0],[1 0 1 0 1 1 1 0],1
+S04,Posicion minima carro - exterior,LOGICA,"Indicacion del sensor correspondiente",0.24,1,1,1
+S05,Posicion minima carro - retencion y rearme,LOGICA,"Intervencion de eje",0.24,[1 0 1 0 1 1 1 0],[1 0 1 0 1 1 1 0],1
+S05,Posicion minima carro - retencion y rearme,LOGICA,"Reinicio rechazado con causa activa",0.32,[1 0 1 0 1 1 1 0],[1 0 1 0 1 1 1 0],1
+S05,Posicion minima carro - retencion y rearme,LOGICA,"Retencion tras desaparecer la causa",0.5,[1 0 1 0 1 1 1 0],[1 0 1 0 1 1 1 0],1
+S05,Posicion minima carro - retencion y rearme,LOGICA,"Nuevo flanco con causa inactiva",0.62,[1 1 1 1 1 1 0 0],[1 1 1 1 1 1 0 0],1
+S06,Posicion maxima carro - interior,LOGICA,"Respuesta del umbral inclusivo",0.24,[1 1 1 1 1 1 0 0],[1 1 1 1 1 1 0 0],1
+S06,Posicion maxima carro - interior,LOGICA,"Indicacion del sensor correspondiente",0.24,0,0,1
+S07,Posicion maxima carro - igualdad,LOGICA,"Respuesta del umbral inclusivo",0.24,[1 0 1 0 1 1 1 0],[1 0 1 0 1 1 1 0],1
+S07,Posicion maxima carro - igualdad,LOGICA,"Indicacion del sensor correspondiente",0.24,1,1,1
+S08,Posicion maxima carro - exterior,LOGICA,"Respuesta del umbral inclusivo",0.24,[1 0 1 0 1 1 1 0],[1 0 1 0 1 1 1 0],1
+S08,Posicion maxima carro - exterior,LOGICA,"Indicacion del sensor correspondiente",0.24,1,1,1
+S09,Posicion maxima carro - retencion y rearme,LOGICA,"Intervencion de eje",0.24,[1 0 1 0 1 1 1 0],[1 0 1 0 1 1 1 0],1
+S09,Posicion maxima carro - retencion y rearme,LOGICA,"Reinicio rechazado con causa activa",0.32,[1 0 1 0 1 1 1 0],[1 0 1 0 1 1 1 0],1
+S09,Posicion maxima carro - retencion y rearme,LOGICA,"Retencion tras desaparecer la causa",0.5,[1 0 1 0 1 1 1 0],[1 0 1 0 1 1 1 0],1
+S09,Posicion maxima carro - retencion y rearme,LOGICA,"Nuevo flanco con causa inactiva",0.62,[1 1 1 1 1 1 0 0],[1 1 1 1 1 1 0 0],1
+S10,Velocidad negativa carro - interior,LOGICA,"Respuesta del umbral inclusivo",0.24,[1 1 1 1 1 1 0 0],[1 1 1 1 1 1 0 0],1
+S10,Velocidad negativa carro - interior,LOGICA,"Indicacion del sensor correspondiente",0.24,0,0,1
+S11,Velocidad negativa carro - igualdad,LOGICA,"Respuesta del umbral inclusivo",0.24,[1 0 1 0 1 1 1 0],[1 0 1 0 1 1 1 0],1
+S11,Velocidad negativa carro - igualdad,LOGICA,"Indicacion del sensor correspondiente",0.24,1,1,1
+S12,Velocidad negativa carro - exterior,LOGICA,"Respuesta del umbral inclusivo",0.24,[1 0 1 0 1 1 1 0],[1 0 1 0 1 1 1 0],1
+S12,Velocidad negativa carro - exterior,LOGICA,"Indicacion del sensor correspondiente",0.24,1,1,1
+S13,Velocidad negativa carro - retencion y rearme,LOGICA,"Intervencion de eje",0.24,[1 0 1 0 1 1 1 0],[1 0 1 0 1 1 1 0],1
+S13,Velocidad negativa carro - retencion y rearme,LOGICA,"Reinicio rechazado con causa activa",0.32,[1 0 1 0 1 1 1 0],[1 0 1 0 1 1 1 0],1
+S13,Velocidad negativa carro - retencion y rearme,LOGICA,"Retencion tras desaparecer la causa",0.5,[1 0 1 0 1 1 1 0],[1 0 1 0 1 1 1 0],1
+S13,Velocidad negativa carro - retencion y rearme,LOGICA,"Nuevo flanco con causa inactiva",0.62,[1 1 1 1 1 1 0 0],[1 1 1 1 1 1 0 0],1
+S14,Velocidad positiva carro - interior,LOGICA,"Respuesta del umbral inclusivo",0.24,[1 1 1 1 1 1 0 0],[1 1 1 1 1 1 0 0],1
+S14,Velocidad positiva carro - interior,LOGICA,"Indicacion del sensor correspondiente",0.24,0,0,1
+S15,Velocidad positiva carro - igualdad,LOGICA,"Respuesta del umbral inclusivo",0.24,[1 0 1 0 1 1 1 0],[1 0 1 0 1 1 1 0],1
+S15,Velocidad positiva carro - igualdad,LOGICA,"Indicacion del sensor correspondiente",0.24,1,1,1
+S16,Velocidad positiva carro - exterior,LOGICA,"Respuesta del umbral inclusivo",0.24,[1 0 1 0 1 1 1 0],[1 0 1 0 1 1 1 0],1
+S16,Velocidad positiva carro - exterior,LOGICA,"Indicacion del sensor correspondiente",0.24,1,1,1
+S17,Velocidad positiva carro - retencion y rearme,LOGICA,"Intervencion de eje",0.24,[1 0 1 0 1 1 1 0],[1 0 1 0 1 1 1 0],1
+S17,Velocidad positiva carro - retencion y rearme,LOGICA,"Reinicio rechazado con causa activa",0.32,[1 0 1 0 1 1 1 0],[1 0 1 0 1 1 1 0],1
+S17,Velocidad positiva carro - retencion y rearme,LOGICA,"Retencion tras desaparecer la causa",0.5,[1 0 1 0 1 1 1 0],[1 0 1 0 1 1 1 0],1
+S17,Velocidad positiva carro - retencion y rearme,LOGICA,"Nuevo flanco con causa inactiva",0.62,[1 1 1 1 1 1 0 0],[1 1 1 1 1 1 0 0],1
+S18,Altura minima izaje - interior,LOGICA,"Respuesta del umbral inclusivo",0.24,[1 1 1 1 1 1 0 0],[1 1 1 1 1 1 0 0],1
+S18,Altura minima izaje - interior,LOGICA,"Indicacion del sensor correspondiente",0.24,0,0,1
+S19,Altura minima izaje - igualdad,LOGICA,"Respuesta del umbral inclusivo",0.24,[1 1 0 1 0 0 1 0],[1 1 0 1 0 0 1 0],1
+S19,Altura minima izaje - igualdad,LOGICA,"Indicacion del sensor correspondiente",0.24,1,1,1
+S20,Altura minima izaje - exterior,LOGICA,"Respuesta del umbral inclusivo",0.24,[1 1 0 1 0 0 1 0],[1 1 0 1 0 0 1 0],1
+S20,Altura minima izaje - exterior,LOGICA,"Indicacion del sensor correspondiente",0.24,1,1,1
+S21,Altura minima izaje - retencion y rearme,LOGICA,"Intervencion de eje",0.24,[1 1 0 1 0 0 1 0],[1 1 0 1 0 0 1 0],1
+S21,Altura minima izaje - retencion y rearme,LOGICA,"Reinicio rechazado con causa activa",0.32,[1 1 0 1 0 0 1 0],[1 1 0 1 0 0 1 0],1
+S21,Altura minima izaje - retencion y rearme,LOGICA,"Retencion tras desaparecer la causa",0.5,[1 1 0 1 0 0 1 0],[1 1 0 1 0 0 1 0],1
+S21,Altura minima izaje - retencion y rearme,LOGICA,"Nuevo flanco con causa inactiva",0.62,[1 1 1 1 1 1 0 0],[1 1 1 1 1 1 0 0],1
+S22,Altura maxima izaje - interior,LOGICA,"Respuesta del umbral inclusivo",0.24,[1 1 1 1 1 1 0 0],[1 1 1 1 1 1 0 0],1
+S22,Altura maxima izaje - interior,LOGICA,"Indicacion del sensor correspondiente",0.24,0,0,1
+S23,Altura maxima izaje - igualdad,LOGICA,"Respuesta del umbral inclusivo",0.24,[1 1 0 1 0 0 1 0],[1 1 0 1 0 0 1 0],1
+S23,Altura maxima izaje - igualdad,LOGICA,"Indicacion del sensor correspondiente",0.24,1,1,1
+S24,Altura maxima izaje - exterior,LOGICA,"Respuesta del umbral inclusivo",0.24,[1 1 0 1 0 0 1 0],[1 1 0 1 0 0 1 0],1
+S24,Altura maxima izaje - exterior,LOGICA,"Indicacion del sensor correspondiente",0.24,1,1,1
+S25,Altura maxima izaje - retencion y rearme,LOGICA,"Intervencion de eje",0.24,[1 1 0 1 0 0 1 0],[1 1 0 1 0 0 1 0],1
+S25,Altura maxima izaje - retencion y rearme,LOGICA,"Reinicio rechazado con causa activa",0.32,[1 1 0 1 0 0 1 0],[1 1 0 1 0 0 1 0],1
+S25,Altura maxima izaje - retencion y rearme,LOGICA,"Retencion tras desaparecer la causa",0.5,[1 1 0 1 0 0 1 0],[1 1 0 1 0 0 1 0],1
+S25,Altura maxima izaje - retencion y rearme,LOGICA,"Nuevo flanco con causa inactiva",0.62,[1 1 1 1 1 1 0 0],[1 1 1 1 1 1 0 0],1
+S26,Velocidad negativa izaje - interior,LOGICA,"Respuesta del umbral inclusivo",0.24,[1 1 1 1 1 1 0 0],[1 1 1 1 1 1 0 0],1
+S26,Velocidad negativa izaje - interior,LOGICA,"Indicacion del sensor correspondiente",0.24,0,0,1
+S27,Velocidad negativa izaje - igualdad,LOGICA,"Respuesta del umbral inclusivo",0.24,[1 1 0 1 0 0 1 0],[1 1 0 1 0 0 1 0],1
+S27,Velocidad negativa izaje - igualdad,LOGICA,"Indicacion del sensor correspondiente",0.24,1,1,1
+S28,Velocidad negativa izaje - exterior,LOGICA,"Respuesta del umbral inclusivo",0.24,[1 1 0 1 0 0 1 0],[1 1 0 1 0 0 1 0],1
+S28,Velocidad negativa izaje - exterior,LOGICA,"Indicacion del sensor correspondiente",0.24,1,1,1
+S29,Velocidad negativa izaje - retencion y rearme,LOGICA,"Intervencion de eje",0.24,[1 1 0 1 0 0 1 0],[1 1 0 1 0 0 1 0],1
+S29,Velocidad negativa izaje - retencion y rearme,LOGICA,"Reinicio rechazado con causa activa",0.32,[1 1 0 1 0 0 1 0],[1 1 0 1 0 0 1 0],1
+S29,Velocidad negativa izaje - retencion y rearme,LOGICA,"Retencion tras desaparecer la causa",0.5,[1 1 0 1 0 0 1 0],[1 1 0 1 0 0 1 0],1
+S29,Velocidad negativa izaje - retencion y rearme,LOGICA,"Nuevo flanco con causa inactiva",0.62,[1 1 1 1 1 1 0 0],[1 1 1 1 1 1 0 0],1
+S30,Velocidad positiva izaje - interior,LOGICA,"Respuesta del umbral inclusivo",0.24,[1 1 1 1 1 1 0 0],[1 1 1 1 1 1 0 0],1
+S30,Velocidad positiva izaje - interior,LOGICA,"Indicacion del sensor correspondiente",0.24,0,0,1
+S31,Velocidad positiva izaje - igualdad,LOGICA,"Respuesta del umbral inclusivo",0.24,[1 1 0 1 0 0 1 0],[1 1 0 1 0 0 1 0],1
+S31,Velocidad positiva izaje - igualdad,LOGICA,"Indicacion del sensor correspondiente",0.24,1,1,1
+S32,Velocidad positiva izaje - exterior,LOGICA,"Respuesta del umbral inclusivo",0.24,[1 1 0 1 0 0 1 0],[1 1 0 1 0 0 1 0],1
+S32,Velocidad positiva izaje - exterior,LOGICA,"Indicacion del sensor correspondiente",0.24,1,1,1
+S33,Velocidad positiva izaje - retencion y rearme,LOGICA,"Intervencion de eje",0.24,[1 1 0 1 0 0 1 0],[1 1 0 1 0 0 1 0],1
+S33,Velocidad positiva izaje - retencion y rearme,LOGICA,"Reinicio rechazado con causa activa",0.32,[1 1 0 1 0 0 1 0],[1 1 0 1 0 0 1 0],1
+S33,Velocidad positiva izaje - retencion y rearme,LOGICA,"Retencion tras desaparecer la causa",0.5,[1 1 0 1 0 0 1 0],[1 1 0 1 0 0 1 0],1
+S33,Velocidad positiva izaje - retencion y rearme,LOGICA,"Nuevo flanco con causa inactiva",0.62,[1 1 1 1 1 1 0 0],[1 1 1 1 1 1 0 0],1
+S34,Pulsador de emergencia y rearme,LOGICA,"Boton inhibe ambos ejes",0.24,[0 0 0 0 0 0 1 0],[0 0 0 0 0 0 1 0],1
+S34,Pulsador de emergencia y rearme,LOGICA,"Boton activo impide rearme",0.32,[0 0 0 0 0 0 1 0],[0 0 0 0 0 0 1 0],1
+S34,Pulsador de emergencia y rearme,LOGICA,"Soltar boton no rearma",0.5,[0 0 0 0 0 0 1 0],[0 0 0 0 0 0 1 0],1
+S34,Pulsador de emergencia y rearme,LOGICA,"Rearme intencional",0.62,[1 1 1 1 1 1 0 0],[1 1 1 1 1 1 0 0],1
+S35,Escalamiento - Carro luego izaje,LOGICA,"Primera emergencia parcial",0.24,[1 0 1 0 1 1 1 0],[1 0 1 0 1 1 1 0],1
+S35,Escalamiento - Carro luego izaje,LOGICA,"Segundo eje escala a total",0.34,[0 0 0 0 0 0 1 0],[0 0 0 0 0 0 1 0],1
+S35,Escalamiento - Carro luego izaje,LOGICA,"Rearme total con todas las causas despejadas",0.62,[1 1 1 1 1 1 0 0],[1 1 1 1 1 1 0 0],1
+S36,Pulsador durante emergencia - Carro luego izaje,LOGICA,"Emergencia parcial previa",0.24,[1 0 1 0 1 1 1 0],[1 0 1 0 1 1 1 0],1
+S36,Pulsador durante emergencia - Carro luego izaje,LOGICA,"Boton escala a total",0.34,[0 0 0 0 0 0 1 0],[0 0 0 0 0 0 1 0],1
+S37,Escalamiento - Izaje luego carro,LOGICA,"Primera emergencia parcial",0.24,[1 1 0 1 0 0 1 0],[1 1 0 1 0 0 1 0],1
+S37,Escalamiento - Izaje luego carro,LOGICA,"Segundo eje escala a total",0.34,[0 0 0 0 0 0 1 0],[0 0 0 0 0 0 1 0],1
+S37,Escalamiento - Izaje luego carro,LOGICA,"Rearme total con todas las causas despejadas",0.62,[1 1 1 1 1 1 0 0],[1 1 1 1 1 1 0 0],1
+S38,Pulsador durante emergencia - Izaje luego carro,LOGICA,"Emergencia parcial previa",0.24,[1 1 0 1 0 0 1 0],[1 1 0 1 0 0 1 0],1
+S38,Pulsador durante emergencia - Izaje luego carro,LOGICA,"Boton escala a total",0.34,[0 0 0 0 0 0 1 0],[0 0 0 0 0 0 1 0],1
+S39,Limites de ambos ejes simultaneos,LOGICA,"Prioridad de izaje implementada",0.24,[1 1 0 1 0 0 1 0],[1 1 0 1 0 0 1 0],1
+S39,Limites de ambos ejes simultaneos,LOGICA,"El flanco de carro no se vuelve a evaluar",0.6,[1 1 0 1 0 0 1 0],[1 1 0 1 0 0 1 0],1
+S39,Limites de ambos ejes simultaneos,ROBUSTEZ,"Ambos ejes peligrosos deben quedar inhibidos",0.24,[0 0],[1 0],0
+S40,Pulsador y limites simultaneos,LOGICA,"Prioridad total del boton",0.24,[0 0 0 0 0 0 1 0],[0 0 0 0 0 0 1 0],1
+S41,Rearme total bloqueado por boton,LOGICA,"Una sola causa activa impide rearme total",0.32,[0 0 0 0 0 0 1 0],[0 0 0 0 0 0 1 0],1
+S41,Rearme total bloqueado por boton,LOGICA,"La desaparicion no rearma sola",0.6,[0 0 0 0 0 0 1 0],[0 0 0 0 0 0 1 0],1
+S41,Rearme total bloqueado por boton,LOGICA,"Rearme tras eliminar la ultima causa",0.72,[1 1 1 1 1 1 0 0],[1 1 1 1 1 1 0 0],1
+S42,Rearme total bloqueado por carro minimo,LOGICA,"Una sola causa activa impide rearme total",0.32,[0 0 0 0 0 0 1 0],[0 0 0 0 0 0 1 0],1
+S42,Rearme total bloqueado por carro minimo,LOGICA,"La desaparicion no rearma sola",0.6,[0 0 0 0 0 0 1 0],[0 0 0 0 0 0 1 0],1
+S42,Rearme total bloqueado por carro minimo,LOGICA,"Rearme tras eliminar la ultima causa",0.72,[1 1 1 1 1 1 0 0],[1 1 1 1 1 1 0 0],1
+S43,Rearme total bloqueado por carro maximo,LOGICA,"Una sola causa activa impide rearme total",0.32,[0 0 0 0 0 0 1 0],[0 0 0 0 0 0 1 0],1
+S43,Rearme total bloqueado por carro maximo,LOGICA,"La desaparicion no rearma sola",0.6,[0 0 0 0 0 0 1 0],[0 0 0 0 0 0 1 0],1
+S43,Rearme total bloqueado por carro maximo,LOGICA,"Rearme tras eliminar la ultima causa",0.72,[1 1 1 1 1 1 0 0],[1 1 1 1 1 1 0 0],1
+S44,Rearme total bloqueado por izaje minimo,LOGICA,"Una sola causa activa impide rearme total",0.32,[0 0 0 0 0 0 1 0],[0 0 0 0 0 0 1 0],1
+S44,Rearme total bloqueado por izaje minimo,LOGICA,"La desaparicion no rearma sola",0.6,[0 0 0 0 0 0 1 0],[0 0 0 0 0 0 1 0],1
+S44,Rearme total bloqueado por izaje minimo,LOGICA,"Rearme tras eliminar la ultima causa",0.72,[1 1 1 1 1 1 0 0],[1 1 1 1 1 1 0 0],1
+S45,Rearme total bloqueado por izaje maximo,LOGICA,"Una sola causa activa impide rearme total",0.32,[0 0 0 0 0 0 1 0],[0 0 0 0 0 0 1 0],1
+S45,Rearme total bloqueado por izaje maximo,LOGICA,"La desaparicion no rearma sola",0.6,[0 0 0 0 0 0 1 0],[0 0 0 0 0 0 1 0],1
+S45,Rearme total bloqueado por izaje maximo,LOGICA,"Rearme tras eliminar la ultima causa",0.72,[1 1 1 1 1 1 0 0],[1 1 1 1 1 1 0 0],1
+S46,Rearme total bloqueado por sobrevelocidad izaje,LOGICA,"Una sola causa activa impide rearme total",0.32,[0 0 0 0 0 0 1 0],[0 0 0 0 0 0 1 0],1
+S46,Rearme total bloqueado por sobrevelocidad izaje,LOGICA,"La desaparicion no rearma sola",0.6,[0 0 0 0 0 0 1 0],[0 0 0 0 0 0 1 0],1
+S46,Rearme total bloqueado por sobrevelocidad izaje,LOGICA,"Rearme tras eliminar la ultima causa",0.72,[1 1 1 1 1 1 0 0],[1 1 1 1 1 1 0 0],1
+S47,Reinicio sostenido requiere nuevo flanco,LOGICA,"Limite dispara aun con reset alto",0.24,[1 0 1 0 1 1 1 0],[1 0 1 0 1 1 1 0],1
+S47,Reinicio sostenido requiere nuevo flanco,LOGICA,"Reset alto no equivale a flanco nuevo",0.5,[1 0 1 0 1 1 1 0],[1 0 1 0 1 1 1 0],1
+S47,Reinicio sostenido requiere nuevo flanco,LOGICA,"Rearme por nuevo flanco",0.72,[1 1 1 1 1 1 0 0],[1 1 1 1 1 1 0 0],1
+S48,Pulso de limite de un ciclo queda enclavado,LOGICA,"Un pulso muestreado queda retenido",0.24,[1 0 1 0 1 1 1 0],[1 0 1 0 1 1 1 0],1
+S48,Pulso de limite de un ciclo queda enclavado,LOGICA,"Rearme posterior",0.52,[1 1 1 1 1 1 0 0],[1 1 1 1 1 1 0 0],1
+S49,Watchdog congelado en 0,LOGICA,"Sin cambios aparece fallo y total",5.26,[0 0 0 0 0 0 1 1],[0 0 0 0 0 0 1 1],1
+S49,Watchdog congelado en 0,LOGICA,"Primer reset limpia WD, total permanece",5.42,[0 0 0 0 0 0 1 0],[0 0 0 0 0 0 1 0],1
+S49,Watchdog congelado en 0,LOGICA,"Segundo flanco rearma emergencia total",5.72,[1 1 1 1 1 1 0 0],[1 1 1 1 1 1 0 0],1
+S50,Watchdog congelado en 1,LOGICA,"Sin cambios aparece fallo y total",5.26,[0 0 0 0 0 0 1 1],[0 0 0 0 0 0 1 1],1
+S50,Watchdog congelado en 1,LOGICA,"Primer reset limpia WD, total permanece",5.42,[0 0 0 0 0 0 1 0],[0 0 0 0 0 0 1 0],1
+S50,Watchdog congelado en 1,LOGICA,"Segundo flanco rearma emergencia total",5.72,[1 1 1 1 1 1 0 0],[1 1 1 1 1 1 0 0],1
+S51,Watchdog durante emergencia parcial,LOGICA,"Parcial antes del watchdog",0.24,[1 0 1 0 1 1 1 0],[1 0 1 0 1 1 1 0],1
+S51,Watchdog durante emergencia parcial,LOGICA,"Watchdog escala parcial a total",5.2,[0 0 0 0 0 0 1 1],[0 0 0 0 0 0 1 1],1
+S52,Watchdog durante emergencia parcial,LOGICA,"Parcial antes del watchdog",0.24,[1 1 0 1 0 0 1 0],[1 1 0 1 0 0 1 0],1
+S52,Watchdog durante emergencia parcial,LOGICA,"Watchdog escala parcial a total",5.2,[0 0 0 0 0 0 1 1],[0 0 0 0 0 0 1 1],1
+S53,Cambio WD relativo al vencimiento -0.02 s,LOGICA,"Cambio previo renueva temporizador",5.2,[1 1 1 1 1 1 0 0],[1 1 1 1 1 1 0 0],1
+S54,Cambio WD relativo al vencimiento +0.00 s,LOGICA,"Al vencer prevalece fallo sobre cambio",5.2,[0 0 0 0 0 0 1 1],[0 0 0 0 0 0 1 1],1
+S55,Cambio WD relativo al vencimiento +0.02 s,LOGICA,"Al vencer prevalece fallo sobre cambio",5.2,[0 0 0 0 0 0 1 1],[0 0 0 0 0 0 1 1],1
+S56,Reinicio normal no sustituye latido WD,LOGICA,"Reset en W0 no realimenta el watchdog",5.2,[0 0 0 0 0 0 1 1],[0 0 0 0 0 0 1 1],1
+S57,Reinicio del WD sin restaurar actividad,LOGICA,"Dos flancos permiten rearme aun sin latido",5.72,[1 1 1 1 1 1 0 0],[1 1 1 1 1 1 0 0],1
+S57,Reinicio del WD sin restaurar actividad,LOGICA,"Nuevo vencimiento tras rearme sin actividad",10.5,[0 0 0 0 0 0 1 1],[0 0 0 0 0 0 1 1],1
+S58,Limite activo desde arranque - Posicion minima carro,ROBUSTEZ,"Eje peligroso inhibido al arrancar",0.1,0,1,0
+S59,Limite activo desde arranque - Altura minima izaje,ROBUSTEZ,"Eje peligroso inhibido al arrancar",0.1,0,1,0
+S60,Limite activo desde arranque - Velocidad negativa izaje,ROBUSTEZ,"Eje peligroso inhibido al arrancar",0.1,0,1,0
+S61,Pulsador activo desde arranque,LOGICA,"Boton por nivel protege desde el arranque",0.04,[0 0 0 0 0 0 1 0],[0 0 0 0 0 0 1 0],1
+S62,Entrada fisica no valida NaN - canal 4,ROBUSTEZ,"Medicion NaN no debe autorizar su eje",0.24,0,1,0
+S63,Entrada fisica no valida NaN - canal 5,ROBUSTEZ,"Medicion NaN no debe autorizar su eje",0.24,0,1,0
+S64,Entrada fisica no valida NaN - canal 6,ROBUSTEZ,"Medicion NaN no debe autorizar su eje",0.24,0,1,0
+S65,Entrada fisica no valida NaN - canal 7,ROBUSTEZ,"Medicion NaN no debe autorizar su eje",0.24,0,1,0
+S66,Pulso entre instantes de muestreo,LOGICA,"Un pulso no muestreado no dispara el chart",0.24,[1 1 1 1 1 1 0 0],[1 1 1 1 1 1 0 0],1
+S67,Escalamiento - Carro luego limite inferior izaje,LOGICA,"Escalamiento por la causa restante del otro eje",0.34,[0 0 0 0 0 0 1 0],[0 0 0 0 0 0 1 0],1
+S68,Escalamiento - Carro luego sobrevelocidad izaje,LOGICA,"Escalamiento por la causa restante del otro eje",0.34,[0 0 0 0 0 0 1 0],[0 0 0 0 0 0 1 0],1
+S69,Escalamiento - Izaje luego limite derecho carro,LOGICA,"Escalamiento por la causa restante del otro eje",0.34,[0 0 0 0 0 0 1 0],[0 0 0 0 0 0 1 0],1
+S70,Limite activo desde arranque - Posicion maxima carro,ROBUSTEZ,"Eje peligroso inhibido al arrancar",0.1,0,1,0
+S71,Limite activo desde arranque - Velocidad negativa carro,ROBUSTEZ,"Eje peligroso inhibido al arrancar",0.1,0,1,0
+S72,Limite activo desde arranque - Velocidad positiva carro,ROBUSTEZ,"Eje peligroso inhibido al arrancar",0.1,0,1,0
+S73,Limite activo desde arranque - Altura maxima izaje,ROBUSTEZ,"Eje peligroso inhibido al arrancar",0.1,0,1,0
+S74,Limite activo desde arranque - Velocidad positiva izaje,ROBUSTEZ,"Eje peligroso inhibido al arrancar",0.1,0,1,0
+S75,Limite carro y sobrevelocidad izaje simultaneos,LOGICA,"Prioridad de izaje tambien ante exceso de velocidad",0.24,[1 1 0 1 0 0 1 0],[1 1 0 1 0 0 1 0],1
+S75,Limite carro y sobrevelocidad izaje simultaneos,ROBUSTEZ,"Ambos ejes peligrosos deben quedar inhibidos",0.24,[0 0],[1 0],0
