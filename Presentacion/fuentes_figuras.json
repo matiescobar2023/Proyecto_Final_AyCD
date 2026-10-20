@@ -1,0 +1,427 @@
+{
+  "logo_ref-000": {
+    "file": "imagenes/r_000.png",
+    "source": "imagenes_informe/usuario/logo_ref-000.png",
+    "size": [
+      900,
+      292
+    ]
+  },
+  "grua_STS_guia_fig1a": {
+    "file": "imagenes/r_001.png",
+    "source": "imagenes_informe/modelo_planta/grua_STS_guia_fig1a.pdf",
+    "size": [
+      2000,
+      1501
+    ],
+    "note": "Encuadre en LaTeX para ocultar el rótulo inferior de fuente, por solicitud de los autores. Imagen original conservada."
+  },
+  "esquema_planta_visualizacion_v4": {
+    "file": "imagenes/r_003.png",
+    "source": "imagenes_informe/modelo_planta/esquema_planta_visualizacion_v4.png",
+    "size": [
+      1703,
+      914
+    ]
+  },
+  "CR_gral1": {
+    "file": "imagenes/r_015.png",
+    "source": "imagenes_informe/usuario/CR_gral1.png",
+    "size": [
+      1052,
+      813
+    ]
+  },
+  "carro_pendulo_Euler_Lagrange": {
+    "file": "imagenes/r_018.png",
+    "source": "imagenes_informe/modelo_planta/carro_pendulo_Euler_Lagrange.pdf",
+    "size": [
+      1700,
+      1056
+    ]
+  },
+  "perfil_horizontal": {
+    "file": "imagenes/r_023.png",
+    "source": "imagenes_informe/trayectorias/perfil_horizontal.pdf",
+    "size": [
+      1991,
+      1475
+    ]
+  },
+  "perfil_vertical": {
+    "file": "imagenes/r_024.png",
+    "source": "imagenes_informe/trayectorias/perfil_vertical.pdf",
+    "size": [
+      1993,
+      1475
+    ]
+  },
+  "coordinacion_xy": {
+    "file": "imagenes/r_025.png",
+    "source": "imagenes_informe/trayectorias/coordinacion_xy.pdf",
+    "size": [
+      1990,
+      1244
+    ]
+  },
+  "02b_operacion_maniobra": {
+    "file": "imagenes/r_027.png",
+    "source": "imagenes_informe/otro/diagramas_automatas_revision/02b_operacion_maniobra.pdf",
+    "size": [
+      1012,
+      1974
+    ]
+  },
+  "05_carga_twistlocks_recortado": {
+    "file": "imagenes/r_031.png",
+    "source": "imagenes_informe/otro/diagramas_automatas_revision/05_carga_twistlocks_recortado.pdf",
+    "size": [
+      1154,
+      1941
+    ]
+  },
+  "06_frenos": {
+    "file": "imagenes/r_032.png",
+    "source": "imagenes_informe/otro/diagramas_automatas_revision/06_frenos.pdf",
+    "size": [
+      1719,
+      1409
+    ]
+  },
+  "08_seguridad_emergencias": {
+    "file": "imagenes/r_035.png",
+    "source": "imagenes_informe/otro/diagramas_automatas_revision/08_seguridad_emergencias.pdf",
+    "size": [
+      1822,
+      1095
+    ]
+  },
+  "Visualizacion_HMI_GruaPerfilSeg_30092026": {
+    "file": "imagenes/r_038.png",
+    "source": "imagenes_informe/usuario/Visualizacion_HMI_GruaPerfilSeg_30092026.png",
+    "size": [
+      1790,
+      954
+    ]
+  },
+  "izaje_original": {
+    "file": "imagenes/r_039.png",
+    "source": "imagenes_informe/usuario/ensayos_regulatorios_aislados/izaje_original.png",
+    "size": [
+      1817,
+      1472
+    ]
+  },
+  "izaje_bajada8": {
+    "file": "imagenes/r_040.png",
+    "source": "imagenes_informe/usuario/ensayos_regulatorios_aislados/izaje_bajada8.png",
+    "size": [
+      1811,
+      1470
+    ]
+  },
+  "decaimiento_7grados": {
+    "file": "imagenes/r_041.png",
+    "source": "imagenes_informe/usuario/ensayos_regulatorios_aislados/decaimiento_7grados.png",
+    "size": [
+      1801,
+      1262
+    ]
+  },
+  "carro_13m_normal": {
+    "file": "imagenes/r_042.png",
+    "source": "imagenes_informe/usuario/ensayos_regulatorios_aislados/carro_13m_normal.png",
+    "size": [
+      2012,
+      1461
+    ]
+  },
+  "carro_13m_rapido": {
+    "file": "imagenes/r_043.png",
+    "source": "imagenes_informe/usuario/ensayos_regulatorios_aislados/carro_13m_rapido.png",
+    "size": [
+      2012,
+      1461
+    ]
+  },
+  "02_02_zoom_retirada_joystick": {
+    "file": "imagenes/r_047.png",
+    "source": "imagenes_informe/usuario/integracionP1/02_02_zoom_retirada_joystick.png",
+    "size": [
+      2345,
+      1297
+    ]
+  },
+  "03_02_referencias_y_mando": {
+    "file": "imagenes/r_048.png",
+    "source": "imagenes_informe/usuario/integracionP1/03_02_referencias_y_mando.png",
+    "size": [
+      2097,
+      1218
+    ]
+  },
+  "04_03_fuerzas_deformacion_energia": {
+    "file": "imagenes/r_049.png",
+    "source": "imagenes_informe/usuario/integracionP1/04_03_fuerzas_deformacion_energia.png",
+    "size": [
+      2092,
+      1218
+    ]
+  },
+  "13_sfc_operacion": {
+    "file": "imagenes/r_051.png",
+    "source": "imagenes_informe/otro/diagramas_codesys_manual/13_sfc_operacion.pdf",
+    "size": [
+      1788,
+      1828
+    ]
+  },
+  "01_estructura_MC": {
+    "file": "imagenes/r_060.png",
+    "source": "imagenes_informe/usuario/motionControllerP2/01_estructura_MC.png",
+    "size": [
+      2327,
+      1158
+    ]
+  },
+  "03_diferencias_MC_FF": {
+    "file": "imagenes/r_061.png",
+    "source": "imagenes_informe/usuario/motionControllerP2/03_diferencias_MC_FF.png",
+    "size": [
+      1870,
+      1483
+    ]
+  },
+  "perfil": {
+    "file": "imagenes/r_063.png",
+    "source": "imagenes_informe/prueba_completa_MIL/perfil.pdf",
+    "size": [
+      2000,
+      1131
+    ]
+  },
+  "carro_tres_filas": {
+    "file": "imagenes/r_065.png",
+    "source": "imagenes_informe/prueba_completa_MIL/paneles_0810/carro_tres_filas.pdf",
+    "size": [
+      1992,
+      1476
+    ]
+  },
+  "izaje_tres_filas": {
+    "file": "imagenes/r_066.png",
+    "source": "imagenes_informe/prueba_completa_MIL/paneles_0810/izaje_tres_filas.pdf",
+    "size": [
+      1993,
+      1491
+    ]
+  },
+  "angulo_dos_etapas": {
+    "file": "imagenes/r_067.png",
+    "source": "imagenes_informe/prueba_completa_MIL/paneles_0810/angulo_dos_etapas.pdf",
+    "size": [
+      2000,
+      1212
+    ]
+  },
+  "torques_dos_ejes": {
+    "file": "imagenes/r_071.png",
+    "source": "imagenes_informe/prueba_completa_MIL/paneles_0810/torques_dos_ejes.pdf",
+    "size": [
+      2000,
+      1230
+    ]
+  },
+  "paneles_0810_carro_tres_filas": {
+    "file": "imagenes/r_074.png",
+    "source": "imagenes_informe/prueba_completa_CODESYS/paneles_0810/carro_tres_filas.pdf",
+    "size": [
+      1992,
+      1476
+    ]
+  },
+  "paneles_0810_izaje_tres_filas": {
+    "file": "imagenes/r_075.png",
+    "source": "imagenes_informe/prueba_completa_CODESYS/paneles_0810/izaje_tres_filas.pdf",
+    "size": [
+      1992,
+      1476
+    ]
+  },
+  "paneles_0810_angulo_dos_etapas": {
+    "file": "imagenes/r_076.png",
+    "source": "imagenes_informe/prueba_completa_CODESYS/paneles_0810/angulo_dos_etapas.pdf",
+    "size": [
+      2000,
+      1212
+    ]
+  },
+  "paneles_0810_torques_dos_ejes": {
+    "file": "imagenes/r_080.png",
+    "source": "imagenes_informe/prueba_completa_CODESYS/paneles_0810/torques_dos_ejes.pdf",
+    "size": [
+      2000,
+      1230
+    ]
+  },
+  "posicion_velocidad_ajustada": {
+    "file": "imagenes/r_082.png",
+    "source": "imagenes_informe/productividad/posicion_velocidad_ajustada.png",
+    "size": [
+      2186,
+      1433
+    ]
+  },
+  "recorrido_perfil_ajustado": {
+    "file": "imagenes/r_083.png",
+    "source": "imagenes_informe/productividad/recorrido_perfil_ajustado.png",
+    "size": [
+      2202,
+      1461
+    ]
+  },
+  "balanceo_ajustado": {
+    "file": "imagenes/r_084.png",
+    "source": "imagenes_informe/productividad/balanceo_ajustado.png",
+    "size": [
+      2201,
+      1181
+    ]
+  },
+  "posiciones": {
+    "file": "imagenes/r_086.png",
+    "source": "imagenes_informe/medio_ciclo_0810/posiciones.pdf",
+    "size": [
+      2000,
+      1255
+    ]
+  },
+  "sin_sw_balanceo": {
+    "file": "imagenes/r_092.png",
+    "source": "imagenes_informe/medio_ciclo_0810/sin_sw_balanceo.pdf",
+    "size": [
+      2000,
+      1236
+    ]
+  },
+  "sin_sw_posiciones": {
+    "file": "imagenes/r_093.png",
+    "source": "imagenes_informe/medio_ciclo_0810/sin_sw_posiciones.pdf",
+    "size": [
+      2000,
+      1255
+    ]
+  },
+  "video_inicial": {
+    "file": "imagenes/video_inicial.png",
+    "source": "PROD_FINAL/MC_prod_DESAP/resultados/productividad_20261010_004747/video_vista_previa.png"
+  },
+  "video_ajustado": {
+    "file": "imagenes/video_ajustado.png",
+    "source": "PROD_FINAL/MC_prod_APROB/resultados/productividad_20261010_003723/video_vista_previa.png"
+  },
+  "Sens_1": {
+    "file": "imagenes/Sens_1.png",
+    "source": "OCTUBRE/Paquete_Informe_AyCD_EscobarHerrera_v2_v3/imagenes_informe/usuario/Sens_1.png"
+  },
+  "PickPlace_chart": {
+    "file": "imagenes/PickPlace_chart.png",
+    "source": "OCTUBRE/Paquete_Informe_AyCD_EscobarHerrera_v2_v3/imagenes_informe/usuario/PickPlace_chart.png"
+  },
+  "PickPlace_actObs": {
+    "file": "imagenes/PickPlace_actObs.png",
+    "source": "OCTUBRE/Paquete_Informe_AyCD_EscobarHerrera_v2_v3/imagenes_informe/usuario/PickPlace_actObs.png"
+  },
+  "P_carro1": {
+    "file": "imagenes/P_carro1.png",
+    "source": "OCTUBRE/Paquete_Informe_AyCD_EscobarHerrera_v2_v3/imagenes_informe/usuario/P_carro1.png"
+  },
+  "P_izj1": {
+    "file": "imagenes/P_izj1.png",
+    "source": "OCTUBRE/Paquete_Informe_AyCD_EscobarHerrera_v2_v3/imagenes_informe/usuario/P_izj1.png"
+  },
+  "P_carga2din_": {
+    "file": "imagenes/P_carga2din_.png",
+    "source": "OCTUBRE/Paquete_Informe_AyCD_EscobarHerrera_v2_v3/imagenes_informe/usuario/P_carga2din_.png"
+  },
+  "CR_carro3": {
+    "file": "imagenes/CR_carro3.png",
+    "source": "OCTUBRE/Paquete_Informe_AyCD_EscobarHerrera_v2_v3/imagenes_informe/usuario/CR_carro3.png"
+  },
+  "CR_carro4": {
+    "file": "imagenes/CR_carro4.png",
+    "source": "OCTUBRE/Paquete_Informe_AyCD_EscobarHerrera_v2_v3/imagenes_informe/usuario/CR_carro4.png"
+  },
+  "CR_iz2": {
+    "file": "imagenes/CR_iz2.png",
+    "source": "OCTUBRE/Paquete_Informe_AyCD_EscobarHerrera_v2_v3/imagenes_informe/usuario/CR_iz2.png"
+  },
+  "polos_carro_antisway": {
+    "file": "imagenes/polos_carro_antisway.png",
+    "source": "OCTUBRE/Paquete_Informe_AyCD_EscobarHerrera_v2_v3/imagenes_informe/usuario/ensayos_regulatorios_aislados/polos_carro_antisway.png"
+  },
+  "polos_izaje_nominal": {
+    "file": "imagenes/polos_izaje_nominal.pdf",
+    "source": "OCTUBRE/Paquete_Informe_AyCD_EscobarHerrera_v2_v3/imagenes_informe/usuario/ensayos_regulatorios_aislados/polos_izaje_nominal.pdf"
+  },
+  "carro_cascada_R2": {
+    "file": "imagenes/carro_cascada_R2.png",
+    "source": "OCTUBRE/R2_Bloques_FFLimitado_06102026/GruaSeg_R2_FFLimitado_06102026.slx",
+    "block": "Subsystem/Controlador Carro",
+    "note": "Exportación MATLAB del modelo, sin guardar modificaciones al SLX original."
+  },
+  "izaje_lazo_R2": {
+    "file": "imagenes/izaje_lazo_R2.png",
+    "source": "OCTUBRE/R2_Bloques_FFLimitado_06102026/GruaSeg_R2_FFLimitado_06102026.slx",
+    "block": "Subsystem/Controlador Izaje",
+    "note": "Exportación MATLAB del modelo, sin guardar modificaciones al SLX original."
+  },
+  "carro_torque_R2": {
+    "file": "imagenes/carro_torque_R2.png",
+    "source": "OCTUBRE/R2_Bloques_FFLimitado_06102026/GruaSeg_R2_FFLimitado_06102026.slx",
+    "block": "Subsystem/Controlador Carro/Computed Torque",
+    "note": "Exportación MATLAB del modelo, sin guardar modificaciones al SLX original."
+  },
+  "regulacion_R2": {
+    "file": "imagenes/regulacion_R2.png",
+    "source": "OCTUBRE/R2_Bloques_FFLimitado_06102026/GruaSeg_R2_FFLimitado_06102026.slx",
+    "block": "Subsystem",
+    "note": "Exportación MATLAB del modelo, sin guardar modificaciones al SLX original."
+  },
+  "modulador_torque_izaje_20261012": {
+    "file": "imagenes/modulador_torque_izaje_20261012.png",
+    "source": "GruaSeg_R2_FFLimitado_06102026/Planta/Subsistema izaje/Modulador de Torque Motor Drive Izaje",
+    "method": "Exportación Simulink sin guardar SLX"
+  },
+  "polos_carro_nominales_20261012": {
+    "file": "imagenes/polos_carro_nominales_20261012.pdf",
+    "source": "Raíces calculadas de los polinomios reducidos nominales",
+    "Kx": 0.05,
+    "Kpv": 2.4,
+    "Kiv": 0.2,
+    "poles_velocity": [
+      -2.313552872566004,
+      -0.08644712743399563
+    ],
+    "poles_cascade": [
+      {
+        "real": -2.260388616514028,
+        "imag": 0.0
+      },
+      {
+        "real": -0.09099098303622538,
+        "imag": 0.0
+      },
+      {
+        "real": -0.04862040044974521,
+        "imag": 0.0
+      }
+    ],
+    "zero": -0.08333333333333334
+  },
+  "carro_cascada_sin_antiwindup_usuario": {
+    "file": "imagenes/CR_carro_cascada_sin_antiwindup.png",
+    "source": "OCTUBRE/Paquete_Informe_AyCD_EscobarHerrera_v2_v3/imagenes_informe/usuario/CR_carro_cascada_sin_antiwindup.png",
+    "note": "Captura final aportada por el usuario: PI más a_ff, seguido de límite de aceleración total. Sin saturación de consigna de velocidad ni anti-windup."
+  }
+}

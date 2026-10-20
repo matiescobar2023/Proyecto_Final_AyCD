@@ -1,0 +1,11 @@
+{
+  "archivo": "video_HMI.mp4",
+  "fps": 25,
+  "intervalo_simulado_s": 0.2,
+  "aceleracion_nominal": 5,
+  "fotogramas": 565,
+  "primer_t_s": 0,
+  "ultimo_t_s": 112.8,
+  "duracion_video_s": 22.6,
+  "tipo": "Captura HMI durante la simulacion"
+}

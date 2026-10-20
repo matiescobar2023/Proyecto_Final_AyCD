@@ -1,0 +1,6 @@
+Metropolis Beamer theme
+Copyright 2015 Matthias Vogelgesang and contributors.
+https://github.com/matze/mtheme
+Licensed under Creative Commons Attribution-ShareAlike 4.0 International.
+https://creativecommons.org/licenses/by-sa/4.0/
+The included files are copied unchanged from the installed MiKTeX distribution. Their source copyright and license headers are preserved.

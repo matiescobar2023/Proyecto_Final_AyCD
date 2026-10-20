@@ -1,0 +1,1772 @@
+[
+  {
+    "title": "Portada",
+    "body": "\\setlength{\\parskip}{0pt}\n\\vspace*{2mm}\n\\hfill\\includegraphics[width=3.7cm,height=1.2cm,keepaspectratio]{imagenes/r_000.png}\\par\n\\vspace{3mm}\n{\\fontsize{19}{22}\\selectfont\\bfseries Autómatas y Control Discreto\\par}\n\\vspace{3mm}\n{\\fontsize{14}{17}\\selectfont Proyecto integrador: Control de Accionamientos y\\\\Automatización de Grúa Portuaria de Muelle tipo Pórtico\\par}\n\\vspace{3mm}\\textcolor{accent}{\\rule{\\linewidth}{0.8pt}}\\par\\vspace{2mm}\n{\\fontsize{12}{14}\\selectfont Diseño, desarrollo, integración y validación del sistema\\par}\n\\vspace{5mm}\nMatías Escobar \\quad Martín Herrera\\par\n\\vspace{2mm}{\\small Prof: Ing. Gabriel L. Julián\\par}\n\\vfill{\\small 13 de octubre de 2026\\par}\n\\vspace*{4mm}\n",
+    "note": "Presentar la asignatura, el proyecto integrador, los integrantes y el docente. Indicar que se recorrerá el diseño, desarrollo, integración y validación del sistema.",
+    "weight": 0.3,
+    "section": "Apertura",
+    "backup": false,
+    "owner": null,
+    "label": "portada"
+  },
+  {
+    "title": "Recorrido de la exposición",
+    "body": "\\relax\n\\begin{columns}[T,onlytextwidth]\\column{.48\\textwidth}\\fontsize{9.2}{11.2}\\selectfont\\textbf{Planta y regulación}\\par\\begin{enumerate}\n\\item \\textbf{Maniobra y requisitos.} Recorridos, cargas, límites y objetivo productivo.\n\\item \\textbf{Modelo físico.} Cables elásticos, contacto, accionamientos, frenos y sensores.\n\\item \\textbf{Carro.} Reducción mecánica, cascada, polos y corrección anti-sway.\n\\item \\textbf{Izaje.} Deducción en longitud, compensación de tensión y asignación de tres ganancias.\n\\item \\textbf{Pruebas aisladas e integración.} Seguimiento, balanceo y excitación del modo flexible.\n\\end{enumerate}\\column{.48\\textwidth}\\fontsize{9.2}{11.2}\\selectfont\\textbf{Coordinación y pruebas}\\par\\begin{enumerate}\n\\setcounter{enumi}{5}\n\\item \\textbf{Supervisor.} Modos, toma y entrega, pesaje, barrido y frenos.\n\\item \\textbf{Planificación automática.} Perfil, despeje, referencias suaves y reloj común.\n\\item \\textbf{Implementación.} Seguridad, CODESYS, estimadores y MC de dos ejes.\n\\item \\textbf{Pruebas MIL y SIL.} Maniobra completa y comparación con/sin anti-sway.\n\\item \\textbf{Productividad y alcance.} Ciclo inicial, ajuste y trabajos futuros.\n\\end{enumerate}\\end{columns}\n",
+    "note": "Presentar primero los fenómenos físicos y luego las aproximaciones de diseño. El diagnóstico de la integración explica por qué se acondicionan las referencias. Anunciar cómo se relacionan los bancos: las pruebas aisladas caracterizan la regulación, las completas verifican la secuencia y el ciclo cerrado permite estimar productividad.",
+    "weight": 1,
+    "section": "Apertura",
+    "backup": false,
+    "owner": null,
+    "label": "slide2"
+  },
+  {
+    "title": "La maniobra que debe resolver el sistema",
+    "body": "\\begin{columns}[T,onlytextwidth]\n\\column{0.49\\textwidth}\\includegraphics[width=.98\\linewidth,height=4.9cm,keepaspectratio,trim=0 180 0 0,clip]{imagenes/r_001.png}\n\\column{0.47\\textwidth}\\begin{itemize}\n\\item Transferencia semiautomática entre muelle y buque.\n\\item Toma y descenso final bajo supervisión manual.\n\\item Traslado automático con izaje y carro coordinados.\n\\item Carga suspendida: balanceo, obstáculos y cambios de masa.\n\\end{itemize}\n\\end{columns}\n",
+    "note": "Ubicar físicamente los dos ejes. Explicar por qué seguir una posición no garantiza que la carga quede estable ni que el recorrido sea seguro.",
+    "weight": 1,
+    "section": "Apertura",
+    "backup": false,
+    "owner": null,
+    "label": "slide3"
+  },
+  {
+    "title": "Requisitos mecánicos y operativos",
+    "body": "\\begin{center}\n{\\small\\renewcommand{\\arraystretch}{1.0}\n\\begin{tabular}{lrr}\\toprule\nMagnitud & Carro & Izaje\\\\\\midrule\nRecorrido [m] & $[-30;50]$ & $[-20;40]$\\\\\nVelocidad máxima [m/s] & 4,00 & 1,50 cargado / 3,00 vacío\\\\\nAceleración máxima [m/s$^2$] & 0,80 & 0,75\\\\\nTorque nominal motor [kN m] & 4,00 & 20,00\\\\\n\\bottomrule\\end{tabular}}\\end{center}\n\\begin{itemize}\n\\item Altura del punto de suspensión: 45 m.\n\\item Spreader: 15 000 kg; contenedor: 2,59 m de altura y 2,44 m de ancho.\n\\item Objetivo productivo: 30 contenedores/h, incluyendo retorno vacío.\n\\end{itemize}\n",
+    "note": "Distinguir los límites de la guía de los límites internos de cada revisión del generador. El requisito de productividad se evaluará con un ciclo cerrado definido al final.",
+    "weight": 1,
+    "section": "Apertura",
+    "backup": false,
+    "owner": null,
+    "label": "slide4"
+  },
+  {
+    "title": "Arquitectura jerárquica",
+    "body": "\\begin{center}\\begin{tikzpicture}[node distance=9mm, every node/.style={font=\\small}, box/.style={draw=accent,rounded corners=1pt,minimum height=9mm,text width=10cm,align=center},arr/.style={-{Stealth},thick,accent}]\n\\node[box] (sup) {Supervisor · 20 ms\\\\Modos, secuencias, perfil y referencias coordinadas};\n\\node[box,below=of sup] (reg) {Control regulatorio / MC · 1 ms\\\\Carro, izaje, anti-sway y compensaciones};\n\\node[box,below=of reg] (plant) {Accionamientos y planta no lineal\\\\Torque, frenos, cables y carga suspendida};\n\\draw[arr] (sup)--node[right]{referencias}(reg);\n\\draw[arr] (reg)--node[right]{torques}(plant);\n\\draw[arr] (plant.west)--++(-7mm,0)|-(reg.west);\\node[font=\\small,anchor=east] at ([xshift=-8mm,yshift=-4mm]reg.west) {mediciones};\n\\end{tikzpicture}\\end{center}\n\\textbf{Seguridad independiente · 20 ms:} autoriza movimiento y apertura de frenos.\n",
+    "note": "Explicar la separación de responsabilidades y las tasas de ejecución. Las protecciones intervienen sobre los permisos finales, no mediante las ganancias de la regulación.",
+    "weight": 1.2,
+    "section": "Apertura",
+    "backup": false,
+    "owner": null,
+    "label": "slide5"
+  },
+  {
+    "title": "Modelo físico y accionamientos",
+    "body": "\\setbeamertemplate{frametitle}{}\n\\vfill\n{\\fontsize{25}{29}\\selectfont\\bfseries Modelo físico y accionamientos\\par}\n\\vspace{4mm}\\textcolor{accent}{\\rule{.75\\linewidth}{1pt}}\\par\\vspace{3mm}\n{\\large Fenómenos físicos, transmisión, sensores y torque disponible.\\par}\\vfill\n",
+    "note": "Ubicar este bloque en el recorrido y anunciar su objetivo.",
+    "weight": 1,
+    "section": "Modelo físico y entorno",
+    "backup": false,
+    "owner": null,
+    "label": "seccion1"
+  },
+  {
+    "title": "Hipótesis y fenómenos del modelo",
+    "body": "\\small\n\\begin{itemize}\\setlength{\\itemsep}{4pt}\n\\item \\textbf{Hipótesis físicas:} vigas y pórtico rígidos, sin deformación ni vibración; carro horizontal y carga puntual en un plano vertical. Sin viento ni giro del contenedor.\n\\item \\textbf{Transmisión:} reductores ideales y mecanismos equivalentes; aparejo de izaje 2:1. Cable de carro siempre tenso; cable de izaje sin masa y sólo a tracción.\n\\item \\textbf{Fenómenos conservados:} balanceo no lineal, elasticidad y amortiguamiento de cables, contacto, cambios de masa por toma/entrega, dinámica y límites de torque, frenos.\n\\item \\textbf{Aproximaciones de diseño:} transmisión rígida para reducir el carro; ángulo pequeño y longitud casi constante para asignar el anti-sway.\n\\end{itemize}\n",
+    "note": "Hipótesis de la guía, secciones 3.2 y 3.3. La estructura rígida no implica cables rígidos. La masa permanece constante entre eventos. Distinguir la planta no lineal de las aproximaciones utilizadas para el diseño.",
+    "weight": 1,
+    "section": "Modelo físico y entorno",
+    "backup": false,
+    "owner": null,
+    "label": "slide6"
+  },
+  {
+    "title": "Geometría y coordenadas del modelo",
+    "body": "\\begin{center}\\includegraphics[width=.98\\linewidth,height=5.55cm,keepaspectratio]{imagenes/r_003.png}\\end{center}\\vspace{-1mm}\\figcaption{Carro: $x_t$. Centro de la base del spreader: $(x_l,y_l)$. $x$ hacia el barco; $y$ hacia arriba.}\n",
+    "note": "Señalar cada coordenada y distinguir la longitud geométrica de la longitud impuesta por el tambor. La base del contenedor queda una altura Hc por debajo del spreader.",
+    "weight": 1,
+    "section": "Modelo físico y entorno",
+    "backup": false,
+    "owner": null,
+    "label": "slide7"
+  },
+  {
+    "title": "Carga suspendida y cable de izaje",
+    "body": "\\vspace*{-3mm}\n\\small\\setlength{\\abovedisplayskip}{4pt}\\setlength{\\belowdisplayskip}{1pt}\n\\textbf{Geometría y balances de la carga}\n\\[\nl=\\sqrt{(x_l-x_t)^2+(45-y_l)^2},\\qquad\n\\theta_l=\\operatorname{atan2}(x_l-x_t,45-y_l)\n\\]\n\\[\n\\begin{aligned}\nm_l\\ddot x_l&=-2F_{hw}\\sin\\theta_l+F_{cx},&\nm_l\\ddot y_l&=2F_{hw}\\cos\\theta_l+F_{cy}-m_lg\n\\end{aligned}\n\\]\n\\textbf{Cable de izaje y aparejo}\n\\[\nF_{hw}=\\begin{cases}\n2K_{hw}(l_h)(l-l_h)+2b_{hw}(l_h)(\\dot l-\\dot l_h),&\\text{cable tenso},\\\\\n0,&\\text{cable flojo}\n\\end{cases}\n\\]\n\\[\nK_{hw}=\\frac{236\\times10^6}{2l_h+110},\\quad b_{hw}=150(2l_h+110),\\quad\ny_h=45-l_h,\\quad 2\\dot y_h=r_{hd}\\omega_{hd}\n\\]\n\\figcaption{$m_l=M_s$ en vacío; $m_l=M_s+M_c$ con contenedor. El cable sólo transmite tracción.}\n",
+    "note": "Se reúnen la geometría, los balances y la tensión del cable. El factor dos corresponde al aparejo equivalente. La conmutación de cable flojo mantiene la ley física de tracción; no usar una rama compresiva.",
+    "weight": 1.4,
+    "section": "Modelo físico y entorno",
+    "backup": false,
+    "owner": null,
+    "label": "slide8"
+  },
+  {
+    "title": "Contacto y transmisión del carro",
+    "body": "\\small\\setlength{\\abovedisplayskip}{5pt}\\setlength{\\belowdisplayskip}{5pt}\n\\textbf{Contacto con el perfil y cambios de carga}\n\\[\n\\delta=y_{obs}-(y_l-h_c),\\qquad\n\\begin{cases}\nF_{cy}=K_{cy}\\delta-b_{cy}\\dot y_l,\\quad F_{cx}=-b_{cx}\\dot x_l,&\\delta\\geq0,\\\\\nF_{cx}=F_{cy}=0,&\\delta<0\n\\end{cases}\n\\]\n\\figcaption{Toma: $m_l=M_s+M_c$ y perfil de origen $-H_c$. Entrega: $m_l=M_s$ y perfil de destino $+H_c$, con $H_c=2,59$ m.}\n\\vspace{3mm}\\textbf{Transmisión flexible y balance del carro}\n\\[\nF_{tw}=K_{tw}(x_{td}-x_t)+b_{tw}(\\dot x_{td}-\\dot x_t)\n\\]\n\\[\nM_t\\ddot x_t+b_t\\dot x_t=F_{tw}+2F_{hw}\\sin\\theta_l\n\\]\n\\figcaption{$M_t=30\\,000$ kg; $K_{tw}=480$ kN/m; $b_{tw}=3$ kN s/m. El desplazamiento del tambor $x_{td}$ puede diferir del carro físico $x_t$.}\n",
+    "note": "El contacto y los twistlocks determinan los eventos de toma y entrega. El cable flexible explica la diferencia entre la medición del accionamiento y la posición real del carro.",
+    "weight": 1.2,
+    "section": "Modelo físico y entorno",
+    "backup": false,
+    "owner": null,
+    "label": "slide10"
+  },
+  {
+    "title": "Accionamientos: límite y dinámica de torque",
+    "body": "\\relax\\setlength{\\parskip}{0pt}\\small\n\\begin{center}\\includegraphics[width=\\linewidth,height=3.1cm,keepaspectratio]{imagenes/modulador_torque_izaje_20261012.png}\\end{center}\n\\[\nT_{m,\\mathrm{lim}}^*=\\operatorname{sat}_{T_{\\max}(\\omega_m)}(T_m^*),\\qquad\n\\tau_m\\dot T_m+T_m=T_{m,\\mathrm{lim}}^*,\\quad \\tau_m=1\\ \\mathrm{ms}\n\\]\n\\figcaption{Consigna solicitada $T_m^*$ $\\to$ límite según velocidad $\\to$ torque aplicado $T_m$. La capacidad disminuye por encima de la velocidad nominal.}\n",
+    "note": "Captura del modulador real de Simulink. La saturación dinámica precede al primer orden. Los permisos y los frenos actúan por separado.",
+    "weight": 1,
+    "section": "Modelo físico y entorno",
+    "backup": false,
+    "owner": null,
+    "label": "slide12"
+  },
+  {
+    "title": "Accionamientos y frenos: balances y parámetros",
+    "body": "\\small\\setlength{\\parskip}{0pt}\\setlength{\\abovedisplayskip}{4pt}\\setlength{\\belowdisplayskip}{4pt}\n\\[\n\\begin{aligned}\nJ_t\\dot\\omega_{td}+b_d\\omega_{td}&=i_t(T_{tm}+T_{tb})-r_{td}F_{tw},\\\\\nJ_h\\dot\\omega_{hd}+b_h\\omega_{hd}&=i_h(T_{hm}+T_{hb})+T_{hEb}-r_{hd}F_{hw}\n\\end{aligned}\n\\]\n\\begin{center}\\renewcommand{\\arraystretch}{1.05}\n\\begin{tabular}{lrr}\\toprule\nParámetro & Carro & Izaje\\\\\\midrule\nRadio de tambor [m] & 0,50 & 0,75\\\\\nReducción $i$ & 30 & 22\\\\\nTorque nominal motor [kN m] & 4 & 20\\\\\nFreno de operación [kN m] & 5 & 50\\\\\nFreno de emergencia, eje lento [kN m] & --- & 1100\\\\\\bottomrule\n\\end{tabular}\\end{center}\n\\figcaption{El freno aplicado se opone a la rotación, con torque limitado; abierto, su torque es cero. El freno de operación actúa en el motor y el de emergencia en el eje lento.}\n",
+    "note": "Las inercias y pérdidas se reflejan al eje del tambor. El torque del freno de operación se multiplica por la reducción; el de emergencia de izaje actúa directamente. La regulación nominal se deduce con frenos abiertos. La secuencia de apertura y cierre se desarrolla en el supervisor.",
+    "weight": 1,
+    "section": "Modelo físico y entorno",
+    "backup": false,
+    "owner": null,
+    "label": "accionamientosparametros"
+  },
+  {
+    "title": "Planta Simulink: accionamiento y cable del carro",
+    "body": "\\relax\n\\figurefooter{El torque mueve el tambor. El cable elástico transmite fuerza al carro físico.}\n\\vspace{-2mm}\\makebox[\\linewidth][c]{\\includegraphics[width=15.0cm,height=6.05cm,keepaspectratio,trim=18.00bp 4.20bp 9.60bp 9.60bp,clip]{imagenes/P_carro1.png}}\\par\n",
+    "note": "Recorrer torque motor, inercia del accionamiento, desplazamiento equivalente del tambor, deformación del cable y balance del carro. Las posiciones del encoder y del carro físico no son intercambiables.",
+    "weight": 1,
+    "section": "Modelo físico y entorno",
+    "backup": false,
+    "owner": null,
+    "label": "plantacarro"
+  },
+  {
+    "title": "Encoders y señales: implementación en Simulink",
+    "body": "\\relax\n\\figurefooter{Encoders, ángulo y velocidad angular, tensión filtrada con $G_F(s)=1/(0{,}1s+1)$ y protecciones. Sin ruido ni cuantización añadidos.}\n\\vspace{-2mm}\\makebox[\\linewidth][c]{\\includegraphics[width=15.0cm,height=6.05cm,keepaspectratio,trim=8.40bp 1.80bp 4.20bp 3.60bp,clip]{imagenes/Sens_1.png}}\\par\n",
+    "note": "Captura original del informe v3, subsistema SENSORES. Los encoders entregan ángulo del motor. Los estimadores convierten esa lectura en velocidad, manteniendo el radio, la transmisión y el factor 2 del izaje.",
+    "weight": 1,
+    "section": "Modelo físico y entorno",
+    "backup": false,
+    "owner": null,
+    "label": "slide13"
+  },
+  {
+    "title": "Perfil relevado y reconocimiento de carga",
+    "body": "\\begin{columns}[T,onlytextwidth]\n\\column{0.49\\textwidth}\\textbf{Toma confirmada}\\[\nM_s\\longrightarrow M_s+M_c\n\\]\nPerfil de origen: $-H_c$.\\par\\vspace{6mm}\\textbf{Entrega confirmada}\\[\nM_s+M_c\\longrightarrow M_s\n\\]\nPerfil de destino: $+H_c$.\n\\column{0.47\\textwidth}\\begin{itemize}\n\\item El LIDAR mide con un desplazamiento de 3 m respecto del carro.\n\\item El perfil disponible se construye durante el barrido.\n\\item PICK / PLACE reconoce toma, apoyo y liberación.\n\\item El supervisor trabaja con el perfil actualizado.\n\\end{itemize}\n\\end{columns}\n",
+    "note": "Explicar que la escena física y el perfil relevado no son lo mismo. Las pruebas completas incluyen barrido real; el ensayo de productividad comienza con perfil conocido.",
+    "weight": 1,
+    "section": "Modelo físico y entorno",
+    "backup": false,
+    "owner": null,
+    "label": "slide14"
+  },
+  {
+    "title": "PICK/PLACE: estados de reconocimiento en Simulink",
+    "body": "\\relax\n\\vspace{-2mm}\\makebox[\\linewidth][c]{\\includegraphics[width=15.0cm,height=5.0cm,keepaspectratio,trim=8.40bp 0.00bp 1.20bp 0.00bp,clip]{imagenes/PickPlace_chart.png}}\\par\\vspace{1mm}{\\fontsize{8}{9.4}\\selectfont \\texttt{PRE\\_PICK} memoriza el slot de origen. Cierre, tensión, pérdida de contacto y ascenso confirman la toma. \\texttt{PRE\\_PLACE} memoriza el apoyo. Apertura de twistlocks con contacto confirma la entrega.}\n",
+    "note": "VACIO1 y CARGADO1 representan la asociación de la carga. Las condiciones de contacto y tensión usan histéresis. Un contacto momentáneo no confirma por sí solo la transferencia. El evento lleva el slot memorizado y se emite una vez.",
+    "weight": 1,
+    "section": "Modelo físico y entorno",
+    "backup": false,
+    "owner": null,
+    "label": "pickchart"
+  },
+  {
+    "title": "PICK/PLACE: evento y actualización del perfil",
+    "body": "\\relax\n\\vspace{-2mm}\\makebox[\\linewidth][c]{\\includegraphics[width=15.0cm,height=4.05cm,keepaspectratio,trim=0.00bp 3.00bp 16.80bp 9.00bp,clip]{imagenes/PickPlace_actObs.png}}\\par\n{\\fontsize{9}{10.5}\\selectfont\n\\[\nn_k^+=\\begin{cases}\\max(n_k-1,0),&\\text{toma},\\\\n_k+1,&\\text{entrega},\\end{cases}\\quad\nY_c(k)=Z_{base}(k)+n_k^+H_c\n\\]\n}\n\\figcaption{El pulso habilita la actualización de un slot válido y no bloqueado. Las memorias separan reconocimiento, actualización y consulta espacial del contacto.}\n",
+    "note": "El evento tiene tipo_evento y slot_evento. El perfil físico actualizado vuelve al modelo de contacto y al LIDAR simulado. Distinguirlo del perfil relevado almacenado por el supervisor.",
+    "weight": 1,
+    "section": "Modelo físico y entorno",
+    "backup": false,
+    "owner": null,
+    "label": "pickperfil"
+  },
+  {
+    "title": "Diseño del control regulatorio",
+    "body": "\\setbeamertemplate{frametitle}{}\n\\vfill\n{\\fontsize{25}{29}\\selectfont\\bfseries Diseño del control regulatorio\\par}\n\\vspace{4mm}\\textcolor{accent}{\\rule{.75\\linewidth}{1pt}}\\par\\vspace{3mm}\n{\\large Modelos reducidos, cascadas y amortiguamiento del balanceo.\\par}\\vfill\n",
+    "note": "Ubicar este bloque en el recorrido y anunciar su objetivo.",
+    "weight": 1,
+    "section": "Diseño del control regulatorio",
+    "backup": false,
+    "owner": null,
+    "label": "seccion2"
+  },
+  {
+    "title": "Regulación de carro e izaje",
+    "body": "\\relax\n\\figurefooter{Referencias de posición, velocidad y aceleración; corrección anti-sway y compensación de fuerzas.}\n\\vspace{-2mm}\\makebox[\\linewidth][c]{\\includegraphics[width=15.0cm,height=6.05cm,keepaspectratio,trim=7.00bp 2.00bp 7.00bp 7.00bp,clip]{imagenes/r_015.png}}\\par\n",
+    "note": "Recorrer el diagrama una sola vez. El supervisor genera consignas y el regulador convierte referencias y mediciones en torque.",
+    "weight": 1.1,
+    "section": "Diseño del control regulatorio",
+    "backup": false,
+    "owner": null,
+    "label": "slide15"
+  },
+  {
+    "title": "Carro: modelo reducido y compensación de torque",
+    "body": "\\vspace*{-3mm}\n\\small\\setlength{\\abovedisplayskip}{4pt}\\setlength{\\belowdisplayskip}{4pt}\n\\[\n\\begin{aligned}\nM_t\\ddot x_t+b_t\\dot x_t&=F_{tw}+2F_{hw}\\sin\\theta_l,\\\\\n\\frac{J_t}{r_{td}^2}\\ddot x_{td}+\\frac{b_d}{r_{td}^2}\\dot x_{td}\n&=\\frac{i_t}{r_{td}}(T_{tm}+T_{tb})-F_{tw}\n\\end{aligned}\n\\]\nCon $x_t\\simeq x_{td}$:\n\\[\nM_{EQt}\\ddot x_t+b_{EQt}\\dot x_t=\\frac{i_t}{r_{td}}(T_{tm}+T_{tb})+2F_{hw}\\sin\\theta_l\n\\]\nCon freno abierto, $T_{tb}=0$:\n\\[\nT_{tm}^*=\\frac{r_{td}M_{EQt}}{i_t}\n\\left(a_{cmd}+\\frac{b_{EQt}}{M_{EQt}}\\hat v_t\n-\\frac{2F_{hw}}{M_{EQt}}\\sin\\theta_l\\right)\n\\]\n\\[\n\\boxed{\\ddot x_t\\simeq a_{cmd},\\qquad \\frac{V(s)}{A_{cmd}(s)}\\simeq\\frac1s}\n\\]\n\\figcaption{Equivalencia nominal con transmisión rígida, estimación de velocidad y torque disponible.}\n",
+    "note": "Los parámetros equivalentes agrupan la masa y las pérdidas del carro con las inercias y rozamientos reflejados del accionamiento. Su desarrollo permanece en el informe. La compensación de la reacción horizontal permanece activa aunque se deshabilite la corrección anti-sway.",
+    "weight": 1,
+    "section": "Diseño del control regulatorio",
+    "backup": false,
+    "owner": null,
+    "label": "slide16"
+  },
+  {
+    "title": "Carro: cascada y ecuaciones de los lazos",
+    "body": "\\relax\\setlength{\\parskip}{0pt}\n\\vspace{-2mm}{\\centering\\includegraphics[width=15cm,height=3.55cm,keepaspectratio]{imagenes/CR_carro_cascada_sin_antiwindup.png}\\par}\n\\vspace{-1mm}\n\\begin{columns}[T,onlytextwidth]\n\\column{.48\\textwidth}\\fontsize{9.5}{11}\\selectfont\n\\setlength{\\abovedisplayskip}{2pt}\\setlength{\\belowdisplayskip}{2pt}\n\\[e_x=x_{ref}-\\hat x_t\\]\n\\[v_c=v_{ref}+K_xe_x+v_{sw}\\]\n\\[e_v=v_c-\\hat v_t,\\qquad\\dot I_v=e_v\\]\n\\column{.48\\textwidth}\\fontsize{9.5}{11}\\selectfont\n\\setlength{\\abovedisplayskip}{2pt}\\setlength{\\belowdisplayskip}{2pt}\n\\[a_u=a_{ref}+K_{pv}e_v+K_{iv}I_v\\]\n\\[a_c=\\operatorname{sat}_{a_{max}}(a_u)\\]\n\\figcaption{Posición $\\to$ velocidad $\\to$ aceleración $\\to$ torque.}\n\\end{columns}\n{\\small\\setlength{\\abovedisplayskip}{2pt}\\setlength{\\belowdisplayskip}{2pt}\n\\[\\boxed{T_{tm}^*=\\frac{r_{td}}{i_t}\\left(M_{EQt}a_c+b_{EQt}\\hat v_t-2F_w\\sin\\theta_l\\right)}\\]}\n\\figurefooter{Captura del controlador sin anti-windup. Compensación mecánica hasta torque.}\n",
+    "note": "Captura final aportada por el usuario: cascada base sin anti-windup. La suma de referencia de velocidad, corrección de posición y anti-sway forma vc sin saturación de velocidad en esta versión. El PI produce aceleración, se suma a_ff y se limita la aceleración total antes de Computed Torque. El rótulo Limite aceleracion FF limita la suma completa, no sólo el término anticipativo. La formulación se ajustó a esta captura; el MC final y sus límites permanecen como se desarrollan posteriormente. v_base reúne las referencias comunes; swTransfer continúa pendiente. No se modificó el SLX ni el código.",
+    "weight": 1,
+    "section": "Diseño del control regulatorio",
+    "backup": false,
+    "owner": null,
+    "label": "slide17"
+  },
+  {
+    "title": "Carro: transferencia y polos de la cascada",
+    "body": "\\fontsize{10}{11.5}\\selectfont\n\\setlength{\\abovedisplayskip}{3pt}\\setlength{\\belowdisplayskip}{3pt}\nPara estudiar el lazo interior: $a_{ref}=0$, $v_{sw}=0$ y condiciones iniciales nulas; sin límites activos.\n\\[\nsV=A_{cmd},\\qquad A_{cmd}=\\left(K_{pv}+\\frac{K_{iv}}s\\right)(V_c-V)\n\\]\n\\[\n(s^2+K_{pv}s+K_{iv})V=(K_{pv}s+K_{iv})V_c,\\qquad\n\\boxed{G_v(s)=\\frac{V}{V_c}=\\frac{K_{pv}s+K_{iv}}{s^2+K_{pv}s+K_{iv}}}\n\\]\n\\[\nP_v(s)=(s-p_f)(s-p_i),\\quad K_{pv}=-(p_f+p_i),\\quad K_{iv}=p_fp_i\n\\]\n\\[\nK_{pv}=2,4\\ \\mathrm{s^{-1}},\\quad K_{iv}=0,2\\ \\mathrm{s^{-2}}\n\\quad\\Rightarrow\\quad p_f=-2,314,\\quad p_i=-0,0864\\ \\mathrm{s^{-1}}\n\\]\n\\[\n\\text{Cero de }G_v:\\quad -K_{iv}/K_{pv}=-0,0833\\ \\mathrm{s^{-1}}\n\\]\n\\[\n1+\\frac{K_xG_v(s)}s=0\\quad\\Rightarrow\\quad\nP_{xv}(s)=s^3+K_{pv}s^2+(K_{iv}+K_xK_{pv})s+K_xK_{iv}\n\\]\n",
+    "note": "La planta nominal compensada es un integrador. La cascada de posición tiene un polinomio cúbico. Los polos no corresponden a la planta flexible completa.",
+    "weight": 1,
+    "section": "Diseño del control regulatorio",
+    "backup": false,
+    "owner": null,
+    "label": "gv"
+  },
+  {
+    "title": "Carro: polos y cero de los modelos nominales",
+    "body": "\\relax\n\\begin{center}\\includegraphics[width=\\linewidth,height=4.6cm,keepaspectratio]{imagenes/polos_carro_nominales_20261012.pdf}\\end{center}\n\\vspace{-3mm}\\small\n\\[K_x=0{,}05\\ \\mathrm{s^{-1}},\\quad K_{pv}=2{,}4\\ \\mathrm{s^{-1}},\\quad K_{iv}=0{,}2\\ \\mathrm{s^{-2}}\\]\n\\figcaption{Cruces: polos. Círculo: cero $z=-K_{iv}/K_{pv}=-0{,}0833\\ \\mathrm{s^{-1}}$. Modelos reducidos sin saturación; el péndulo y la flexibilidad no están incluidos.}\n",
+    "note": "Los puntos se recalcularon a partir de los polinomios del PI y de la cascada completa con las ganancias base. El detalle ampliado evita confundir el polo lento con el cero próximo. La cascada tiene tres polos; no se obtiene agregando exactamente -Kx a los polos interiores. La figura no representa la sintonía productiva final ni polos identificados de la planta flexible.",
+    "weight": 1,
+    "section": "Diseño del control regulatorio",
+    "backup": false,
+    "owner": null,
+    "label": "poloscascada"
+  },
+  {
+    "title": "Carro: sintonías y alcance de la asignación",
+    "body": "\\begin{center}\\small\n\\begin{tabular}{lrrr}\\toprule\nConfiguración & $K_x$ [s$^{-1}$] & $K_{pv}$ [s$^{-1}$] & $K_{iv}$ [s$^{-2}$]\\\\\\midrule\nEnsayos aislados & 0,05 & 2,40 & 0,20\\\\\nCiclo integrado inicial & 0,20 & 2,40 & 0,20\\\\\nCiclo productivo ajustado & 0,25 & 3,20 & 0,267\\\\\\bottomrule\n\\end{tabular}\\end{center}\n\\begin{itemize}\n\\item La asignación nominal orienta el diseño. Cada configuración requiere comprobar seguimiento y balanceo con la planta completa.\n\\item Los cambios de ganancias del ajuste productivo pertenecen a otro ensayo.\n\\item Manual y automático comparten regulación dentro de la misma configuración.\n\\end{itemize}\n",
+    "note": "Valores documentados en el informe v3 y en la presentación original. No atribuir las métricas de una corrida a otra sintonía.",
+    "weight": 1,
+    "section": "Diseño del control regulatorio",
+    "backup": false,
+    "owner": null,
+    "label": "gananciasversiones"
+  },
+  {
+    "title": "Carro y péndulo: modelo y referencia angular",
+    "body": "\\relax\\setlength{\\parskip}{0pt}\n\\begin{columns}[T,onlytextwidth]\n\\column{.39\\textwidth}\\includegraphics[width=\\linewidth,height=3.6cm,keepaspectratio]{imagenes/r_018.png}\\par\n\\figcaption{$\\theta_l>0$: carga hacia $+x$. La aceleración positiva inclina el equilibrio hacia $-x$.}\n\\column{.58\\textwidth}\\small\n\\setlength{\\abovedisplayskip}{4pt}\\setlength{\\belowdisplayskip}{4pt}\\setlength{\\abovedisplayshortskip}{0pt}\\setlength{\\belowdisplayshortskip}{4pt}\n\\textbf{Modelo aproximado del péndulo}\n\\[\\boxed{\\ddot\\theta_l+\\omega_p^2\\theta_l=-\\frac{\\ddot x_t}{l}},\\qquad\\omega_p=\\sqrt{\\frac gl}\\]\n\\textbf{Equilibrio bajo aceleración}\n\\[\\theta_{ref}\\simeq-\\frac{a_{ref}}g\\]\n\\figcaption{Implementación: $\\theta_{ref}=\\operatorname{atan2}(-a_{ref},g)$.}\n\\[\\boxed{e_\\theta=\\theta_l-\\theta_{ref}}\\]\n\\end{columns}\n\\vspace{1mm}\\small La aceleración excita el péndulo. Se busca reducir el balanceo alrededor del equilibrio angular.\n\\par\\vspace{1mm}\\figcaption{Diseño: ángulo pequeño y longitud aproximadamente constante. Deducción no lineal en respaldo.}\n",
+    "note": "Partir de la ecuación aproximada con longitud constante y explicar su entrada: la aceleración horizontal del apoyo. Para aceleración constante, el equilibrio satisface (g/l) theta_ref=-a_ref/l, de donde theta_ref=-a_ref/g. La implementación utiliza atan2 para representar la inclinación de equilibrio; se linealiza sólo para la deducción. El error angular es la desviación respecto de ese equilibrio, que es cero cuando la referencia de aceleración es cero. La ecuación completa con 2 dot l dot theta y geometría no lineal queda en las diapositivas de respaldo. Distinguir longitud geométrica l y longitud inferida lh.",
+    "weight": 1,
+    "section": "Diseño del control regulatorio",
+    "backup": false,
+    "owner": null,
+    "label": "slide19"
+  },
+  {
+    "title": "Anti-sway: cómo aparece el amortiguamiento",
+    "body": "\\relax\\setlength{\\parskip}{0pt}\n\\small\\setlength{\\abovedisplayskip}{2pt}\\setlength{\\belowdisplayskip}{2pt}\n\\textbf{1. Corrección de velocidad proporcional al error angular}\n\\[\\boxed{v_{sw}=k_{sw}e_\\theta}\\]\n\\textbf{2. Efecto sobre la aceleración del carro}\n\\[\\dot x_t\\simeq v_{ref}+k_{sw}e_\\theta\n\\quad\\Longrightarrow\\quad\n\\ddot x_t\\simeq a_{ref}+k_{sw}\\dot e_\\theta\\]\n\\textbf{3. Sustitución en el péndulo, con $\\theta_l=e_\\theta+\\theta_{ref}$}\n\\[\\boxed{\\ddot e_\\theta+\n\\underbrace{\\textcolor{accent}{\\frac{k_{sw}}{l}\\dot e_\\theta}}_{\\text{amortiguamiento introducido}}\n+\\omega_p^2e_\\theta\\simeq0}\\]\n\\par\\vspace{2mm}\\textcolor{accent}{La corrección de velocidad introduce amortiguamiento a través de la aceleración del carro.}\n\\par\\vspace{2mm}\\figcaption{Diseño nominal: ganancia y longitud constantes, referencia angular casi constante y buen seguimiento de velocidad.}\n",
+    "note": "Seguir la cadena e_theta -> v_sw -> aceleración del carro -> amortiguamiento. Derivar la velocidad con ksw constante genera ksw dot e_theta. Al sustituir en la ecuación del péndulo: theta_ddot+(ksw/l) e_theta_dot+(g/l) theta=-a_ref/l. Reemplazar theta=e_theta+theta_ref produce en el lado derecho -theta_ref_ddot-(g/l)theta_ref-a_ref/l. La elección theta_ref aproximadamente -a_ref/g cancela los dos términos de equilibrio; queda -theta_ref_ddot. La ecuación homogénea presentada supone que esa excitación es despreciable. Para aislar este mecanismo se omiten la corrección de posición y las saturaciones y se aproxima el seguimiento de velocidad. La realimentación angular crea el término amortiguador a través de la dinámica cinemática del carro; no se impone como una propiedad física original del cable.",
+    "weight": 1,
+    "section": "Diseño del control regulatorio",
+    "backup": false,
+    "owner": null,
+    "label": "antiswaydiseno"
+  },
+  {
+    "title": "Anti-sway: ganancia y adaptación con la longitud",
+    "body": "\\relax\\setlength{\\parskip}{0pt}\n\\small\\setlength{\\abovedisplayskip}{4pt}\\setlength{\\belowdisplayskip}{4pt}\n\\textbf{Respuesta nominal buscada}\n\\[\\ddot e_\\theta+2\\zeta_{sw}\\omega_p\\dot e_\\theta+\\omega_p^2e_\\theta=0\\]\n\\begin{columns}[T,onlytextwidth]\n\\column{.61\\textwidth}\\small\n\\textbf{Comparación del término amortiguador}\n\\[\\frac{k_{sw}}l=2\\zeta_{sw}\\omega_p\n\\quad\\Longrightarrow\\quad k_{sw}=2\\zeta_{sw}\\sqrt{gl}\\]\n\\textbf{Ganancia actualizada desde el encoder}\n\\[\\boxed{k_{sw}(l_h)=2\\zeta_{sw}\\sqrt{g\\,l_h}}\\]\n\\column{.35\\textwidth}\\fontsize{9.2}{11}\\selectfont\n\\begin{tabular}{rrr}\\toprule\n$l_h$ [m] & $\\omega_p$ [rad/s] & $k_{sw}$\\\\\\midrule\n10 & 0,990 & 19,81\\\\\n20 & 0,700 & 28,01\\\\\n40 & 0,495 & 39,62\\\\\\bottomrule\n\\end{tabular}\\par\\vspace{2mm}\n\\figcaption{$\\zeta_{sw}=1$; $k_{sw}$ en m/s por rad. $l_h\\simeq l$ para el diseño.}\n\\end{columns}\n\\vspace{1mm}\\small $\\zeta_{sw}$ fija el amortiguamiento nominal. El encoder actualiza la ganancia: \\textbf{gain scheduling}.\n\\par\\vspace{1mm}\\figcaption{Para $\\zeta_{sw}=1$: amortiguamiento crítico nominal. Frecuencia y tiempo de respuesta varían con la longitud.}\n",
+    "note": "Comparar ksw/l, obtenido al cerrar el anti-sway, con el coeficiente deseado 2 zeta_sw omega_p. La elección de ganancia es consecuencia de esa comparación. Para zeta=1 el polinomio nominal es (s+omega_p)^2: amortiguamiento crítico del error angular, no del sistema físico completo. Se utiliza lh obtenido del encoder como aproximación de la longitud geométrica. La tabla usa g=9,80665 m/s2. La adaptación se interpreta congelando localmente la longitud; si cambia rápidamente aparecen los términos asociados a dot l y dot ksw y no se garantiza una razón de amortiguamiento exacta. Los factores de ajuste, habilitación gradual y límites se presentan posteriormente en integración. No se modifica el código de control.",
+    "weight": 1,
+    "section": "Diseño del control regulatorio",
+    "backup": false,
+    "owner": null,
+    "label": "antiswayscheduling"
+  },
+  {
+    "title": "Izaje: del balance de torque al modelo en longitud",
+    "body": "\\vspace*{-3mm}\n\\small\\setlength{\\parskip}{0pt}\n\\setlength{\\abovedisplayskip}{3pt}\\setlength{\\belowdisplayskip}{3pt}\n\\[\nJ_h=J_{hd+hEb}+i_h^2J_{hm+hb},\\qquad b_h=b_{hd}+i_h^2b_{hm}\n\\]\n\\[\nJ_h\\dot\\omega_{hd}+b_h\\omega_{hd}\n=i_h(T_{hm}+T_{hb})+T_{hEb}-r_{hd}F_{hw}\n\\]\n\\[\n\\omega_{hd}=-\\frac{2\\dot l_h}{r_{hd}},\\qquad\nM_{EQh}=\\frac{2J_h}{r_{hd}^2},\\qquad b_{EQh}=\\frac{2b_h}{r_{hd}^2}\n\\]\n\\[\nM_{EQh}\\ddot l_h+b_{EQh}\\dot l_h\n=-\\frac{i_h}{r_{hd}}(T_{hm}+T_{hb})-\\frac{T_{hEb}}{r_{hd}}+F_{hw}\n\\]\nCon frenos abiertos y compensación de tensión medida:\n\\[\nT_{hm}^*=T'_{hm}+\\frac{r_{hd}}{i_h}F_{hw}\n\\quad\\Longrightarrow\\quad\n\\boxed{M_{EQh}\\ddot l_h+b_{EQh}\\dot l_h=-\\frac{i_h}{r_{hd}}T'_{hm}}\n\\]\n\\figcaption{Torque positivo: reduce $l_h$ y eleva la carga. El factor 2 proviene del aparejo. Se controla la longitud cinemática; la planta conserva la elasticidad del cable.}\n",
+    "note": "Se reflejan las inercias y pérdidas al tambor, incluyendo los frenos de ambos ejes. De y_h=45-l_h y 2 dot y_h=r_hd omega_hd surge el signo negativo. Sustituir omega en el balance y dividir por menos r_hd produce el modelo en longitud. MEQh representa inercia rotacional en esta coordenada, no simplemente la masa suspendida. Con frenos abiertos, la tensión medida se compensa en el torque; la regulación actúa sobre la longitud cinemática del tambor.",
+    "weight": 1,
+    "section": "Diseño del control regulatorio",
+    "backup": false,
+    "owner": null,
+    "label": "slide21"
+  },
+  {
+    "title": "Izaje: lazo Simulink y ecuaciones implementadas",
+    "body": "\\relax\\setlength{\\parskip}{0pt}\n\\vspace{-2mm}\\makebox[\\linewidth][c]{\\includegraphics[width=15.0cm,height=4.45cm,keepaspectratio,trim=0.00bp 0.00bp 0.98bp 0.00bp,clip]{imagenes/izaje_lazo_R2.png}}\\par\\vspace{-2mm}{\\small\\setlength{\\abovedisplayskip}{2pt}\\setlength{\\belowdisplayskip}{2pt}\n\\[\ne_h=\\dot l_h^*-\\widehat{\\dot l_h},\\quad z_1=\\int e_h\\,dt,\\quad z_2=\\int z_1\\,dt\n\\]\n\\[\nT_{hm}^*=K_{hd}e_h+K_{hp}z_1+K_{hi}z_2\n-\\frac{r_{hd}}{i_h}(M_{EQh}\\ddot l_h^*+b_{EQh}\\dot l_h^*)+\\frac{r_{hd}}{i_h}F_{hw}\n\\]\n}\\figcaption{La doble integración del error de velocidad equivale al PID de longitud con condiciones iniciales coherentes.}\n",
+    "note": "Captura exportada del modelo R2, contrastada con mc_eje_izaje.m. El MC conserva esta estructura y los signos. No agregar un anti-windup de izaje que no existe en la realización ensayada.",
+    "weight": 1,
+    "section": "Diseño del control regulatorio",
+    "backup": false,
+    "owner": null,
+    "label": "izajelazoreal"
+  },
+  {
+    "title": "Izaje: polinomio cerrado y asignación de ganancias",
+    "body": "\\vspace*{-3mm}\n\\relax\n\\figurefooter{Las ganancias igualan los coeficientes de $P_d(s)$; la anticipación no modifica los polos nominales.}\n\\setlength{\\parskip}{0pt}\n\\small\\setlength{\\abovedisplayskip}{3pt}\\setlength{\\belowdisplayskip}{3pt}\\setlength{\\abovedisplayshortskip}{2pt}\\setlength{\\belowdisplayshortskip}{2pt}\n\\[\n\\alpha_h=\\frac{i_h}{r_{hd}M_{EQh}},\\quad\\beta_h=\\frac{b_{EQh}}{M_{EQh}},\\quad\nG_h(s)=-\\frac{\\alpha_h}{s(s+\\beta_h)},\\quad C_h(s)=K_{hd}s+K_{hp}+\\frac{K_{hi}}s\n\\]\n\\[\n1+G_hC_h=0\\quad\\Rightarrow\\quad\nP_h(s)=s^3+(\\beta_h-\\alpha_hK_{hd})s^2-\\alpha_hK_{hp}s-\\alpha_hK_{hi}\n\\]\n\\[\nP_d(s)=(s+\\omega_{posh})(s^2+2\\zeta_h\\omega_{posh}s+\\omega_{posh}^2),\\quad n_h=1+2\\zeta_h\n\\]\n\\[\n\\begin{aligned}\nK_{hp}&=-c_hn_h\\omega_{posh}^2,&K_{hi}&=-c_h\\omega_{posh}^3,\\\\\nK_{hd}&=\\frac{r_{hd}}{i_h}b_{EQh}-c_hn_h\\omega_{posh},&c_h&=\\frac{r_{hd}M_{EQh}}{i_h}.\n\\end{aligned}\n\\]\n\\vspace{-1mm}\\begin{center}\\begin{tabular}{lr}\\toprule\nDiseño & Resultado\\\\\\midrule\n$n_h=2,7$, $\\omega_{posh}=1,8$ rad/s & $\\zeta_h=0,85$\\\\\nPolos nominales & $-1,8$ y $-1,53\\pm j\\,0,948$\\\\\\bottomrule\n\\end{tabular}\\end{center}\n",
+    "note": "Explicar el signo negativo de la planta: aumentar torque disminuye longitud. La integral agrega el tercer orden. La asignación fija dinámicas del error alrededor de la trayectoria nominal. Presentar el polinomio deseado y el resultado de igualar coeficientes. Mantener las deducciones intermedias para preguntas; los polos pertenecen al modelo reducido.",
+    "weight": 1,
+    "section": "Diseño del control regulatorio",
+    "backup": false,
+    "owner": null,
+    "label": "izajepolinomio"
+  },
+  {
+    "title": "Izaje: diagrama de polos nominales",
+    "body": "\\begin{center}\\includegraphics[width=.98\\linewidth,height=5.05cm,keepaspectratio]{imagenes/polos_izaje_nominal.pdf}\\end{center}\\figcaption{Asignación sobre el modelo reducido: un polo real y un par conjugado estable.}\n",
+    "note": "Usar la gráfica del informe y recordar que la tensión filtrada, los límites del drive y el cable elástico no están incluidos en esta asignación.",
+    "weight": 1,
+    "section": "Diseño del control regulatorio",
+    "backup": false,
+    "owner": null,
+    "label": "izajepolosfig"
+  },
+  {
+    "title": "Observadores continuos de velocidad",
+    "body": "\\small\\setlength{\\parskip}{0pt}\n\\setlength{\\abovedisplayskip}{3pt}\\setlength{\\belowdisplayskip}{3pt}\nLos encoders miden el ángulo del motor. Dos observadores independientes, uno por eje, reconstruyen la velocidad angular del tambor.\n\\par\\vspace{1mm}\\textbf{Modelo cinemático de predicción}\n\\[\nu=\\frac{\\theta_{m,\\mathrm{sens}}}{i},\\qquad \\dot q=\\omega,\\qquad \\dot\\omega=0\n\\]\n\\begin{columns}[T,onlytextwidth]\n\\column{.43\\textwidth}\\small\n\\setlength{\\abovedisplayskip}{2pt}\\setlength{\\belowdisplayskip}{2pt}\\setlength{\\abovedisplayshortskip}{2pt}\\setlength{\\belowdisplayshortskip}{2pt}\n\\textbf{Observador de Luenberger}\n\\[\n\\boxed{\\begin{aligned}\n\\dot{\\hat q}&=\\hat\\omega+l_1(u-\\hat q),\\\\\n\\dot{\\hat\\omega}&=l_2(u-\\hat q)\n\\end{aligned}}\n\\]\n\\par\\vspace{2mm}\\figcaption{El ángulo estimado es un estado interno. Las posiciones de los reguladores se calculan directamente desde los encoders.}\n\\column{.54\\textwidth}\\small\n\\setlength{\\abovedisplayskip}{2pt}\\setlength{\\belowdisplayskip}{2pt}\\setlength{\\abovedisplayshortskip}{2pt}\\setlength{\\belowdisplayshortskip}{2pt}\n\\textbf{Asignación de polos}\n\\[\n\\begin{aligned}\nP_o(s)&=s^2+l_1s+l_2\\\\\n&=s^2+2\\zeta_o\\omega_os+\\omega_o^2\n\\end{aligned}\n\\]\n\\[\n\\zeta_o=1,\\qquad\\omega_o=40\\ \\mathrm{rad/s}\n\\]\n\\[\nl_1=80\\ \\mathrm{s^{-1}},\\quad l_2=1600\\ \\mathrm{s^{-2}}\n\\]\n\\[\n\\boxed{p_{o1}=p_{o2}=-40\\ \\mathrm{s^{-1}}}\n\\]\n\\end{columns}\n",
+    "note": "El modelo cinemático es observable: con estados q y omega, A0=[0 1;0 0] y C=[1 0], su matriz de observabilidad es la identidad. La predicción supone velocidad constante; no se impone esa condición al movimiento real. El error entre ángulo medido y estimado corrige ambos estados. Los parámetros coinciden con los observadores continuos del informe, sección 6.2. La realización discreta a 1 ms se explica en las diapositivas del MC.",
+    "weight": 1,
+    "section": "Diseño del control regulatorio",
+    "backup": false,
+    "owner": null,
+    "label": "estimadoresencoders"
+  },
+  {
+    "title": "Interpretación y conversiones cinemáticas",
+    "body": "\\small\\setlength{\\parskip}{0pt}\n\\setlength{\\abovedisplayskip}{5pt}\\setlength{\\belowdisplayskip}{5pt}\n\\textbf{Derivada filtrada y conversiones cinemáticas} (condiciones iniciales nulas):\n\\[\n\\frac{\\hat\\Omega(s)}{U(s)}=s\\,\\frac{1600}{(s+40)^2},\\qquad\n\\hat v_{td}=r_{td}\\hat\\omega_{td},\\qquad\n\\widehat{\\dot l_h}=-\\frac{r_{hd}}{2}\\hat\\omega_{hd}\n\\]\nA velocidad constante, el error converge a cero. Ante una aceleración angular constante sostenida, una vez extinguido el transitorio:\n\\[\ne_\\omega=\\omega-\\hat\\omega=(0,05\\ \\mathrm{s})\\,a_\\theta\n\\]\n\\figcaption{A bajas frecuencias aproxima la derivada. A altas frecuencias limita la amplificación de las perturbaciones de la medición.}\n",
+    "note": "La transferencia se obtiene al eliminar el estado angular interno con condiciones iniciales nulas. Para una medición ideal, la velocidad estimada respecto de la real sigue 1600/(s+40)^2. El error a aceleración constante es el valor posterior al transitorio, no una igualdad instantánea para cualquier maniobra. Las variables del tambor no deben confundirse con las de la carga o el carro físico cuando interviene la elasticidad.",
+    "weight": 1,
+    "section": "Diseño del control regulatorio",
+    "backup": false,
+    "owner": null,
+    "label": "senalesconversion"
+  },
+  {
+    "title": "Implementación en bloques y validación",
+    "body": "\\setlength{\\parskip}{0pt}\n{\\centering\\includegraphics[width=\\linewidth,height=2.8cm,keepaspectratio]{imagenes/observador_continuo_carro.png}\\par}\n\\figcaption{Ejemplo: observador continuo del accionamiento del carro y conversión directa de posición desde el encoder.}\n\\vspace{2mm}\n\\begin{columns}[T,onlytextwidth]\n\\column{.50\\textwidth}\\fontsize{9.5}{11}\\selectfont\n\\textbf{Verificación con ambos ejes en movimiento}\\par\nSe reprodujeron los registros de los encoders y se compararon las estimaciones con las velocidades de los accionamientos de la planta simulada.\n\\column{.47\\textwidth}\\fontsize{9}{10.5}\\selectfont\n\\renewcommand{\\arraystretch}{1.05}\\setlength{\\tabcolsep}{3pt}\n\\begin{tabular}{@{}lrr@{}}\\toprule\nAccionamiento & Error RMS & Máx. absoluto\\\\\n& [m/s] & [m/s]\\\\\\midrule\nCarro & 0,00540 & 0,02957\\\\\nIzaje & 0,00682 & 0,10548\\\\\\bottomrule\n\\end{tabular}\n\\end{columns}\\vspace{2mm}\n\\figcaption{Buen seguimiento; las diferencias se concentraron en transitorios rápidos, de acuerdo con el filtrado adoptado.}\n",
+    "note": "Imagen del observador continuo del carro incluida en la sección 6.2 del informe, sin alterar el modelo de bloques. El izaje utiliza la misma estructura y sus conversiones propias. La validación reprodujo los encoders registrados en una maniobra de ambos ejes y comparó con las velocidades reales de sus accionamientos en la planta simulada; no fue una nueva ejecución completa de la planta. Los sensores simulados no incorporan ruido ni cuantización.",
+    "weight": 1,
+    "section": "Diseño del control regulatorio",
+    "backup": false,
+    "owner": null,
+    "label": "observadoresvalidacion"
+  },
+  {
+    "title": "Pruebas del control",
+    "body": "\\setbeamertemplate{frametitle}{}\n\\vfill\n{\\fontsize{25}{29}\\selectfont\\bfseries Pruebas del control\\par}\n\\vspace{4mm}\\textcolor{accent}{\\rule{.75\\linewidth}{1pt}}\\par\\vspace{3mm}\n{\\large Seguimiento, esfuerzo y balanceo en los ensayos aislados.\\par}\\vfill\n",
+    "note": "Ubicar este bloque en el recorrido y anunciar su objetivo.",
+    "weight": 1,
+    "section": "Validación regulatoria aislada",
+    "backup": false,
+    "owner": null,
+    "label": "seccion3"
+  },
+  {
+    "title": "Plan de pruebas del control",
+    "body": "\\begin{center}\n{\\small\\renewcommand{\\arraystretch}{1.0}\n\\begin{tabular}{p{5.2cm}p{8.5cm}}\\toprule\nEnsayo & Qué permite observar\\\\\\midrule\nIzaje con carga y en vacío & Seguimiento y esfuerzo\\\\\nPerturbación inicial de 7° & Decaimiento del balanceo\\\\\nTraslado de 13 m en 24 s & Compromiso posición–balanceo\\\\\nTraslado rápido de 13 m & Efecto de límites y excitación\\\\\n\\bottomrule\\end{tabular}}\\end{center}\nLas pruebas aisladas separan el comportamiento regulatorio de las secuencias del supervisor.\n",
+    "note": "Indicar masa, longitud y referencia al entrar a cada gráfica. No elegir una ganancia solamente por una perturbación inicial o una trayectoria.",
+    "weight": 0.7,
+    "section": "Validación regulatoria aislada",
+    "backup": false,
+    "owner": null,
+    "label": "slide23"
+  },
+  {
+    "title": "Prueba de izaje: seguimiento y resultados",
+    "body": "\\relax\\setlength{\\parskip}{0pt}\n\\begin{columns}[c,onlytextwidth]\n\\column{.59\\textwidth}\n\\includegraphics[width=\\linewidth,height=5.35cm,keepaspectratio]{imagenes/r_039.png}\n\\column{.39\\textwidth}\n{\\fontsize{8.5}{10.5}\\selectfont\\renewcommand{\\arraystretch}{1.25}\\setlength{\\tabcolsep}{3pt}\n\\begin{tabular}{@{}lrr@{}}\\toprule\nPerfil / carga & RMS $e_h$ & $|T|_{\\max}$\\\\\n& [m] & [kN m]\\\\\\midrule\nSubida--bajada, 50 t & 0,1004 & 11,65\\\\\nSubida--bajada, vacío & 0,0258 & 3,18\\\\\nBajada 8 m, 50 t & 0,1487 & 12,84\\\\\nBajada 8 m, vacío & 0,0689 & 3,81\\\\\\bottomrule\n\\end{tabular}}\n\\end{columns}\n\\figcaption{Gráfica: subida, sostén y bajada. Tabla: resumen de ambos perfiles; bajada de 8 m en respaldo.}\n",
+    "note": "Identificar referencia y respuesta. La tabla cuantifica los dos ensayos, la gráfica muestra el primero. No generalizar los resultados a impactos de contacto ni a maniobras rápidas.",
+    "weight": 1,
+    "section": "Validación regulatoria aislada",
+    "backup": false,
+    "owner": null,
+    "label": "slide24"
+  },
+  {
+    "title": "Prueba aislada anti-sway: perturbación inicial de 7°",
+    "body": "\\begin{center}\\includegraphics[width=.98\\linewidth,height=5.55cm,keepaspectratio]{imagenes/r_041.png}\\end{center}\\vspace{-1mm}\\figcaption{50 t; dos longitudes de cable; asignaciones $\\zeta_{sw}=0$, $0,8$ y $1,75$.}\n",
+    "note": "Mostrar que aumentar zeta no mejora siempre el tiempo de estabilización. Para esta perturbación, 0,8 ofrece una respuesta más favorable que 1,75.",
+    "weight": 1,
+    "section": "Validación regulatoria aislada",
+    "backup": false,
+    "owner": null,
+    "label": "slide26"
+  },
+  {
+    "title": "Prueba del carro: traslado de 13 m en 24 s",
+    "body": "\\relax\\setlength{\\parskip}{0pt}\n\\begin{columns}[c,onlytextwidth]\n\\column{.60\\textwidth}\n\\includegraphics[width=\\linewidth,height=5.35cm,keepaspectratio]{imagenes/r_042.png}\n\\column{.38\\textwidth}\n{\\fontsize{8.5}{10.5}\\selectfont\\renewcommand{\\arraystretch}{1.3}\\setlength{\\tabcolsep}{3pt}\n\\begin{tabular}{@{}lrrr@{}}\\toprule\n$\\zeta_{sw}$ & RMS $e_x$ & RMS $\\theta$ & $|T|_{\\max}$\\\\\n& [m] & [$^\\circ$] & [Nm]\\\\\\midrule\n0 & 0,0424 & 1,4536 & 804,3\\\\\n0,8 & 0,1320 & 0,2100 & 562,8\\\\\n1,75 & 0,1668 & 0,1051 & 524,2\\\\\\bottomrule\n\\end{tabular}}\\par\n\\vspace{4mm}\\figcaption{Menos balanceo requiere una corrección adicional del movimiento horizontal.}\n\\end{columns}\n\\figcaption{Traslado de 13 m en 24 s; cable de 20 m y contenedor de 50 t.}\n",
+    "note": "El anti-sway reduce el ángulo a cambio de un seguimiento de posición menos rígido. La comparación corresponde al traslado normal. Relacionar el compromiso con las condiciones de llegada del supervisor.",
+    "weight": 1,
+    "section": "Validación regulatoria aislada",
+    "backup": false,
+    "owner": null,
+    "label": "slide27"
+  },
+  {
+    "title": "Prueba aislada del carro: traslado rápido de 13 m",
+    "body": "\\begin{center}\\includegraphics[width=.98\\linewidth,height=5.55cm,keepaspectratio]{imagenes/r_043.png}\\end{center}\\vspace{-1mm}\\figcaption{13 m en 8,66 s; cable de 10 m; 50 t; $v_{max}=2,85$ m/s y $a_{max}=0,792$ m/s$^2$.}\n",
+    "note": "La actuación del límite es prolongada y el error aumenta. Con zeta=1,75 el RMS angular baja de 6,647 a 2,037 grados, pero el error horizontal máximo llega a 2,78 m.",
+    "weight": 1,
+    "section": "Validación regulatoria aislada",
+    "backup": false,
+    "owner": null,
+    "label": "slide29"
+  },
+  {
+    "title": "Integración y ajustes del control",
+    "body": "\\setbeamertemplate{frametitle}{}\n\\vfill\n{\\fontsize{25}{29}\\selectfont\\bfseries Integración y ajustes del control\\par}\n\\vspace{4mm}\\textcolor{accent}{\\rule{.75\\linewidth}{1pt}}\\par\\vspace{3mm}\n{\\large Referencias suaves, saturaciones y respuesta de la planta flexible.\\par}\\vfill\n",
+    "note": "Ubicar este bloque en el recorrido y anunciar su objetivo.",
+    "weight": 1,
+    "section": "Integración y diagnóstico del transitorio manual",
+    "backup": false,
+    "owner": null,
+    "label": "seccion4"
+  },
+  {
+    "title": "Prueba de integración original: retirada del joystick",
+    "body": "\\relax\n\\figurefooter{Joystick retirado a 145,800 s; pico físico a 146,744 s.}\n\\vspace{-2mm}\\makebox[\\linewidth][c]{\\includegraphics[width=15.0cm,height=6.05cm,keepaspectratio,trim=0.00bp 0.00bp 0.00bp 0.00bp,clip]{imagenes/r_047.png}}\\par\n",
+    "note": "Seguir la secuencia de velocidad, anticipación, mando de aceleración y torque. No identificar la curva del mando con el carro real.",
+    "weight": 1,
+    "section": "Integración y diagnóstico del transitorio manual",
+    "backup": false,
+    "owner": null,
+    "label": "slide31"
+  },
+  {
+    "title": "Modo flexible del carro y suavidad de las referencias",
+    "body": "\\[\n\\delta=x_{td}-x_t,\\quad U_e=\\tfrac12K_{tw}\\delta^2,\\quad\n\\ddot\\delta+K_{tw}\\left(\\frac1{M_d}+\\frac1{M_t}\\right)\\delta\\simeq0\n\\]\n\\[\n\\omega_f\\simeq5{,}66\\ \\mathrm{rad/s},\\qquad f_f\\simeq0{,}90\\ \\mathrm{Hz}\n\\]\n\\begin{itemize}\n\\item La transmisión almacena energía. Limitar $a_{cmd}$ no limita directamente la aceleración física del carro.\n\\item El modelo reducido elimina este movimiento relativo entre dos masas.\n\\end{itemize}\n\\small\\textcolor{accent}{\\textbf{Durante el desarrollo:} los generadores iniciales, menos suaves y con cambios instantáneos de jerk, excitaban este modo. Se revisaron las transiciones y la anticipación anti-sway.}\n",
+    "note": "La observación del desarrollo fue solicitada por los autores. La frecuencia es una estimación de dos masas sin amortiguamiento, no un polo identificado. Jerk instantáneo aquí significa salto de jerk en una transición. La excitación también depende de la corrección regulatoria y del torque.",
+    "weight": 1,
+    "section": "Integración y diagnóstico del transitorio manual",
+    "backup": false,
+    "owner": null,
+    "label": "slide32"
+  },
+  {
+    "title": "Anti-windup: aceleración y torque",
+    "body": "\\[\na_c=\\operatorname{sat}_{0{,}8}(a_u),\\qquad \\Delta a_a=a_c-a_u\n\\]\n\\[\n\\Delta a_T=\\frac{i_t}{r_{td}M_{EQt}}(T_{lim}-T_{in})\n\\]\n\\[\n\\dot I=e_v+\\frac{\\Delta a_a+\\Delta a_T}{K_{iv}T_{aw}},\\quad T_{aw}=1\\ \\mathrm{s}\n\\]\n\\begin{itemize}\n\\item El recorte de torque se mide antes de la dinámica del motor.\n\\item Ambos límites corrigen el mismo estado integral.\n\\item La suma completa de aceleraciones se limita a ±0,80 m/s².\n\\end{itemize}\n",
+    "note": "Evitar medir saturación con torque físico menos torque limitado: eso incorpora el retardo del motor. La realización discreta exacta queda en la sección MC.",
+    "weight": 1.5,
+    "section": "Integración y diagnóstico del transitorio manual",
+    "backup": false,
+    "owner": null,
+    "label": "slide33"
+  },
+  {
+    "title": "Anticipación anti-sway limitada",
+    "body": "\\[\nv_{sw}=\\operatorname{sat}_{3{,}2}\\!\\left[\\alpha(t)\\left(k_{sw}\\theta_l+v_{ff,lim}\\right)\\right]\n\\]\n\\[\nv_{ff}=-k_{sw}\\theta_{ref},\\qquad k_{sw}=2\\zeta_{sw}\\sqrt{g/l_h}\\,l_h\n\\]\n\\begin{itemize}\n\\item Se limita la variación del término anticipativo: 0,25 m/s².\n\\item Se conserva la realimentación angular directa.\n\\item Rampa de habilitación de 2 s.\n\\item Se conserva el PI, el anti-windup y la compensación mecánica.\n\\end{itemize}\n",
+    "note": "Aclarar que el límite de 0,25 tiene unidades de derivada de una corrección de velocidad. No es el límite de aceleración física del carro; la estructura de frenado permanece.",
+    "weight": 1.3,
+    "section": "Integración y diagnóstico del transitorio manual",
+    "backup": false,
+    "owner": null,
+    "label": "slide34"
+  },
+  {
+    "title": "Prueba de anticipación limitada: referencias y mando",
+    "body": "\\relax\\setlength{\\parskip}{0pt}\n\\figurefooter{Ley simple y FF limitado, ambas con anti-windup y condiciones comparables.}\n\\vspace{-3mm}\\makebox[\\linewidth][c]{\\includegraphics[width=15.0cm,height=6.55cm,keepaspectratio,trim=0.00bp 0.00bp 0.00bp 0.00bp,clip]{imagenes/r_048.png}}\\par\n",
+    "note": "El mando regulatorio permanece dentro del límite en ambas variantes. La diferencia aparece al observar la aceleración física y el esfuerzo mecánico.",
+    "weight": 1,
+    "section": "Integración y diagnóstico del transitorio manual",
+    "backup": false,
+    "owner": null,
+    "label": "slide35"
+  },
+  {
+    "title": "Prueba de anticipación limitada: energía elástica",
+    "body": "\\relax\\setlength{\\parskip}{0pt}\n\\figurefooter{La anticipación limitada reduce la excitación de la transmisión durante la parada.}\n\\vspace{-3mm}\\makebox[\\linewidth][c]{\\includegraphics[width=15.0cm,height=6.55cm,keepaspectratio,trim=0.00bp 0.00bp 0.00bp 0.00bp,clip]{imagenes/r_049.png}}\\par\n",
+    "note": "Destacar la diferencia entre aceleración del tambor y del carro. Recorrer fuerza y energía como evidencia de la causa física.",
+    "weight": 1,
+    "section": "Integración y diagnóstico del transitorio manual",
+    "backup": false,
+    "owner": null,
+    "label": "slide36"
+  },
+  {
+    "title": "Prueba de anticipación limitada: resultados",
+    "body": "\\begin{center}\n{\\small\\renewcommand{\\arraystretch}{1.0}\n\\begin{tabular}{lrr}\\toprule\nMagnitud & Ley simple & FF limitado\\\\\\midrule\nAceleración física máxima [m/s²] & 1,4535 & 0,6274\\\\\nTiempo fuera de ±0,80 m/s² [s] & 0,8836 & 0\\\\\nFuerza máxima [kN] & 41,142 & 15,198\\\\\nEnergía elástica máxima [J] & 1 762,084 & 240,485\\\\\nDuración de la maniobra [s] & 381,20 & 381,40\\\\\n\\bottomrule\\end{tabular}}\\end{center}\n\\vspace{2mm}\\textcolor{accent}{\\textbf{Reducción de energía elástica máxima: 86,4 \\%.}}\n",
+    "note": "La mejora principal es de excitación y esfuerzo, con incidencia pequeña sobre la duración. No afirmar que la estabilización resulta más rápida: en esta ventana el tiempo medido no mejora.",
+    "weight": 1,
+    "section": "Integración y diagnóstico del transitorio manual",
+    "backup": false,
+    "owner": null,
+    "label": "slide37"
+  },
+  {
+    "title": "Supervisor y planificación del movimiento",
+    "body": "\\setbeamertemplate{frametitle}{}\n\\vfill\n{\\fontsize{25}{29}\\selectfont\\bfseries Supervisor y planificación del movimiento\\par}\n\\vspace{4mm}\\textcolor{accent}{\\rule{.75\\linewidth}{1pt}}\\par\\vspace{3mm}\n{\\large Estados, secuencias y referencias coordinadas para ambos ejes.\\par}\\vfill\n",
+    "note": "Ubicar este bloque en el recorrido y anunciar su objetivo.",
+    "weight": 1,
+    "section": "Supervisor y planificación coordinada",
+    "backup": false,
+    "owner": null,
+    "label": "seccion5"
+  },
+  {
+    "title": "Organización del supervisor · Stateflow",
+    "body": "\\begin{center}\\diagramfit{\\begin{tikzpicture}\n\\node[sfstate,dashed,text width=3.8cm](r0)at(0.0,0.0){1. INTERLOCKS\\\\{\\scriptsize Prepara guardas}};\n\\node[sfstate,dashed,text width=3.8cm](r1)at(4.8,0.0){2. CARGA Y TWISTLOCKS\\\\{\\scriptsize Gestiona toma y masa}};\n\\node[sfstate,dashed,text width=3.8cm](r2)at(9.6,0.0){3. OPERACIÓN\\\\{\\scriptsize Selecciona maniobra}};\n\\node[sfstate,dashed,text width=3.8cm](r3)at(0.0,-2.0){4. REFERENCIAS CARRO\\\\{\\scriptsize Actualiza referencias}};\n\\node[sfstate,dashed,text width=3.8cm](r4)at(4.8,-2.0){5. FRENOS\\\\{\\scriptsize Coordina apertura}};\n\\node[sfstate,dashed,text width=3.8cm](r5)at(9.6,-2.0){6. DIAGNÓSTICO\\\\{\\scriptsize Publica códigos}};\n\\end{tikzpicture}}\\end{center}\\vfill\n{\\small Seis regiones paralelas se ejecutan en orden cada 20 ms.\\par}\\vspace{1.5mm}{\\fontsize{9.5}{11}\\selectfont\\textcolor{muted}{Las referencias comunes se actualizan después de OPERACIÓN y antes de FRENOS.}\\par}\n",
+    "note": "Seis regiones paralelas se ejecutan en orden cada 20 ms. Las referencias comunes se actualizan después de OPERACIÓN y antes de FRENOS.",
+    "weight": 0.65,
+    "section": "Supervisor y planificación coordinada",
+    "backup": false,
+    "owner": "Herrera",
+    "label": "cmp1"
+  },
+  {
+    "title": "Organización del supervisor · CODESYS SFC",
+    "body": "\\begin{center}\\diagramfit{\\begin{tikzpicture}\n\\node[sfcstep,double,double distance=1pt] (init) at (5.5,1.75){INICIAL};\n\\draw[wire](init.south)--(5.5,.82);\n\\draw[wire,line width=1pt](5.3,1.05)--(5.7,1.05);\n\\node[guard,anchor=west]at(5.85,1.05){Sin parada ni pérdida de permiso};\n\\draw[wire,line width=1pt](-1.2,0.82)--(12.2,0.82);\n\\draw[wire,line width=1pt](-1.2,0.75)--(12.2,0.75);\n\\draw[wire,line width=1pt](-1.2,-0.75)--(12.2,-0.75);\n\\draw[wire,line width=1pt](-1.2,-0.82)--(12.2,-0.82);\n\\node[sfcstep,text width=2.2cm](r0)at(0.0,0){REGIÓN OPERACIÓN};\n\\draw[wire](0.0,.75)--(r0.north);\n\\draw[wire](r0.south)--(0.0,-.75);\n\\node[sfcstep,text width=2.2cm](r1)at(2.75,0){CARGA};\n\\draw[wire](2.75,.75)--(r1.north);\n\\draw[wire](r1.south)--(2.75,-.75);\n\\node[sfcstep,text width=2.2cm](r2)at(5.5,0){FRENO\\\\IZAJE};\n\\draw[wire](5.5,.75)--(r2.north);\n\\draw[wire](r2.south)--(5.5,-.75);\n\\node[sfcstep,text width=2.2cm](r3)at(8.25,0){FRENO\\\\CARRO};\n\\draw[wire](8.25,.75)--(r3.north);\n\\draw[wire](r3.south)--(8.25,-.75);\n\\node[sfcstep,text width=2.2cm](r4)at(11.0,0){DIAGNÓSTICO};\n\\draw[wire](11.0,.75)--(r4.north);\n\\draw[wire](r4.south)--(11.0,-.75);\n\\node[sfcstep](stop)at(5.5,-1.8){DETENIDO};\n\\draw[wire](5.5,-.82)--(stop.north);\n\\draw[wire,line width=1pt](5.3,-1.05)--(5.7,-1.05);\n\\node[guard,anchor=west]at(5.85,-1.05){Parada o pérdida de permiso};\n\\node[guard,anchor=north,align=center]at(5.5,-2.3){Reset y permiso global: salto a INICIAL};\n\\end{tikzpicture}}\\end{center}\\vfill\n{\\small Las ramas SFC agrupan responsabilidades. La tarea llama a las secuencias y a los cálculos ST.\\par}\\vspace{1.5mm}{\\fontsize{9.5}{11}\\selectfont\\textcolor{muted}{El estado activo de un paso se consulta desde ST para generar referencias y órdenes.}\\par}\n",
+    "note": "Las ramas SFC agrupan responsabilidades. La tarea llama a las secuencias y a los cálculos ST. El estado activo de un paso se consulta desde ST para generar referencias y órdenes.",
+    "weight": 0.65,
+    "section": "Supervisor y planificación coordinada",
+    "backup": false,
+    "owner": "Herrera",
+    "label": "cmp2"
+  },
+  {
+    "title": "INTERLOCKS · Stateflow",
+    "body": "\\begin{center}\\diagramfit{\\begin{tikzpicture}\n\\node[sfstate,text width=2.5cm] (n0) at (0.0,0) {INTERLOCKS\\\\región activa};\n\\node[sfstate,text width=2.5cm] (n1) at (3.35,0) {Banderas y\\\\variables comunes};\n\\node[sfstate,text width=2.5cm] (n2) at (6.7,0) {Carga, operación,\\\\frenos y diagnóstico};\n\\fill[accent] (-1.8,0) circle (2pt);\n\\draw[flow] (-1.8,0)--(n0.west);\n\\draw[flow] (n0.east)--(n1.west);\n\\node[guard,text width=3.35cm,anchor=south] at (1.675,.78) {Acondicionamiento\\\\cada 20 ms};\n\\draw[flow] (n1.east)--(n2.west);\n\\node[guard,text width=3.35cm,anchor=south] at (5.025,1.18) {Uso en el mismo ciclo};\n\\end{tikzpicture}}\\end{center}\\vfill\n{\\small Acondiciona entradas y memoriza solicitudes breves del HMI.\\par}\\vspace{1.5mm}{\\fontsize{9.5}{11}\\selectfont\\textcolor{muted}{Calcula estabilidad, masa, límites locales y condiciones de acceso al automático.}\\par}\n",
+    "note": "Acondiciona entradas y memoriza solicitudes breves del HMI. Calcula estabilidad, masa, límites locales y condiciones de acceso al automático.",
+    "weight": 0.65,
+    "section": "Supervisor y planificación coordinada",
+    "backup": false,
+    "owner": "Herrera",
+    "label": "cmp3"
+  },
+  {
+    "title": "INTERLOCKS · CODESYS SFC",
+    "body": "\\begin{center}\\diagramfit{\\begin{tikzpicture}\n\\node[sfcstep,double,double distance=1pt] (p) at (0,0) {PREPROCESO};\n\\node[sfcstep] (s) at (0,-1.2) {EVALUACIÓN SFC};\n\\node[sfcstep] (a) at (0,-2.4) {ACCIONES Y SALIDAS};\n\\draw[wire](p.south)--(s.north);\n\\draw[wire,line width=1.1pt](-.2,-.6)--(.2,-.6);\n\\node[guard,anchor=west,text width=4.8cm]at(1.7,-.6){Fin del preprocesamiento};\n\\draw[wire](s.south)--(a.north);\n\\draw[wire,line width=1.1pt](-.2,-1.8)--(.2,-1.8);\n\\node[guard,anchor=west,text width=4.8cm]at(1.7,-1.8){Fin de evaluación de los pasos};\n\\draw[wire](a.south)--(0,-3.0);\n\\draw[wire,line width=1.1pt](-.2,-2.85)--(.2,-2.85);\n\\draw[flow](0,-3.0)--(-2.25,-3.0)--(-2.25,.65)-|(p.north);\n\\node[guard,anchor=west,text width=4.8cm]at(1.7,-2.85){Siguiente ciclo de 20 ms};\n\\node[draw=ink,align=left,font=\\fontsize{9}{10}\\selectfont,text width=4.4cm,anchor=west]at(7.0,0){N: ST prepara banderas, guardas y solicitudes del HMI};\n\\node[draw=ink,align=left,font=\\fontsize{9}{10}\\selectfont,text width=4.4cm,anchor=west]at(7.0,-1.2){N: evalúa las secuencias con las banderas compartidas};\n\\node[draw=ink,align=left,font=\\fontsize{9}{10}\\selectfont,text width=4.4cm,anchor=west]at(7.0,-2.4){N: ST consulta pasos activos y aplica interbloqueos finales};\n\\draw[wire](p.east)--(7.0,0);\\draw[wire](s.east)--(7.0,-1.2);\\draw[wire](a.east)--(7.0,-2.4);\n\\end{tikzpicture}}\\end{center}\\vfill\n{\\small El preprocesamiento prepara las guardas antes de evaluar las secuencias SFC.\\par}\n\\vspace{1.5mm}{\\fontsize{9.5}{11}\\selectfont\\textcolor{muted}{Esquema funcional en notación SFC del orden de ejecución. Los cálculos y las salidas permanecen en ST.}\\par}\n",
+    "note": "El esquema usa pasos, transiciones y acciones para explicar el orden de ejecución cíclica. El preprocesamiento prepara las entradas y guardas, después se evalúan las secuencias SFC y finalmente las acciones ST consultan los pasos activos y aplican los interbloqueos. N indica acción no almacenada asociada al paso. Los textos de las transiciones describen el fin de cada fase. Este dibujo representa funcionalmente el orden de llamadas del PLC, sin introducir un nuevo POU INTERLOCKS en SFC ni cambiar la implementación real.",
+    "weight": 0.65,
+    "section": "Supervisor y planificación coordinada",
+    "backup": false,
+    "owner": "Herrera",
+    "label": "cmp4"
+  },
+  {
+    "title": "Operación: arranque y parada · Stateflow",
+    "body": "\\begin{center}\\diagramfit{\\begin{tikzpicture}\n\\node[sfstate](off) at(0,0){APAGADO};\\node[sfstate](start)at(4.4,0){ARRANQUE};\\node[sfstate](ready)at(8.8,0){LISTO};\n\\draw[flow](off)--node[guard,above,text width=3cm,yshift=6mm]{Start, configuración\\\\y permiso global}(start);\n\\draw[flow](start)--node[guard,above,text width=3cm,yshift=6mm]{Permisos por eje\\\\y 5 ticks}(ready);\n\\node[sfstate](stop)at(1.8,-2){PARADA NORMAL};\\node[sfstate](fail)at(7,-2){RETENCIÓN FALLA};\n\\draw[flow](stop.west)-|node[guard,pos=.12,above,xshift=-12mm]{Ejes detenidos}(off.south);\n\\draw[flow](fail.south)--++(0,-.8)-| (off.south);\n\\node[guard,align=center]at(5,-3.65){Reset, fallas ausentes y permiso global};\n\n\\end{tikzpicture}}\\end{center}\\vfill\n{\\small ARRANQUE espera 100 ms y permisos de ambos ejes para alcanzar LISTO.\\par}\\vspace{1.5mm}{\\fontsize{9.5}{11}\\selectfont\\textcolor{muted}{La parada reduce la velocidad. Una falla retiene referencias y deshabilita la regulación.}\\par}\n",
+    "note": "ARRANQUE espera 100 ms y permisos de ambos ejes para alcanzar LISTO. La parada reduce la velocidad. Una falla retiene referencias y deshabilita la regulación.",
+    "weight": 0.65,
+    "section": "Supervisor y planificación coordinada",
+    "backup": false,
+    "owner": "Herrera",
+    "label": "cmp5"
+  },
+  {
+    "title": "Operación: arranque y parada · CODESYS SFC",
+    "body": "\\begin{center}\\diagramfit{\\begin{tikzpicture}\n\\node[sfcstep,double,double distance=1pt] (n0) at (0,0.0) {APAGADO};\n\\node[sfcstep] (n1) at (0,-1.08) {ARRANQUE};\n\\node[sfcstep] (n2) at (0,-2.16) {LISTO};\n\\node[sfcstep] (n3) at (0,-3.24) {PARADA NORMAL};\n\\draw[wire] (n0.south)--(n1.north);\n\\draw[wire,line width=1.1pt] (-.2,-0.54)--(.2,-0.54);\n\\node[guard,anchor=west,text width=8.7cm] at (1.85,-0.54) {Start, permiso global y configuración válida};\n\\draw[wire] (n1.south)--(n2.north);\n\\draw[wire,line width=1.1pt] (-.2,-1.62)--(.2,-1.62);\n\\node[guard,anchor=west,text width=8.7cm] at (1.85,-1.62) {100 ms y permisos por eje, o G\\_StopSupervisor};\n\\draw[wire] (n2.south)--(n3.north);\n\\draw[wire,line width=1.1pt] (-.2,-2.7)--(.2,-2.7);\n\\node[guard,anchor=west,text width=8.7cm] at (1.85,-2.7) {Parada, trackingFault o loadSequenceFault};\n\\draw[flow] (n3.south)--(0,-3.89);\n\\node[guard,anchor=north,align=center,text width=8.3cm] at (2.8,-3.91) {Con ejes detenidos: salto a APAGADO};\n\\end{tikzpicture}}\\end{center}\\vfill\n{\\small LISTO permanece activo mientras otras secuencias resuelven el modo y la maniobra.\\par}\\vspace{1.5mm}{\\fontsize{9.5}{11}\\selectfont\\textcolor{muted}{La retención de fallas usa un monitor separado y las órdenes finales se calculan en ST.}\\par}\n",
+    "note": "LISTO permanece activo mientras otras secuencias resuelven el modo y la maniobra. La retención de fallas usa un monitor separado y las órdenes finales se calculan en ST.",
+    "weight": 0.65,
+    "section": "Supervisor y planificación coordinada",
+    "backup": false,
+    "owner": "Herrera",
+    "label": "cmp6"
+  },
+  {
+    "title": "Operación: modo manual · Stateflow",
+    "body": "\\begin{center}\\diagramfit{\\begin{tikzpicture}\n\\node[sfstate,text width=2.5cm] (n0) at (0.0,0) {LISTO};\n\\node[sfstate,text width=2.5cm] (n1) at (3.35,0) {MANUAL\\\\SUPERVISADO};\n\\node[sfstate,text width=2.5cm] (n2) at (6.7,0) {BUMPLESS\\\\A AUTO};\n\\fill[accent] (-1.8,0) circle (2pt);\n\\draw[flow] (-1.8,0)--(n0.west);\n\\draw[flow] (n0.east)--(n1.west);\n\\node[guard,text width=3.35cm,anchor=south] at (1.675,.78) {Sin solicitud auto\\\\ni barrido pendiente};\n\\draw[flow] (n1.east)--(n2.west);\n\\node[guard,text width=3.35cm,anchor=south] at (5.025,.78) {Auto + inicio + perfil\\\\altura local y sin falla};\n\\end{tikzpicture}}\\end{center}\\vfill\n{\\small El joystick solicita velocidad. El supervisor limita el mando antes de generar referencias.\\par}\\vspace{1.5mm}{\\fontsize{9.5}{11}\\selectfont\\textcolor{muted}{Los permisos, el perfil y la estabilidad posterior al cierre pueden restringir el movimiento.}\\par}\n",
+    "note": "El joystick solicita velocidad. El supervisor limita el mando antes de generar referencias. Los permisos, el perfil y la estabilidad posterior al cierre pueden restringir el movimiento.",
+    "weight": 0.65,
+    "section": "Supervisor y planificación coordinada",
+    "backup": false,
+    "owner": "Herrera",
+    "label": "cmp7"
+  },
+  {
+    "title": "Operación: modo manual · CODESYS SFC",
+    "body": "\\begin{center}\\diagramfit{\\begin{tikzpicture}\n\\node[sfcstep,double,double distance=1pt] (n0) at (0,0.0) {MANUAL INACTIVO};\n\\node[sfcstep] (n1) at (0,-1.08) {MANUAL SUPERVISADO};\n\\node[sfcstep] (n2) at (0,-2.16) {APROXIMACIÓN FINAL MANUAL};\n\\draw[wire] (n0.south)--(n1.north);\n\\draw[wire,line width=1.1pt] (-.2,-0.54)--(.2,-0.54);\n\\node[guard,anchor=west,text width=8.7cm] at (1.85,-0.54) {LISTO, sin modo automático ni barrido};\n\\draw[wire] (n1.south)--(n2.north);\n\\draw[wire,line width=1.1pt] (-.2,-1.62)--(.2,-1.62);\n\\node[guard,anchor=west,text width=8.7cm] at (1.85,-1.62) {Solicitud auto, solicitud de barrido o pérdida de LISTO};\n\\draw[flow] (n2.south)--(0,-2.81);\n\\node[guard,anchor=north,align=center,text width=8.3cm] at (2.8,-2.83) {Reposo o pérdida de LISTO: salto a MANUAL INACTIVO};\n\\end{tikzpicture}}\\end{center}\\vfill\n{\\small El SFC selecciona la etapa manual. ST calcula las referencias de posición, velocidad y aceleración.\\par}\\vspace{1.5mm}{\\fontsize{9.5}{11}\\selectfont\\textcolor{muted}{La salida de MANUAL SUPERVISADO depende de la solicitud de automático, barrido o pérdida de LISTO.}\\par}\n",
+    "note": "El SFC selecciona la etapa manual. ST calcula las referencias de posición, velocidad y aceleración. La salida de MANUAL SUPERVISADO depende de la solicitud de automático, barrido o pérdida de LISTO.",
+    "weight": 0.65,
+    "section": "Supervisor y planificación coordinada",
+    "backup": false,
+    "owner": "Herrera",
+    "label": "cmp8"
+  },
+  {
+    "title": "Operación: transferencia de modos · Stateflow",
+    "body": "\\begin{center}\\diagramfit{\\begin{tikzpicture}\n\\node[sfstate](a)at(0,0){BUMPLESS A AUTO\\\\{\\scriptsize Copia el estado medido}};\n\\node[sfstate](b)at(4.5,0){AUTOMÁTICO\\\\{\\scriptsize Planifica y ejecuta}};\n\\node[sfstate](c)at(9,0){BUMPLESS A MANUAL\\\\{\\scriptsize Adapta referencias}};\n\\node[sfstate](d)at(4.5,-2.9){MANUAL SUPERVISADO};\n\\node[sfstate](e)at(9,-2.9){APROXIMACIÓN FINAL};\n\\draw[flow](a)--(b);\\node[guard,above]at(2.25,.6){40 ms};\n\\draw[flow](b)--(c);\\node[guard,align=center,above]at(6.75,.6){Intervención, cancelación\\\\o ciclo completo};\n\\draw[flow](c)--(e);\\node[guard,anchor=west,text width=2.8cm]at(10.4,-1.15){Ejes detenidos\\\\y ciclo completo};\n\\draw[flow](c.south)--++(0,-.65)-| (d.north);\\node[guard,align=center,text width=3cm]at(6.75,-2.0){Ejes detenidos\\\\y ciclo incompleto};\n\\end{tikzpicture}}\\end{center}\\vfill\n{\\small Desde manual, 40 ms de transferencia inicializan el automático sin saltos de referencia.\\par}\\vspace{1.5mm}{\\fontsize{9.5}{11}\\selectfont\\textcolor{muted}{Al salir, el ciclo completo conduce al descenso final. Una cancelación vuelve al manual supervisado.}\\par}\n",
+    "note": "Desde manual, 40 ms de transferencia inicializan el automático sin saltos de referencia. Al salir, el ciclo completo conduce al descenso final. Una cancelación vuelve al manual supervisado.",
+    "weight": 0.65,
+    "section": "Supervisor y planificación coordinada",
+    "backup": false,
+    "owner": "Herrera",
+    "label": "cmp9"
+  },
+  {
+    "title": "Operación: transferencia de modos · CODESYS SFC",
+    "body": "\\begin{center}\\diagramfit{\\begin{tikzpicture}\n\\node[sfcstep,double,double distance=1pt] (n0) at (0,0.0) {AUTO INACTIVO};\n\\node[sfcstep] (n1) at (0,-1.08) {BUMPLESS A AUTO};\n\\node[sfcstep] (n2) at (0,-2.16) {AUTOMÁTICO};\n\\node[sfcstep] (n3) at (0,-3.24) {BUMPLESS A MANUAL};\n\\draw[wire] (n0.south)--(n1.north);\n\\draw[wire,line width=1.1pt] (-.2,-0.54)--(.2,-0.54);\n\\node[guard,anchor=west,text width=8.7cm] at (1.85,-0.54) {LISTO + auto + inicio + perfil + altura local, sin sobrecarga ni intervención};\n\\draw[wire] (n1.south)--(n2.north);\n\\draw[wire,line width=1.1pt] (-.2,-1.62)--(.2,-1.62);\n\\node[guard,anchor=west,text width=8.7cm] at (1.85,-1.62) {Permanencia mínima de 40 ms};\n\\draw[wire] (n2.south)--(n3.north);\n\\draw[wire,line width=1.1pt] (-.2,-2.7)--(.2,-2.7);\n\\node[guard,anchor=west,text width=8.7cm] at (1.85,-2.7) {Intervención, cancelación, ciclo completo o pérdida de LISTO};\n\\draw[flow] (n3.south)--(0,-3.89);\n\\node[guard,anchor=north,align=center,text width=8.3cm] at (2.8,-3.91) {Ejes detenidos o pérdida de LISTO: salto a AUTO INACTIVO};\n\\end{tikzpicture}}\\end{center}\\vfill\n{\\small El automático pasa siempre por BUMPLESS A AUTO durante 40 ms simulados.\\par}\\vspace{1.5mm}{\\fontsize{9.5}{11}\\selectfont\\textcolor{muted}{Las secuencias de modo manual y automático se evalúan por separado y ST arbitra sus acciones.}\\par}\n",
+    "note": "El automático pasa siempre por BUMPLESS A AUTO durante 40 ms simulados. Las secuencias de modo manual y automático se evalúan por separado y ST arbitra sus acciones.",
+    "weight": 0.65,
+    "section": "Supervisor y planificación coordinada",
+    "backup": false,
+    "owner": "Herrera",
+    "label": "cmp10"
+  },
+  {
+    "title": "Referencias comunes del carro · Stateflow",
+    "body": "\\begin{center}\\diagramfit{\\begin{tikzpicture}\n\\node[sfstate](o)at(0,0){OPERACIÓN\\\\{\\scriptsize Referencias de la maniobra}};\n\\node[sfstate](r)at(4.6,0){REFERENCIAS CARRO\\\\{\\scriptsize Estado y límites comunes}};\n\\node[sfstate](f)at(9.2,0){FRENOS\\\\{\\scriptsize Evalúa demanda y reposo}};\n\\draw[flow](o)--(r);\\draw[flow](r)--(f);\n\\end{tikzpicture}}\\end{center}\\vfill\n{\\small La región común actualiza posición, velocidad y aceleración después de seleccionar la maniobra.\\par}\n\\vspace{2mm}{\\fontsize{9.5}{11}\\selectfont\\textcolor{muted}{El criterio de reposo también comprueba las referencias y la transferencia de antisway.}\\par}\n",
+    "note": "La sexta región llama referencias_carro_comunes en entry y during. INTERLOCKS verifica velocidad de referencia menor que 0,01 m/s, aceleración menor que 0,03 m/s², error de posición menor que 0,08 m y transferencia de antisway menor que 0,01 m/s. Estos criterios se suman a los de velocidad medida. El dibujo representa el orden de cálculo, no transiciones entre estados excluyentes.",
+    "weight": 0.7,
+    "section": "Supervisor y planificación coordinada",
+    "backup": false,
+    "owner": "Herrera",
+    "label": "real1"
+  },
+  {
+    "title": "Referencias y órdenes · CODESYS ST",
+    "body": "\\begin{center}\\diagramfit{\\begin{tikzpicture}\n\\node[sfcstep](s)at(0,0){PASOS ACTIVOS SFC};\n\\node[sfcstep](a)at(4.6,0){ACCIONES ST\\\\{\\scriptsize Referencias por maniobra}};\n\\node[sfcstep](g)at(9.2,0){INTERBLOQUEOS ST\\\\{\\scriptsize Permisos y órdenes}};\n\\draw[flow](s)--(a);\\draw[flow](a)--(g);\n\\end{tikzpicture}}\\end{center}\\vfill\n{\\small CODESYS manual calcula las referencias consultando el modo, el barrido y la trayectoria activos.\\par}\n\\vspace{2mm}{\\fontsize{9.5}{11}\\selectfont\\textcolor{muted}{La región común adicional de Stateflow no aparece como un SFC propio en esta implementación.}\\par}\n",
+    "note": "Los pasos SFC seleccionan la maniobra y PRG_ACCIONES_Y_SALIDAS calcula las referencias con los bloques correspondientes. El proyecto manual probado no contiene un SFC separado equivalente a REFERENCIAS_CARRO_COMUN. La distribución de cálculo y los criterios de reposo deben compararse explícitamente. El dibujo representa flujo de datos, no una secuencia SFC.",
+    "weight": 0.7,
+    "section": "Supervisor y planificación coordinada",
+    "backup": false,
+    "owner": "Herrera",
+    "label": "real2"
+  },
+  {
+    "title": "Automático: secuencia interna · Stateflow",
+    "body": "\\begin{center}\\diagramfit{\\begin{tikzpicture}\n\\node[sfstate](p)at(0,0){PLANIFICAR\\\\{\\scriptsize Captura el objetivo}};\n\\node[sfstate](e)at(4.6,0){EJECUTAR\\\\{\\scriptsize Actualiza la trayectoria}};\n\\node[sfstate](m)at(9.2,0){MANTENER OBJETIVO\\\\{\\scriptsize Velocidades nulas}};\n\\draw[flow](p)--(e);\\node[guard,above]at(2.3,.7){1 tick = 20 ms};\n\\draw[flow](e)--(m);\\node[guard,above,align=center]at(6.9,.7){Error x < 0,08 m\\\\Error y < 0,15 m};\n\\end{tikzpicture}}\\end{center}\\vfill\n{\\small PLANIFICAR fija el objetivo y reinicia el generador. EJECUTAR actualiza ambas referencias.\\par}\\vspace{1.5mm}{\\fontsize{9.5}{11}\\selectfont\\textcolor{muted}{Llegada: error horizontal menor que 0,08 m y vertical menor que 0,15 m.}\\par}\n",
+    "note": "PLANIFICAR fija el objetivo y reinicia el generador. EJECUTAR actualiza ambas referencias. Llegada: error horizontal menor que 0,08 m y vertical menor que 0,15 m.",
+    "weight": 0.65,
+    "section": "Supervisor y planificación coordinada",
+    "backup": false,
+    "owner": "Herrera",
+    "label": "cmp11"
+  },
+  {
+    "title": "Automático: secuencia interna · CODESYS SFC",
+    "body": "\\begin{center}\\diagramfit{\\begin{tikzpicture}\n\\node[sfcstep,double,double distance=1pt] (n0) at (0,0.0) {ESPERA AUTO};\n\\node[sfcstep] (n1) at (0,-1.08) {PLANIFICAR};\n\\node[sfcstep] (n2) at (0,-2.16) {EJECUTAR};\n\\node[sfcstep] (n3) at (0,-3.24) {MANTENER OBJETIVO};\n\\draw[wire] (n0.south)--(n1.north);\n\\draw[wire,line width=1.1pt] (-.2,-0.54)--(.2,-0.54);\n\\node[guard,anchor=west,text width=8.7cm] at (1.85,-0.54) {Modo AUTOMATICO activo};\n\\draw[wire] (n1.south)--(n2.north);\n\\draw[wire,line width=1.1pt] (-.2,-1.62)--(.2,-1.62);\n\\node[guard,anchor=west,text width=8.7cm] at (1.85,-1.62) {Permanencia mínima de 20 ms};\n\\draw[wire] (n2.south)--(n3.north);\n\\draw[wire,line width=1.1pt] (-.2,-2.7)--(.2,-2.7);\n\\node[guard,anchor=west,text width=8.7cm] at (1.85,-2.7) {Error x menor que 0,08 m y error y menor que 0,15 m};\n\\draw[flow] (n3.south)--(0,-3.89);\n\\node[guard,anchor=north,align=center,text width=8.3cm] at (2.8,-3.91) {Al abandonar AUTOMATICO: salto a ESPERA AUTO};\n\\end{tikzpicture}}\\end{center}\\vfill\n{\\small ESPERA AUTO evita ejecutar la trayectoria cuando el modo automático está inactivo.\\par}\\vspace{1.5mm}{\\fontsize{9.5}{11}\\selectfont\\textcolor{muted}{ST llama al generador y al cierre de posición de izaje. MANTENER OBJETIVO fija velocidades nulas.}\\par}\n",
+    "note": "ESPERA AUTO evita ejecutar la trayectoria cuando el modo automático está inactivo. ST llama al generador y al cierre de posición de izaje. MANTENER OBJETIVO fija velocidades nulas.",
+    "weight": 0.65,
+    "section": "Supervisor y planificación coordinada",
+    "backup": false,
+    "owner": "Herrera",
+    "label": "cmp12"
+  },
+  {
+    "title": "Toma, pesaje y entrega",
+    "body": "\\begin{itemize}\n\\item Contacto y estabilidad → cierre de twistlocks.\n\\item Despegue lento → estabilización → promedio de tensión.\n\\item Estimación de masa del contenedor y verificación de sobrecarga.\n\\item Traslado cargado y descenso hacia el destino.\n\\item Apoyo y apertura → confirmación física de entrega.\n\\end{itemize}\\[\n\\widehat M_c=\\max\\left(0,\\frac{2\\overline F_{hw}}g-M_s\\right)\n\\]\n",
+    "note": "El estado cargado puede preceder al pesaje completo; distinguir masa física y validación de masa. La ventana nominal de promedio es de 0,50 s y la cota de sobrecarga del contenedor es 50 t.",
+    "weight": 1.2,
+    "section": "Supervisor y planificación coordinada",
+    "backup": false,
+    "owner": null,
+    "label": "slide40"
+  },
+  {
+    "title": "Carga: toma y cierre · Stateflow",
+    "body": "\\begin{center}\\diagramfit{\\begin{tikzpicture}\n\\node[sfstate](v)at(0,0){VACÍO};\n\\node[sfstate](s)at(3.8,0){ESPERAR ESTABILIDAD\\\\{\\scriptsize Sin orden de cierre}};\n\\node[sfstate](c)at(7.6,0){CERRANDO\\\\{\\scriptsize Orden de twistlocks}};\n\\node[sfstate](d)at(11.4,0){DESPEGUE SUAVE\\\\{\\scriptsize Cargado = verdadero}};\n\\fill[accent](-1.8,0)circle(2pt);\\draw[flow](-1.8,0)--(v);\n\\draw[flow](v)--(s);\\node[guard,align=center]at(1.9,1.45){Cerrar, 4 contactos\\\\y permiso de izaje};\n\\draw[flow](s)--(c);\\node[guard,align=center]at(5.7,1.45){Estable durante 1 s\\\\y orden sostenida};\n\\draw[flow](c)--(d);\\node[guard,align=center]at(9.5,1.45){Cierre confirmado};\n\\draw[flow](s.south)--++(0,-1.1)-|(v.south);\\node[guard,below]at(1.9,-2.15){Cancelar cierre o perder contactos};\n\\end{tikzpicture}}\\end{center}\\vfill\n{\\small Cuatro contactos y estabilidad sostenida durante 1 s autorizan el cierre.\\par}\\vspace{1.5mm}{\\fontsize{9.5}{11}\\selectfont\\textcolor{muted}{Estabilidad: $|\\theta|\\leq0,010$ rad y $|\\dot\\theta|\\leq0,020$ rad/s. DESPEGUE SUAVE activa carga.}\\par}\n",
+    "note": "El cierre exige cuatro contactos y estabilidad durante 1 s: ángulo hasta 0,010 rad y tasa hasta 0,020 rad/s. Al confirmar los twistlocks, DESPEGUE SUAVE activa el estado cargado y la retención de toma.",
+    "weight": 0.65,
+    "section": "Supervisor y planificación coordinada",
+    "backup": false,
+    "owner": "Herrera",
+    "label": "cmp13"
+  },
+  {
+    "title": "Carga: toma y cierre · CODESYS SFC",
+    "body": "\\begin{center}\\diagramfit{\\begin{tikzpicture}\n\\node[sfcstep,double,double distance=1pt] (n0) at (0,0.0) {VACÍO};\n\\node[sfcstep] (n1) at (0,-1.08) {ESPERAR ESTABILIZACIÓN};\n\\node[sfcstep] (n2) at (0,-2.16) {CERRANDO TWISTLOCKS};\n\\node[sfcstep] (n3) at (0,-3.24) {DESPEGUE SUAVE};\n\\draw[wire] (n0.south)--(n1.north);\n\\draw[wire,line width=1.1pt] (-.2,-0.54)--(.2,-0.54);\n\\node[guard,anchor=west,text width=8.7cm] at (1.85,-0.54) {Cerrar, cuatro contactos y permiso de izaje};\n\\draw[wire] (n1.south)--(n2.north);\n\\draw[wire,line width=1.1pt] (-.2,-1.62)--(.2,-1.62);\n\\node[guard,anchor=west,text width=8.7cm] at (1.85,-1.62) {Spreader estable, orden, contacto y permiso};\n\\draw[wire] (n2.south)--(n3.north);\n\\draw[wire,line width=1.1pt] (-.2,-2.7)--(.2,-2.7);\n\\node[guard,anchor=west,text width=8.7cm] at (1.85,-2.7) {Twistlocks cerrados};\n\\end{tikzpicture}}\\end{center}\\vfill\n{\\small Los pasos SFC gobiernan el cierre. Un bloque ST verifica la estabilidad sostenida.\\par}\\vspace{1.5mm}{\\fontsize{9.5}{11}\\selectfont\\textcolor{muted}{La espera no contiene la transición de cancelación hacia VACÍO que sí tiene Stateflow.}\\par}\n",
+    "note": "Los pasos SFC gobiernan el cierre. Un bloque ST verifica la estabilidad sostenida. La espera no contiene la transición de cancelación hacia VACÍO que sí tiene Stateflow.",
+    "weight": 0.65,
+    "section": "Supervisor y planificación coordinada",
+    "backup": false,
+    "owner": "Herrera",
+    "label": "cmp14"
+  },
+  {
+    "title": "Carga: pesaje y entrega · Stateflow",
+    "body": "\\begin{center}\\diagramfit{\\begin{tikzpicture}\n\\node[sfstate](d)at(0,0){DESPEGUE SUAVE};\n\\node[sfstate](p)at(3.8,0){PESAJE\\\\{\\scriptsize Promedia tensión}};\n\\node[sfstate](c)at(7.8,1.1){CARGADO};\n\\node[sfstate](s)at(7.8,-1.1){SOBRECARGA};\n\\node[sfstate](a)at(11.8,0){ABRIENDO\\\\{\\scriptsize Orden de twistlocks}};\n\\draw[flow](d)--(p);\\node[guard,align=center]at(1.9,1.55){Cable tenso\\\\$|v_h|<0,20$ m/s\\\\$|a_h|<0,05$ m/s$^2$};\n\\draw[flow](p.north)|-(c.west);\\node[guard,above]at(5.8,1.5){500 ms y masa hasta 50 t};\n\\draw[flow](p.south)|-(s.west);\\node[guard,below]at(5.8,-1.5){500 ms y masa mayor que 50 t};\n\\draw[flow](c.east)-|(a.north);\\draw[flow](s.east)-|(a.south);\\node[guard,align=center]at(11.8,1.6){Abrir y\\\\4 contactos};\n\\node[sfstate](v)at(7.8,-3.0){VACÍO};\n\\draw[flow](a.south)--(11.8,-3.0)--(v.east);\n\\node[guard,align=center]at(10.3,-2.25){Twistlocks abiertos};\n\\end{tikzpicture}}\\end{center}\\vfill\n{\\small PESAJE promedia muestras de tensión durante al menos 500 ms y actualiza la masa suspendida.\\par}\\vspace{1.5mm}{\\fontsize{9.5}{11}\\selectfont\\textcolor{muted}{Hasta 50 t de contenedor habilita CARGADO. La apertura exige orden y cuatro contactos.}\\par}\n",
+    "note": "PESAJE promedia muestras de tensión durante al menos 500 ms y actualiza la masa suspendida. Hasta 50 t de contenedor habilita CARGADO. La apertura exige orden y cuatro contactos. Stateflow también permite apertura desde DESPEGUE SUAVE cuando hay orden y contacto. La falla de cierre/apertura tiene su propia recuperación.",
+    "weight": 0.65,
+    "section": "Supervisor y planificación coordinada",
+    "backup": false,
+    "owner": "Herrera",
+    "label": "cmp15"
+  },
+  {
+    "title": "Carga: pesaje y entrega · CODESYS SFC",
+    "body": "\\begin{center}\\diagramfit{\\begin{tikzpicture}\n\\node[font=\\small\\bfseries,anchor=west]at(-1.5,.6){Secuencia de carga};\n\\node[sfcstep,text width=2.7cm] (d) at (0,0) {DESPEGUE SUAVE};\n\\node[sfcstep,text width=2.7cm] (p) at (0,-.85) {PESAJE};\n\\node[sfcstep,text width=2.7cm] (c) at (0,-1.7) {CARGADO};\n\\node[sfcstep,text width=2.7cm] (a) at (0,-2.55) {ABRIENDO TWISTLOCKS};\n\\node[sfcstep,text width=2.7cm] (v) at (0,-3.65) {VACÍO};\n\\draw[wire](d.south)--(p.north);\\draw[wire,line width=1.1pt](-.2,-.425)--(.2,-.425);\n\\node[guard,anchor=west,text width=3.8cm]at(1.6,-.425){Cable tenso y dinámica baja};\n\\draw[wire](p.south)--(c.north);\\draw[wire,line width=1.1pt](-.2,-1.275)--(.2,-1.275);\n\\node[guard,anchor=west,text width=3.8cm]at(1.6,-1.275){Permanencia mínima de 500 ms};\n\\draw[wire](c.south)--(a.north);\\draw[wire,line width=1.1pt](-.2,-2.125)--(.2,-2.125);\n\\node[guard,anchor=west,text width=3.8cm]at(1.6,-2.125){Abrir y cuatro contactos};\n\\draw[wire](a.south)--(v.north);\\draw[wire,line width=1.1pt](-.2,-3.15)--(.2,-3.15);\n\\node[guard,anchor=west,text width=3.8cm]at(1.6,-3.15){Twistlocks abiertos};\n\\node[font=\\small\\bfseries,anchor=west]at(5.9,.6){Monitor de sobrecarga};\n\\node[sfcstep,double,double distance=1pt,text width=2.7cm](n)at(7.4,0){CARGA NORMAL};\n\\node[sfcstep,text width=2.7cm](o)at(7.4,-1.4){SOBRECARGA ACTIVA};\n\\draw[wire](n.south)--(o.north);\\draw[wire,line width=1.1pt](7.2,-.7)--(7.6,-.7);\n\\node[guard,anchor=west,text width=2.7cm]at(9,-.7){CARGADO y masa mayor que 50 t};\n\\draw[wire](o.south)--(7.4,-2.4);\\draw[wire,line width=1.1pt](7.2,-2.1)--(7.6,-2.1);\n\\node[guard,anchor=west,text width=2.7cm]at(9,-2.1){Reset y fuera de CARGADO};\n\\draw[flow](7.4,-2.4)--(5.7,-2.4)--(5.7,.3)-|(n.north);\n\\end{tikzpicture}}\\end{center}\\vfill\n{\\small\\noindent PESAJE pasa a CARGADO después de 500 ms.\\par\\noindent El monitor independiente activa SOBRECARGA cuando la masa supera 50 t.\\par}\n\\vspace{1.5mm}{\\fontsize{9.5}{11}\\selectfont\\textcolor{muted}{ST acumula las muestras. ABRIENDO pasa a VACÍO al confirmar twistlocks abiertos.}\\par}\n",
+    "note": "La secuencia SFC de carga pasa de PESAJE a CARGADO después de 500 ms simulados. ST acumula las muestras de tensión. El paso de DESPEGUE SUAVE a PESAJE exige cable tenso, velocidad de izaje menor que 0,20 m/s y aceleración menor que 0,05 m/s². La entrega exige orden de abrir y cuatro contactos, y la confirmación de twistlocks abiertos conduce a VACÍO. La sobrecarga tiene un SFC independiente: CARGA_NORMAL pasa a SOBRECARGA_ACTIVA cuando SFC_CARGA.CARGADO está activo y la masa estimada de contenedor supera 50000 kg. Regresa a CARGA_NORMAL con Reset y fuera de CARGADO. Por eso se muestran dos diagramas independientes, en lugar de inventar una bifurcación exclusiva desde PESAJE equivalente a Stateflow. El SFC de alarma de sobrecarga es otro monitor, explicado en su propia diapositiva.",
+    "weight": 0.65,
+    "section": "Supervisor y planificación coordinada",
+    "backup": false,
+    "owner": "Herrera",
+    "label": "cmp16"
+  },
+  {
+    "title": "Carga: retención de fallas · Stateflow",
+    "body": "\\begin{center}\\diagramfit{\\begin{tikzpicture}\n\\node[sfstate,text width=2.5cm] (n0) at (0.0,0) {ESPERAR, CERRAR\\\\O ABRIR};\n\\node[sfstate,text width=2.5cm] (n1) at (3.35,0) {FALLA\\\\TWISTLOCK};\n\\node[sfstate,text width=2.5cm] (n2) at (6.7,0) {VACÍO};\n\\fill[accent] (-1.8,0) circle (2pt);\n\\draw[flow] (-1.8,0)--(n0.west);\n\\draw[flow] (n0.east)--(n1.west);\n\\node[guard,text width=3.35cm,anchor=south] at (1.675,.78) {Pérdida de permiso,\\\\seguimiento o timeout};\n\\draw[flow] (n1.east)--(n2.west);\n\\node[guard,text width=3.35cm,anchor=south] at (5.025,.78) {Reset y twistlocks\\\\abiertos};\n\\end{tikzpicture}}\\end{center}\\vfill\n{\\small Stateflow integra la falla de twistlocks dentro de la región de carga.\\par}\\vspace{1.5mm}{\\fontsize{9.5}{11}\\selectfont\\textcolor{muted}{Una pérdida de permiso, seguimiento fallido o espera de 2 s puede retirar las órdenes de cierre y apertura.}\\par}\n",
+    "note": "Stateflow integra la falla de twistlocks dentro de la región de carga. Una pérdida de permiso, seguimiento fallido o espera de 2 s puede retirar las órdenes de cierre y apertura.",
+    "weight": 0.65,
+    "section": "Supervisor y planificación coordinada",
+    "backup": false,
+    "owner": "Herrera",
+    "label": "cmp17"
+  },
+  {
+    "title": "Carga: retención de fallas · CODESYS SFC",
+    "body": "\\begin{center}\\diagramfit{\\begin{tikzpicture}\n\\node[sfcstep,double,double distance=1pt] (n0) at (0,0.0) {TWISTLOCK OK};\n\\node[sfcstep] (n1) at (0,-1.08) {FALLA TWISTLOCK};\n\\draw[wire] (n0.south)--(n1.north);\n\\draw[wire,line width=1.1pt] (-.2,-0.54)--(.2,-0.54);\n\\node[guard,anchor=west,text width=8.7cm] at (1.85,-0.54) {Seguimiento fallido, cierre de 2 s o apertura de 2 s};\n\\draw[flow] (n1.south)--(0,-1.73);\n\\node[guard,anchor=north,align=center,text width=8.3cm] at (2.8,-1.75) {Reset y twistlocks abiertos: salto a TWISTLOCK OK};\n\\end{tikzpicture}}\\end{center}\\vfill\n{\\small El monitor retiene seguimiento fallido o timeout de cierre/apertura de 2 s simulados.\\par}\\vspace{1.5mm}{\\fontsize{9.5}{11}\\selectfont\\textcolor{muted}{Reset con twistlocks abiertos reconoce el fallo. La cadena de carga mantiene su propio estado.}\\par}\n",
+    "note": "El monitor retiene seguimiento fallido o timeout de cierre/apertura de 2 s simulados. Reset con twistlocks abiertos reconoce el fallo. La cadena de carga mantiene su propio estado.",
+    "weight": 0.65,
+    "section": "Supervisor y planificación coordinada",
+    "backup": false,
+    "owner": "Herrera",
+    "label": "cmp18"
+  },
+  {
+    "title": "Carga: sobrecarga · CODESYS SFC",
+    "body": "\\begin{center}\\diagramfit{\\begin{tikzpicture}\n\\node[sfcstep,double,double distance=1pt] (n0) at (0,0.0) {CARGA NORMAL};\n\\node[sfcstep] (n1) at (0,-1.08) {SOBRECARGA ACTIVA};\n\\draw[wire] (n0.south)--(n1.north);\n\\draw[wire,line width=1.1pt] (-.2,-0.54)--(.2,-0.54);\n\\node[guard,anchor=west,text width=8.7cm] at (1.85,-0.54) {CARGADO activo y masa estimada mayor que 50 000 kg};\n\\draw[flow] (n1.south)--(0,-1.73);\n\\node[guard,anchor=north,align=center,text width=8.3cm] at (2.8,-1.75) {Reset y CARGADO inactivo: retorno a CARGA NORMAL};\n\\end{tikzpicture}}\\end{center}\\vfill\n{\\small La sobrecarga se detecta cuando CARGADO está activo y la masa estimada supera 50 t.\\par}\\vspace{1.5mm}{\\fontsize{9.5}{11}\\selectfont\\textcolor{muted}{El monitor se rearma con Reset y CARGADO inactivo. ST publica la alarma y restringe los mandos.}\\par}\n",
+    "note": "La sobrecarga se detecta cuando CARGADO está activo y la masa estimada supera 50 t. El monitor se rearma con Reset y CARGADO inactivo. ST publica la alarma y restringe los mandos.",
+    "weight": 0.65,
+    "section": "Supervisor y planificación coordinada",
+    "backup": false,
+    "owner": "Herrera",
+    "label": "cmp42"
+  },
+  {
+    "title": "Freno de carro · Stateflow",
+    "body": "\\begin{center}\\diagramfit{\\begin{tikzpicture}\n\\node[sfstate,text width=2.5cm] (n0) at (0.0,0) {TB APLICADO};\n\\node[sfstate,text width=2.5cm] (n1) at (3.35,0) {TB PRUEBA\\\\TORQUE};\n\\node[sfstate,text width=2.5cm] (n2) at (6.7,0) {TB ABIERTO};\n\\node[sfstate,text width=2.5cm] (n3) at (10.05,0) {TB APLICANDO};\n\\fill[accent] (-1.8,0) circle (2pt);\n\\draw[flow] (-1.8,0)--(n0.west);\n\\draw[flow] (n0.east)--(n1.west);\n\\node[guard,text width=3.35cm,anchor=south] at (1.675,.78) {Habilitación, demanda\\\\y permiso};\n\\draw[flow] (n1.east)--(n2.west);\n\\node[guard,text width=3.35cm,anchor=south] at (5.025,.78) {Torque\\\\comprobado};\n\\draw[flow] (n2.east)--(n3.west);\n\\node[guard,text width=3.35cm,anchor=south] at (8.375,.78) {Cancelar demanda\\\\o retirar permiso};\n\\draw[flow] (n1.south)--++(0,-1.1) -| (n0.south);\n\\node[guard,anchor=north,align=center,text width=9cm] at (1.675,-1.6) {Prueba sin torque: retorno tras 50 ticks};\n\\draw[flow] (n3.south)--++(0,-1.8) -| (n0.south);\n\\node[guard,anchor=north,align=center,text width=9cm] at (5.025,-2.3) {Reposo: velocidad menor que 0,03 m/s y error admisible};\n\\end{tikzpicture}}\\end{center}\\vfill\n{\\small El accionamiento debe demostrar torque antes de abrir el freno del carro.\\par}\\vspace{1.5mm}{\\fontsize{9.5}{11}\\selectfont\\textcolor{muted}{La aplicación espera velocidad menor que 0,03 m/s y error de posición de hasta 0,03 m.}\\par}\n",
+    "note": "El accionamiento debe demostrar torque antes de abrir el freno del carro. La aplicación espera velocidad menor que 0,03 m/s y error de posición de hasta 0,03 m.",
+    "weight": 0.65,
+    "section": "Supervisor y planificación coordinada",
+    "backup": false,
+    "owner": "Herrera",
+    "label": "cmp19"
+  },
+  {
+    "title": "Freno de carro · CODESYS SFC",
+    "body": "\\begin{center}\\diagramfit{\\begin{tikzpicture}\n\\node[sfcstep,double,double distance=1pt] (n0) at (0,0.0) {TB APLICADO};\n\\node[sfcstep] (n1) at (0,-1.08) {TB PRUEBA TORQUE};\n\\node[sfcstep] (n2) at (0,-2.16) {TB ABIERTO};\n\\node[sfcstep] (n3) at (0,-3.24) {TB APLICANDO};\n\\draw[wire] (n0.south)--(n1.north);\n\\draw[wire,line width=1.1pt] (-.2,-0.54)--(.2,-0.54);\n\\node[guard,anchor=west,text width=8.7cm] at (1.85,-0.54) {Habilitación, demanda y permiso};\n\\draw[wire] (n1.south)--(n2.north);\n\\draw[wire,line width=1.1pt] (-.2,-1.62)--(.2,-1.62);\n\\node[guard,anchor=west,text width=8.7cm] at (1.85,-1.62) {Torque comprobado o cancelación de la demanda/habilitación/permiso};\n\\draw[wire] (n2.south)--(n3.north);\n\\draw[wire,line width=1.1pt] (-.2,-2.7)--(.2,-2.7);\n\\node[guard,anchor=west,text width=8.7cm] at (1.85,-2.7) {Cancelación de demanda o permiso};\n\\draw[flow] (n3.south)--(0,-3.89);\n\\node[guard,anchor=north,align=center,text width=8.3cm] at (2.8,-3.91) {Reposo y error admisible: salto a TB APLICADO};\n\\end{tikzpicture}}\\end{center}\\vfill\n{\\small El carro usa tolerancia de 0,05 m y memoriza la prueba de torque para la maniobra vigente.\\par}\\vspace{1.5mm}{\\fontsize{9.5}{11}\\selectfont\\textcolor{muted}{El paso ABIERTO puede atravesarse al cancelar. La apertura física exige prueba memorizada y permisos.}\\par}\n",
+    "note": "El carro usa tolerancia de 0,05 m y memoriza la prueba de torque para la maniobra vigente. El paso ABIERTO puede atravesarse al cancelar. La apertura física exige prueba memorizada y permisos.",
+    "weight": 0.65,
+    "section": "Supervisor y planificación coordinada",
+    "backup": false,
+    "owner": "Herrera",
+    "label": "cmp20"
+  },
+  {
+    "title": "Freno de izaje · Stateflow",
+    "body": "\\begin{center}\\diagramfit{\\begin{tikzpicture}\n\\node[sfstate,text width=2.5cm] (n0) at (0.0,0) {HB APLICADO};\n\\node[sfstate,text width=2.5cm] (n1) at (3.35,0) {HB PRUEBA\\\\TORQUE};\n\\node[sfstate,text width=2.5cm] (n2) at (6.7,0) {HB ABIERTO};\n\\node[sfstate,text width=2.5cm] (n3) at (10.05,0) {HB APLICANDO};\n\\fill[accent] (-1.8,0) circle (2pt);\n\\draw[flow] (-1.8,0)--(n0.west);\n\\draw[flow] (n0.east)--(n1.west);\n\\node[guard,text width=3.35cm,anchor=south] at (1.675,.78) {Habilitación, demanda\\\\y permiso};\n\\draw[flow] (n1.east)--(n2.west);\n\\node[guard,text width=3.35cm,anchor=south] at (5.025,.78) {Torque\\\\comprobado};\n\\draw[flow] (n2.east)--(n3.west);\n\\node[guard,text width=3.35cm,anchor=south] at (8.375,.78) {Cancelar demanda\\\\o retirar permiso};\n\\draw[flow] (n1.south)--++(0,-1.1) -| (n0.south);\n\\node[guard,anchor=north,align=center,text width=9cm] at (1.675,-1.6) {Prueba sin torque: retorno tras 50 ticks};\n\\draw[flow] (n3.south)--++(0,-1.8) -| (n0.south);\n\\node[guard,anchor=north,align=center,text width=9cm] at (5.025,-2.3) {Reposo: velocidad menor que 0,03 m/s y error admisible};\n\\end{tikzpicture}}\\end{center}\\vfill\n{\\small La prueba de torque sostiene la carga antes de permitir abrir el freno de izaje.\\par}\\vspace{1.5mm}{\\fontsize{9.5}{11}\\selectfont\\textcolor{muted}{Durante automático, la referencia nula no basta para iniciar la aplicación del freno.}\\par}\n",
+    "note": "La prueba de torque sostiene la carga antes de permitir abrir el freno de izaje. Durante automático, la referencia nula no basta para iniciar la aplicación del freno.",
+    "weight": 0.65,
+    "section": "Supervisor y planificación coordinada",
+    "backup": false,
+    "owner": "Herrera",
+    "label": "cmp21"
+  },
+  {
+    "title": "Freno de izaje · CODESYS SFC",
+    "body": "\\begin{center}\\diagramfit{\\begin{tikzpicture}\n\\node[sfcstep,double,double distance=1pt] (n0) at (0,0.0) {HB APLICADO};\n\\node[sfcstep] (n1) at (0,-1.08) {HB PRUEBA TORQUE};\n\\node[sfcstep] (n2) at (0,-2.16) {HB ABIERTO};\n\\node[sfcstep] (n3) at (0,-3.24) {HB APLICANDO};\n\\draw[wire] (n0.south)--(n1.north);\n\\draw[wire,line width=1.1pt] (-.2,-0.54)--(.2,-0.54);\n\\node[guard,anchor=west,text width=8.7cm] at (1.85,-0.54) {Habilitación, demanda y permiso};\n\\draw[wire] (n1.south)--(n2.north);\n\\draw[wire,line width=1.1pt] (-.2,-1.62)--(.2,-1.62);\n\\node[guard,anchor=west,text width=8.7cm] at (1.85,-1.62) {Torque comprobado};\n\\draw[wire] (n2.south)--(n3.north);\n\\draw[wire,line width=1.1pt] (-.2,-2.7)--(.2,-2.7);\n\\node[guard,anchor=west,text width=8.7cm] at (1.85,-2.7) {Cancelación de demanda o permiso (demanda exceptuada en automático)};\n\\draw[flow] (n3.south)--(0,-3.89);\n\\node[guard,anchor=north,align=center,text width=8.3cm] at (2.8,-3.91) {Reposo y error admisible: salto a HB APLICADO};\n\\end{tikzpicture}}\\end{center}\\vfill\n{\\small La secuencia conserva la excepción del modo automático para mantener habilitado el izaje.\\par}\\vspace{1.5mm}{\\fontsize{9.5}{11}\\selectfont\\textcolor{muted}{Un monitor separado detecta falta de torque al cumplirse 1 s de prueba.}\\par}\n",
+    "note": "La secuencia conserva la excepción del modo automático para mantener habilitado el izaje. Un monitor separado detecta falta de torque al cumplirse 1 s de prueba.",
+    "weight": 0.65,
+    "section": "Supervisor y planificación coordinada",
+    "backup": false,
+    "owner": "Herrera",
+    "label": "cmp22"
+  },
+  {
+    "title": "Frenos: monitores de falla · CODESYS SFC",
+    "body": "\\begin{center}\\diagramfit{\\begin{tikzpicture}\\begin{scope}[xshift=0.0cm]\\node[font=\\small\\bfseries] at (1.5,.85){Carro};\n\\node[sfcstep,double,double distance=1pt] (n0) at (0,0.0) {FRENO CARRO OK};\n\\node[sfcstep] (n1) at (0,-1.08) {FALLO FRENO CARRO};\n\\draw[wire] (n0.south)--(n1.north);\n\\draw[wire,line width=1.1pt] (-.2,-0.54)--(.2,-0.54);\n\\node[guard,anchor=west,text width=3.4cm] at (1.85,-0.54) {8 s sin torque; con demanda habilitada};\n\\draw[flow] (n1.south)--(0,-1.73);\n\\node[guard,anchor=north,align=center,text width=5.4cm] at (1.6,-1.75) {Reset y regulación inactiva: retorno a OK};\n\\end{scope}\\begin{scope}[xshift=7.1cm]\\node[font=\\small\\bfseries] at (1.5,.85){Izaje};\n\\node[sfcstep,double,double distance=1pt] (n0) at (0,0.0) {FRENO IZAJE OK};\n\\node[sfcstep] (n1) at (0,-1.08) {FALLO FRENO IZAJE};\n\\draw[wire] (n0.south)--(n1.north);\n\\draw[wire,line width=1.1pt] (-.2,-0.54)--(.2,-0.54);\n\\node[guard,anchor=west,text width=3.4cm] at (1.85,-0.54) {Sin torque durante 1 s};\n\\draw[flow] (n1.south)--(0,-1.73);\n\\node[guard,anchor=north,align=center,text width=5.4cm] at (1.6,-1.75) {Reset y regulación inactiva: retorno a OK};\n\\end{scope}\\end{tikzpicture}}\\end{center}\\vfill\n{\\small Cada eje tiene un monitor de falla separado de la secuencia de apertura y aplicación.\\par}\\vspace{1.5mm}{\\fontsize{9.5}{11}\\selectfont\\textcolor{muted}{Carro: 8 s con demanda y sin torque. Izaje: 1 s sin torque. Reset exige regulación deshabilitada.}\\par}\n",
+    "note": "Cada eje tiene un monitor de falla separado de la secuencia de apertura y aplicación. Carro: 8 s con demanda y sin torque. Izaje: 1 s sin torque. Reset exige regulación deshabilitada.",
+    "weight": 0.65,
+    "section": "Supervisor y planificación coordinada",
+    "backup": false,
+    "owner": "Herrera",
+    "label": "cmp23"
+  },
+  {
+    "title": "Barrido LIDAR y perfil válido",
+    "body": "\\begin{itemize}\n\\item Preparación a altura y velocidad compatibles con el relevamiento.\n\\item Aproximación al extremo derecho y barrido hacia la izquierda.\n\\item Actualización de las 33 cotas y verificación de cobertura.\n\\item Validación del perfil antes de planificar las transferencias.\n\\end{itemize}\n",
+    "note": "Los ensayos completos usan relevamiento real; el perfil precargado en otros ensayos es una condición inicial declarada, no una equivalencia del barrido.",
+    "weight": 0.9,
+    "section": "Supervisor y planificación coordinada",
+    "backup": false,
+    "owner": null,
+    "label": "slide42"
+  },
+  {
+    "title": "Barrido: preparación · Stateflow",
+    "body": "\\begin{center}\\diagramfit{\\begin{tikzpicture}\n\\node[sfstate,text width=2.5cm] (n0) at (0.0,0) {LISTO O\\\\MANUAL};\n\\node[sfstate,text width=2.5cm] (n1) at (3.35,0) {PREPARAR\\\\ESCANEO LIDAR};\n\\node[sfstate,text width=2.5cm] (n2) at (6.7,0) {IR AL EXTREMO\\\\DERECHO};\n\\fill[accent] (-1.8,0) circle (2pt);\n\\draw[flow] (-1.8,0)--(n0.west);\n\\draw[flow] (n0.east)--(n1.west);\n\\node[guard,text width=3.35cm,anchor=south] at (1.675,.78) {Solicitud pendiente,\\\\vacío y condiciones de ingreso};\n\\draw[flow] (n1.east)--(n2.west);\n\\node[guard,text width=3.35cm,anchor=south] at (5.025,.78) {Altura al menos 39,65 m\\\\y velocidad vertical baja};\n\\end{tikzpicture}}\\end{center}\\vfill\n{\\small El barrido comienza en vacío y eleva el spreader antes de mover el carro.\\par}\\vspace{1.5mm}{\\fontsize{9.5}{11}\\selectfont\\textcolor{muted}{Inicializa 33 celdas. Pasa al recorrido cuando la altura llega a 39,65 m y el izaje casi se detiene.}\\par}\n",
+    "note": "El barrido comienza en vacío y eleva el spreader antes de mover el carro. Inicializa 33 celdas. Pasa al recorrido cuando la altura llega a 39,65 m y el izaje casi se detiene.",
+    "weight": 0.65,
+    "section": "Supervisor y planificación coordinada",
+    "backup": false,
+    "owner": "Herrera",
+    "label": "cmp24"
+  },
+  {
+    "title": "Barrido: preparación · CODESYS SFC",
+    "body": "\\begin{center}\\diagramfit{\\begin{tikzpicture}\n\\node[sfcstep,double,double distance=1pt] (n0) at (0,0.0) {ESPERA ESCANEO};\n\\node[sfcstep] (n1) at (0,-1.08) {PREPARAR ESCANEO LIDAR};\n\\node[sfcstep] (n2) at (0,-2.16) {IR AL EXTREMO DERECHO};\n\\draw[wire] (n0.south)--(n1.north);\n\\draw[wire,line width=1.1pt] (-.2,-0.54)--(.2,-0.54);\n\\node[guard,anchor=west,text width=8.7cm] at (1.85,-0.54) {LISTO, solicitud, perfil no completado, vacío y ejes detenidos};\n\\draw[wire] (n1.south)--(n2.north);\n\\draw[wire,line width=1.1pt] (-.2,-1.62)--(.2,-1.62);\n\\node[guard,anchor=west,text width=8.7cm] at (1.85,-1.62) {Altura al menos 39,65 m y velocidad vertical menor que 0,05 m/s};\n\\end{tikzpicture}}\\end{center}\\vfill\n{\\small ESPERA ESCANEO exige LISTO, solicitud retenida, vacío y ambos ejes detenidos.\\par}\\vspace{1.5mm}{\\fontsize{9.5}{11}\\selectfont\\textcolor{muted}{ST inicializa el perfil y eleva hacia 39,70 m. La guarda de salida usa 39,65 m.}\\par}\n",
+    "note": "ESPERA ESCANEO exige LISTO, solicitud retenida, vacío y ambos ejes detenidos. ST inicializa el perfil y eleva hacia 39,70 m. La guarda de salida usa 39,65 m.",
+    "weight": 0.65,
+    "section": "Supervisor y planificación coordinada",
+    "backup": false,
+    "owner": "Herrera",
+    "label": "cmp25"
+  },
+  {
+    "title": "Barrido: recorrido y validación · Stateflow",
+    "body": "\\begin{center}\\diagramfit{\\begin{tikzpicture}\n\\node[sfstate,text width=2.5cm] (n0) at (0.0,0) {IR AL EXTREMO\\\\DERECHO};\n\\node[sfstate,text width=2.5cm] (n1) at (3.35,0) {BARRIDO HACIA\\\\LA IZQUIERDA};\n\\node[sfstate,text width=2.5cm] (n2) at (6.7,0) {FINALIZAR\\\\ESCANEO};\n\\node[sfstate,text width=2.5cm] (n3) at (10.05,0) {LISTO};\n\\fill[accent] (-1.8,0) circle (2pt);\n\\draw[flow] (-1.8,0)--(n0.west);\n\\draw[flow] (n0.east)--(n1.west);\n\\node[guard,text width=3.35cm,anchor=south] at (1.675,.78) {Límite derecho o\\\\carro en 48,40 m};\n\\draw[flow] (n1.east)--(n2.west);\n\\node[guard,text width=3.35cm,anchor=south] at (5.025,.78) {Límite izquierdo o\\\\carro en −24,50 m};\n\\draw[flow] (n2.east)--(n3.west);\n\\node[guard,text width=3.35cm,anchor=south] at (8.375,.78) {Ejes\\\\detenidos};\n\\end{tikzpicture}}\\end{center}\\vfill\n{\\small El regreso hacia la izquierda registra las muestras de posición y altura del LiDAR.\\par}\\vspace{1.5mm}{\\fontsize{9.5}{11}\\selectfont\\textcolor{muted}{FINALIZAR verifica cobertura y detiene el movimiento. Terminar el recorrido no garantiza perfil válido.}\\par}\n",
+    "note": "El regreso hacia la izquierda registra las muestras de posición y altura del LiDAR. FINALIZAR verifica cobertura y detiene el movimiento. Terminar el recorrido no garantiza perfil válido.",
+    "weight": 0.65,
+    "section": "Supervisor y planificación coordinada",
+    "backup": false,
+    "owner": "Herrera",
+    "label": "cmp26"
+  },
+  {
+    "title": "Barrido: recorrido y validación · CODESYS SFC",
+    "body": "\\begin{center}\\diagramfit{\\begin{tikzpicture}\n\\node[sfcstep] (n0) at (0,0.0) {IR AL EXTREMO DERECHO};\n\\node[sfcstep] (n1) at (0,-1.08) {BARRIDO LIDAR IZQUIERDA};\n\\node[sfcstep] (n2) at (0,-2.16) {FINALIZAR ESCANEO LIDAR};\n\\draw[wire] (n0.south)--(n1.north);\n\\draw[wire,line width=1.1pt] (-.2,-0.54)--(.2,-0.54);\n\\node[guard,anchor=west,text width=8.7cm] at (1.85,-0.54) {Límite derecho o lidarX al menos 45,90 m, con velocidad baja};\n\\draw[wire] (n1.south)--(n2.north);\n\\draw[wire,line width=1.1pt] (-.2,-1.62)--(.2,-1.62);\n\\node[guard,anchor=west,text width=8.7cm] at (1.85,-1.62) {Límite izquierdo o LiDAR hasta −28,78 m, con velocidad baja};\n\\draw[flow] (n2.south)--(0,-2.81);\n\\node[guard,anchor=north,align=center,text width=8.3cm] at (2.8,-2.83) {Ejes detenidos: salto a ESPERA ESCANEO};\n\\end{tikzpicture}}\\end{center}\\vfill\n{\\small El SFC usa la posición del LiDAR para verificar que se cubren los extremos del perfil.\\par}\\vspace{1.5mm}{\\fontsize{9.5}{11}\\selectfont\\textcolor{muted}{El extremo izquierdo corregido llega a −28,78 m. ST valida las 33 celdas antes de habilitar el automático.}\\par}\n",
+    "note": "El SFC usa la posición del LiDAR para verificar que se cubren los extremos del perfil. El extremo izquierdo corregido llega a −28,78 m. ST valida las 33 celdas antes de habilitar el automático.",
+    "weight": 0.65,
+    "section": "Supervisor y planificación coordinada",
+    "backup": false,
+    "owner": "Herrera",
+    "label": "cmp27"
+  },
+  {
+    "title": "Geometría de seguridad y objetivo automático",
+    "body": "\\[\ny_{auto}=y_{env}(x^*)+H_c(1+\\delta_{carga})+\\Delta l_{est}\n\\]\n\\begin{itemize}\n\\item La envolvente dilata el perfil y considera la huella de 2,44 m.\n\\item La altura objetivo incluye contenedor, margen y elongación.\n\\item La guarda de ingreso usa la altura local segura.\n\\item La línea global de cruce se calcula por separado.\n\\end{itemize}\\[\ny_{seg}=\\max\\{y_{manual\\to auto},\\min(40,\\max_i y_{perfil,i}+2H_c)\\}\n\\]\n",
+    "note": "La bandera global clearanceOK se calcula y visualiza pero no integra la guarda de ingreso. La mejora de productividad revisará el margen local de esta configuración.",
+    "weight": 1.4,
+    "section": "Supervisor y planificación coordinada",
+    "backup": false,
+    "owner": null,
+    "label": "slide43"
+  },
+  {
+    "title": "Generador automático: entradas y referencias",
+    "body": "\\begin{itemize}\n\\item Recibe el estado medido de los ejes, el destino y el perfil de obstáculos.\n\\item Usa la masa suspendida y la presencia de contenedor para calcular el despeje y la velocidad de izaje.\n\\item Planifica al habilitar automático o cambiar el objetivo.\n\\item Entrega posición, velocidad y aceleración de referencia para cada eje.\n\\end{itemize}\n\\[ (x_r,\\dot x_r,\\ddot x_r),\\qquad (y_r,\\dot y_r,\\ddot y_r) \\]\n",
+    "note": "El supervisor captura el objetivo y reinicia el generador en PLANIFICAR. En EJECUTAR evalúa las referencias periódicamente. El izaje incorpora posición, velocidad y aceleración iniciales medidas. El perfil horizontal supone arranque en reposo, coherente con la guarda de entrada al automático. El generador proporciona consignas al control, mientras la planta determina el movimiento real.",
+    "weight": 1.2,
+    "section": "Supervisor y planificación coordinada",
+    "backup": false,
+    "owner": null,
+    "label": "slide44"
+  },
+  {
+    "title": "Generador automático: etapas de cálculo",
+    "body": "\\begin{enumerate}\n\\item Captura origen, destino, estado vertical, masa y perfil válido.\n\\item Calcula altura de aproximación y altura de cruce con huella, márgenes y elongación.\n\\item Construye traslado horizontal y ascenso. Busca duraciones que respeten los límites.\n\\item Verifica el despeje conjunto. Si falta altura, dilata el tiempo horizontal.\n\\item Define inicio y condiciones de descenso. Evalúa ambos ejes con un reloj común.\n\\end{enumerate}\n\\small Un plan inválido impide ejecutar el movimiento automático. Las mediciones reales y las guardas determinan cuándo termina la maniobra.\n",
+    "note": "Explicar las dependencias del algoritmo antes de las fórmulas. No se trata de dos generadores independientes ni de una optimización global de tiempo. Los límites base se presentan aquí y los ajustes productivos más adelante.",
+    "weight": 1,
+    "section": "Supervisor y planificación coordinada",
+    "backup": false,
+    "owner": null,
+    "label": "generadoralgoritmo"
+  },
+  {
+    "title": "Altura de cruce y margen sobre obstáculos",
+    "body": "\\[\ny_c=\\max\\{y_0,y^*,h_{rec}+H_{carga}+2{,}59+\\Delta l,\\ \\max_i h_i+5{,}18\\}\n\\]\n\\begin{itemize}\n\\item $h_{rec}$: máxima altura del recorrido, incluyendo la huella de la carga.\n\\item $H_{carga}=2{,}59$ m con contenedor y cero en vacío.\n\\item $\\Delta l$: elongación estática estimada a partir de la masa y la rigidez del cable.\n\\item Conserva además la cota global de cruce del ciclo probado.\n\\item Si la altura requerida supera 40 m, el plan queda inválido.\n\\end{itemize}\n",
+    "note": "Esta altura de cruce es interna al planificador. El objetivo vertical del supervisor se explicó antes. La estimación de elongación usa kh=236e6/(2l+110) y Delta l=mg/(4kh), con longitud estimada entre 5 y 65 m. El margen vertical del generador es 2,59 m. La cota global añade 5,18 m al máximo del perfil. La validez incluye los límites de duración y la comprobación del recorrido.",
+    "weight": 1.2,
+    "section": "Supervisor y planificación coordinada",
+    "backup": false,
+    "owner": null,
+    "label": "trayectoria1"
+  },
+  {
+    "title": "Carro: aceleración, crucero y frenado",
+    "body": "\\[\nv_r(t)=\\frac{v_c}{2}\\left[1-\\cos\\left(\\frac{\\pi t}{T_r}\\right)\\right],\\quad\na_r(t)=\\frac{\\pi v_c}{2T_r}\\sin\\left(\\frac{\\pi t}{T_r}\\right)\n\\]\n\\begin{itemize}\n\\item Las expresiones corresponden a la rampa inicial. El frenado invierte la rampa.\n\\item $T_r$ se elige para respetar aceleración y jerk máximos.\n\\item En recorridos largos alcanza el crucero y lo mantiene.\n\\item En recorridos cortos reduce $v_c$ y elimina el tramo de crucero.\n\\end{itemize}\n\\[ v_{x,max}=2{,}5\\ \\mathrm{m/s},\\quad a_{x,max}=0{,}3\\ \\mathrm{m/s^2},\\quad j_{x,max}=0{,}5\\ \\mathrm{m/s^3} \\]\n",
+    "note": "Las ecuaciones se muestran para movimiento positivo y 0 <= t <= Tr. Para movimiento hacia el muelle se aplica el signo del desplazamiento. Tr=max(0,25, pi vmax/(2 amax), pi sqrt(vmax/(2 jmax))). Para distancia D >= vmax Tr, vc=vmax y Tc=D/vc-Tr. En caso contrario vc=D/Tr y Tc=0. La duración horizontal inicial es 2Tr+Tc. Estos límites son de planificación y se distinguen de los límites mecánicos de la guía.",
+    "weight": 1.2,
+    "section": "Supervisor y planificación coordinada",
+    "backup": false,
+    "owner": null,
+    "label": "trayectoria2"
+  },
+  {
+    "title": "Generador horizontal: duración y distancia",
+    "body": "\\relax\n{\\small\n\\[\nT_r=\\max\\left(0{,}25\\ \\mathrm s,\\frac{\\pi v_{max}}{2a_{max}},\n\\pi\\sqrt{\\frac{v_{max}}{2j_{max}}}\\right)\n\\]\n\\[\n(v_c,T_c)=\\begin{cases}(v_{max},D/v_{max}-T_r),&D\\geq v_{max}T_r,\\\\\n(D/T_r,0),&D<v_{max}T_r,\\end{cases}\n\\]\n\\[\nT_x=2T_r+T_c,\\qquad D=v_c(T_r+T_c)\n\\]\n}\n\\begin{itemize}\n\\item Las dos rampas recorren juntas $v_cT_r$. El tramo de crucero agrega $v_cT_c$.\n\\item Cada referencia aplica el signo de $x_f-x_0$.\n\\item La aceleración enlaza en cero. El jerk queda acotado y puede saltar en los empalmes.\n\\end{itemize}\n",
+    "note": "Derivar Tr con amax de la senoide y jmax de su derivada. El cálculo inicial usa vmax incluso para una distancia corta y luego reduce vc. Suavidad no significa que todas las derivadas sean continuas.",
+    "weight": 1,
+    "section": "Supervisor y planificación coordinada",
+    "backup": false,
+    "owner": null,
+    "label": "horizontalcalculo"
+  },
+  {
+    "title": "Izaje: ascenso y descenso quínticos",
+    "body": "\\[ y_r(t)=c_0+c_1t+c_2t^2+c_3t^3+c_4t^4+c_5t^5 \\]\n\\begin{itemize}\n\\item Cada tramo fija posición, velocidad y aceleración en sus dos extremos.\n\\item El ascenso parte del estado medido y termina en $y_c$ con velocidad y aceleración nulas.\n\\item El descenso parte del estado previsto al iniciarse y termina en $y^*$ en reposo.\n\\item Entre ambos tramos mantiene la altura de cruce si el ascenso ya terminó.\n\\end{itemize}\n\\[ a_{y,max}=0{,}25\\ \\mathrm{m/s^2},\\qquad j_{y,max}=0{,}10\\ \\mathrm{m/s^3} \\]\n",
+    "note": "Los seis coeficientes del polinomio satisfacen las seis condiciones de borde. Si el descenso empieza antes de finalizar el ascenso, se evalúan posición, velocidad y aceleración de ese instante y se usan como condiciones iniciales del siguiente tramo. Esto conserva continuidad de posición, velocidad y aceleración en el empalme. La trayectoria quíntica limita el jerk, pero no impone jerk nulo en los extremos.",
+    "weight": 1.2,
+    "section": "Supervisor y planificación coordinada",
+    "backup": false,
+    "owner": null,
+    "label": "trayectoria3"
+  },
+  {
+    "title": "Generador vertical: seis condiciones de borde",
+    "body": "\\[\ny_r(t)=\\sum_{k=0}^{5}c_kt^k,\\qquad c_0=y_0,\\quad c_1=v_0,\\quad c_2=a_0/2\n\\]\n{\\small\n\\[\n\\begin{bmatrix}T^3&T^4&T^5\\\\3T^2&4T^3&5T^4\\\\6T&12T^2&20T^3\\end{bmatrix}\n\\begin{bmatrix}c_3\\\\c_4\\\\c_5\\end{bmatrix}\n=\\begin{bmatrix}y_f-c_0-c_1T-c_2T^2\\\\v_f-c_1-2c_2T\\\\a_f-2c_2\\end{bmatrix}\n\\]\n}\n\\small Para cada duración candidata se resuelven los coeficientes y se verifican $\\dot y_r$, $\\ddot y_r$ y $\\dddot y_r$. El empalme conserva posición, velocidad y aceleración. El jerk puede cambiar entre tramos.\n",
+    "note": "Las condiciones iniciales verticales pueden ser medidas o evaluadas al iniciar el descenso, según el plan. Al terminar se pide vf=af=0. No presentar la verificación en 241 puntos como una prueba continua exacta.",
+    "weight": 1,
+    "section": "Supervisor y planificación coordinada",
+    "backup": false,
+    "owner": null,
+    "label": "quinticacondiciones"
+  },
+  {
+    "title": "Izaje: duración admisible y efecto de la masa",
+    "body": "\\begin{itemize}\n\\item Duplica una duración inicial hasta encontrar un perfil que respete los límites.\n\\item Refina la duración por bisección, con 48 iteraciones.\n\\item Comprueba velocidad, aceleración y jerk en 241 puntos por candidato.\n\\item En vacío admite 3 m/s. Con carga reduce el límite según la masa total suspendida.\n\\end{itemize}\n\\[\nv_{y,max}=\\min\\left(3,\\max\\left(1{,}5,\\frac{97500}{m}\\right)\\right)\\ \\mathrm{m/s}\n\\]\n\\small $m$ en kg, acotada entre 15\\,000 y 65\\,000. El límite de búsqueda es 300 s por perfil.\n",
+    "note": "La búsqueda comienza con max(10 Ts,0,05 s) y duplica hasta encontrar una duración válida o llegar a 300 s. Luego hace 48 pasos de bisección entre max(Ts,0,001 s) y la duración válida. Es una comprobación numérica muestreada de los límites, no una demostración analítica continua ni una optimización global del ciclo. La velocidad cargada resulta 1,5 m/s para 65000 kg y 3 m/s para masas de hasta 32500 kg.",
+    "weight": 1.2,
+    "section": "Supervisor y planificación coordinada",
+    "backup": false,
+    "owner": null,
+    "label": "trayectoria4"
+  },
+  {
+    "title": "Sincronización: un reloj para los dos ejes",
+    "body": "\\[\n(x_r,v_{x,r},a_{x,r})=F_x(t_p),\\qquad\n(y_r,v_{y,r},a_{y,r})=F_y(t_p)\n\\]\n\\[\nt_p[k+1]=\\min(t_p[k]+T_{sup},T_{plan}),\\qquad T_{sup}=20\\ \\mathrm{ms}\n\\]\n\\begin{itemize}\n\\item PLANIFICAR reinicia $t_p=0$. EJECUTAR evalúa ambas referencias en ese mismo instante.\n\\item El eje que termina un tramo mantiene su posición final con velocidad y aceleración nulas.\n\\item $T_{plan}=\\max(T_x,t_d+T_{desc})$. Los tramos pueden terminar en instantes distintos.\n\\item En una espera de estabilización se retiene el reloj común en $t_d$.\n\\end{itemize}\n",
+    "note": "La recurrencia mostrada corresponde al avance habilitado. Durante la compuerta de descenso no se aplica el incremento. El MC recibe referencias retenidas y sigue regulando cada 1 ms, incluso cuando el tiempo del plan está detenido.",
+    "weight": 1.2,
+    "section": "Supervisor y planificación coordinada",
+    "backup": false,
+    "owner": null,
+    "label": "trayectoria5"
+  },
+  {
+    "title": "Sincronización: tiempo del plan y tiempo de regulación",
+    "body": "\\begin{center}\\small\n\\begin{tabular}{lll}\\toprule\nEtapa & Reloj del plan & Acción de ambos ejes\\\\\\midrule\nInicio & $t_p=0$ & Captura y evaluación inicial\\\\\nTraslado & Avanza cada 20 ms & Ascenso y carro coordinados\\\\\nEspera en destino & $t_p=t_d$ & Mantiene consignas y amortigua balanceo\\\\\nDescenso habilitado & Continúa desde $t_d$ & Reanuda el perfil vertical\\\\\nFin & $t_p=T_{plan}$ & Mantiene posiciones finales\\\\\\bottomrule\n\\end{tabular}\\end{center}\n\\begin{itemize}\n\\item El MC sigue ejecutándose cada 1 ms durante la espera.\n\\item Dilatar $F_x$ da tiempo al ascenso antes de alcanzar un obstáculo.\n\\item Compartir $t_p$ coordina las consignas. El seguimiento real requiere regulación y mediciones.\n\\end{itemize}\n",
+    "note": "La espera mostrada corresponde al descenso condicionado al fin horizontal, td>=Tx. La pausa congela la evaluación del plan, no la integración de la planta ni el control.",
+    "weight": 1,
+    "section": "Supervisor y planificación coordinada",
+    "backup": false,
+    "owner": null,
+    "label": "relojes"
+  },
+  {
+    "title": "Sincronización: tiempo para superar obstáculos",
+    "body": "\\begin{enumerate}\n\\item Calcula el traslado horizontal inicial y el ascenso hasta $y_c$.\n\\item Comprueba el despeje en 401 instantes del recorrido horizontal.\n\\item Si falta altura, aumenta un 2,5\\,\\% los tiempos horizontales y reduce la velocidad.\n\\item Repite hasta conseguir despeje, con hasta 240 ajustes y 300 s horizontales.\n\\end{enumerate}\n\\[\n\\lambda=1+\\frac{2{,}5}{100}=1{,}025\n\\]\n{\\small Incremento temporal fijo de diseño: 2,5\\,\\%.\\par}\n\\[\nT_r'=\\lambda T_r,\\quad T_c'=\\lambda T_c,\\quad v_c'=v_c/\\lambda\n\\]\n",
+    "note": "El factor 1,025 está fijado explícitamente en el generador. Se obtiene de escoger un incremento temporal del 2,5 por ciento: lambda=1+2,5/100. No se deduce de un cociente entre los tiempos de ambos ejes ni de una optimización. La comprobación del despeje determina cuántas veces aplicarlo. Dos ajustes multiplican la duración por 1,025 al cuadrado, igual a 1,050625: un aumento acumulado del 5,0625 por ciento. Al llegar al techo de 300 s, Tnuevo=min(300,1,025 Tanterior) y el factor efectivo es Tnuevo/Tanterior. Con ese factor efectivo se escalan ambas duraciones horizontales y se divide la velocidad de crucero para conservar distancia. La aceleración se reduce por el cuadrado del factor y el jerk por el cubo. El ascenso conserva su perfil y ambos ejes mantienen el reloj común. La comprobación compara la base de la carga, descontando elongación y altura del contenedor, con el perfil local más 2,59 m, y considera su huella de 2,44 m. El código omite los primeros 0,02 m desde el origen. Si no consigue despeje dentro de los límites, invalida el plan.",
+    "weight": 1.2,
+    "section": "Supervisor y planificación coordinada",
+    "backup": false,
+    "owner": null,
+    "label": "trayectoria6"
+  },
+  {
+    "title": "Sincronización: efecto de dilatar el traslado",
+    "body": "\\[\nx_r^{(nuevo)}(t)=x_r^{(anterior)}(t/\\lambda),\\qquad \\lambda=1{,}025\n\\]\n\\[\nv_r^{(nuevo)}=\\frac{v_r^{(anterior)}}\\lambda,\\quad\na_r^{(nuevo)}=\\frac{a_r^{(anterior)}}{\\lambda^2},\\quad\nj_r^{(nuevo)}=\\frac{j_r^{(anterior)}}{\\lambda^3}\n\\]\n\\begin{itemize}\n\\item La distancia permanece constante. El carro alcanza cada posición más tarde.\n\\item El ascenso conserva su perfil y gana tiempo de elevación respecto de cada obstáculo.\n\\item La comprobación conjunta usa la base de la carga, su huella y la elongación estimada.\n\n\\end{itemize}\n",
+    "note": "Las derivadas del perfil anterior se evalúan en t/lambda. Cuando se aplica el techo de 300 s, el factor efectivo se calcula con la nueva duración, no siempre vale 1,025.",
+    "weight": 1,
+    "section": "Supervisor y planificación coordinada",
+    "backup": false,
+    "owner": null,
+    "label": "dilatacion"
+  },
+  {
+    "title": "Descenso: inicio previsto y espera de estabilización",
+    "body": "\\begin{itemize}\n\\item Busca cuándo la carga sale de la zona de obstáculos ampliada.\n\\item Si el destino queda dentro de esa zona, programa el descenso al finalizar el traslado horizontal.\n\\item En ese caso retiene el reloj al inicio del descenso hasta verificar llegada y balanceo.\n\\end{itemize}\n\\[\n|x-x^*|\\leq0{,}08\\ \\mathrm m,\\quad |v_x|\\leq0{,}06\\ \\mathrm{m/s}\n\\]\n\\[\n|\\theta|\\leq0{,}005\\ \\mathrm{rad},\\quad |\\dot\\theta|\\leq0{,}012\\ \\mathrm{rad/s}\n\\]\n\\small La espera depende de las mediciones reales y puede prolongar la maniobra.\n",
+    "note": "Para destino más allá de la zona ampliada, el generador estima el instante de salida con 400 intervalos y 32 iteraciones de bisección. Si no sale antes, usa t_d=Tx. La retención por balanceo se aplica cuando t_d>=Tx, no a cualquier descenso anticipado. El reloj queda fijado en t_d mientras las cuatro condiciones medidas no se cumplan. Al liberarse, continúa con el mismo reloj y las mismas referencias planificadas. Estos umbrales corresponden a la configuración base explicada aquí y las revisiones de productividad se presentan más adelante. La espera reduce movimiento durante el descenso, pero no elimina activamente el balanceo.",
+    "weight": 1.2,
+    "section": "Supervisor y planificación coordinada",
+    "backup": false,
+    "owner": null,
+    "label": "trayectoria7"
+  },
+  {
+    "title": "Ejemplo del generador: referencia horizontal",
+    "body": "\\begin{center}\\includegraphics[width=.98\\linewidth,height=5.55cm,keepaspectratio]{imagenes/r_023.png}\\end{center}\\vspace{-1mm}\\figcaption{Slot 6 → 23; ejemplo de referencias sin respuesta de planta. $v_{x,max}=2,5$ m/s, $a_{x,max}=0,3$ m/s$^2$.}\n",
+    "note": "Identificar aceleración, crucero, frenado y retención. La velocidad de crucero disminuye si la distancia no permite alcanzar el máximo.",
+    "weight": 1.1,
+    "section": "Supervisor y planificación coordinada",
+    "backup": false,
+    "owner": null,
+    "label": "slide45"
+  },
+  {
+    "title": "Ejemplo del generador: referencia vertical",
+    "body": "\\begin{center}\\includegraphics[width=.98\\linewidth,height=5.55cm,keepaspectratio]{imagenes/r_024.png}\\end{center}\\vspace{-1mm}\\figcaption{Ascenso, altura de cruce y descenso; trayectoria quíntica con límites de aceleración y jerk.}\n",
+    "note": "El ejemplo ilustra el planificador, no acredita cumplimiento físico de todos los límites de la guía. La velocidad vertical se configura además según masa y potencia.",
+    "weight": 1.1,
+    "section": "Supervisor y planificación coordinada",
+    "backup": false,
+    "owner": null,
+    "label": "slide46"
+  },
+  {
+    "title": "Coordinación sobre el perfil de obstáculos",
+    "body": "\\begin{center}\\includegraphics[width=.98\\linewidth,height=5.55cm,keepaspectratio]{imagenes/r_025.png}\\end{center}\\vspace{-1mm}\\figcaption{Ejemplo slot 6 → 23: plan de 57,66 s; sólo referencias generadas.}\n",
+    "note": "Recorrer el XY y explicar el alargamiento horizontal para dar tiempo al ascenso. No confundir estos 57,66 s con los traslados medidos en las pruebas completas.",
+    "weight": 1.2,
+    "section": "Supervisor y planificación coordinada",
+    "backup": false,
+    "owner": null,
+    "label": "slide47"
+  },
+  {
+    "title": "Diagnóstico del supervisor · Stateflow",
+    "body": "\\begin{center}\\diagramfit{\\begin{tikzpicture}\n\\node[sfstate] (ok) at (0,0) {DIAG OK\\\\Códigos nulos};\n\\node[sfstate] (alarm) at (5,0) {ALARMA\\\\Publica alarma};\n\\node[sfstate] (fault) at (10,0) {FALLA\\\\Publica falla};\n\\fill[accent](-1.8,0) circle(2pt);\\draw[flow](-1.8,0)--(ok);\n\\draw[flow](ok)--node[guard,above,text width=2.3cm]{Sobrecarga}(alarm);\n\\draw[flow](alarm)--(fault);\\node[guard,anchor=south,align=center,text width=3.6cm]at(7.5,.8){Seguimiento, carga\\\\o pérdida de permiso};\n\\draw[flow](ok.north)--++(0,1.55)-| (fault.north);\n\\node[guard,above,align=center] at (5,1.55){Seguimiento, carga o pérdida de permiso global};\n\\draw[flow](alarm.south)--++(0,-1.1)-|(ok.south);\n\\node[guard,below,align=center]at(2.5,-1.6){Reset y sin sobrecarga};\n\\draw[flow](fault.south)--++(0,-2.0)-|(ok.south);\n\\node[guard,below,align=center]at(5,-2.5){Reset, sin fallas y permiso global};\n\\end{tikzpicture}}\\end{center}\\vfill\n{\\small Diagnóstico exclusivo: OK, ALARMA o FALLA.\\par}\\vspace{1.5mm}{\\fontsize{9.5}{11}\\selectfont\\textcolor{muted}{FALLA exige Reset, causas ausentes y permiso global. Una alarma puede evolucionar a falla.}\\par}\n",
+    "note": "OK, ALARMA y FALLA son estados excluyentes. FALLA requiere reconocer la causa y recuperar el permiso. Una alarma de sobrecarga puede evolucionar a falla si aparece seguimiento fallido o pérdida de permiso.",
+    "weight": 0.65,
+    "section": "Supervisor y planificación coordinada",
+    "backup": false,
+    "owner": "Herrera",
+    "label": "cmp28"
+  },
+  {
+    "title": "Diagnóstico del supervisor · CODESYS SFC",
+    "body": "\\begin{center}\\diagramfit{\\begin{tikzpicture}\\begin{scope}[xshift=0.0cm]\\node[font=\\small\\bfseries] at (1.5,.85){Alarma};\n\\node[sfcstep,double,double distance=1pt] (n0) at (0,0.0) {SIN ALARMA CARGA};\n\\node[sfcstep] (n1) at (0,-1.08) {ALARMA SOBRECARGA};\n\\draw[wire] (n0.south)--(n1.north);\n\\draw[wire,line width=1.1pt] (-.2,-0.54)--(.2,-0.54);\n\\node[guard,anchor=west,text width=3.4cm] at (1.85,-0.54) {Sobrecarga detectada};\n\\draw[flow] (n1.south)--(0,-1.73);\n\\node[guard,anchor=north,align=center,text width=5.4cm] at (1.6,-1.75) {Reset y sin sobrecarga: retorno a SIN ALARMA CARGA};\n\\end{scope}\\begin{scope}[xshift=7.1cm]\\node[font=\\small\\bfseries] at (1.5,.85){Falla};\n\\node[sfcstep,double,double distance=1pt] (n0) at (0,0.0) {SUPERVISOR OK};\n\\node[sfcstep] (n1) at (0,-1.08) {FALLO RETENIDO};\n\\draw[wire] (n0.south)--(n1.north);\n\\draw[wire,line width=1.1pt] (-.2,-0.54)--(.2,-0.54);\n\\node[guard,anchor=west,text width=3.4cm] at (1.85,-0.54) {Seguimiento, carga o permiso global ausente};\n\\draw[flow] (n1.south)--(0,-1.73);\n\\node[guard,anchor=north,align=center,text width=5.4cm] at (1.6,-1.75) {Reset, sin fallas y permiso global: retorno a SUPERVISOR OK};\n\\end{scope}\\end{tikzpicture}}\\end{center}\\vfill\n{\\small Alarma de carga y falla de supervisor tienen memorias SFC independientes.\\par}\\vspace{1.5mm}{\\fontsize{9.5}{11}\\selectfont\\textcolor{muted}{ST calcula los códigos y decide cuál publicar. El reconocimiento exige Reset y causas ausentes.}\\par}\n",
+    "note": "Alarma de carga y falla de supervisor tienen memorias SFC independientes. ST calcula los códigos y decide cuál publicar. El reconocimiento exige Reset y causas ausentes. Los monitores pueden coexistir activos. El programa ST actual consulta la alarma antes de asignar el código de falla en su IF/ELSIF, por lo que la prioridad de publicación también requiere revisión al comparar implementaciones.",
+    "weight": 0.65,
+    "section": "Supervisor y planificación coordinada",
+    "backup": false,
+    "owner": "Herrera",
+    "label": "cmp29"
+  },
+  {
+    "title": "Tensión del cable e histéresis · Stateflow",
+    "body": "\\begin{center}\\diagramfit{\\begin{tikzpicture}\n\\node[sfstate,text width=2.5cm] (n0) at (0.0,0) {CUERDA\\\\FLOJA};\n\\node[sfstate,text width=2.5cm] (n1) at (3.35,0) {CUERDA\\\\TENSA};\n\\draw[flow] (n0.east)--(n1.west);\n\\node[guard,text width=3.35cm,anchor=south] at (1.675,.78) {Tensión mayor\\\\que 15 kN};\n\\draw[flow] (n1.south)--++(0,-1.1) -| (n0.south);\n\\node[guard,anchor=north,align=center,text width=9cm] at (1.675,-1.6) {Tensión menor que 12 kN};\n\\end{tikzpicture}}\\end{center}\\vfill\n{\\small La memoria de histéresis evita alternar cuerda floja y tensa cerca de un único umbral.\\par}\\vspace{1.5mm}{\\fontsize{9.5}{11}\\selectfont\\textcolor{muted}{Tensa por encima de 15 kN. Floja por debajo de 12 kN. Entre ambos valores conserva el estado.}\\par}\n",
+    "note": "La memoria de histéresis evita alternar cuerda floja y tensa cerca de un único umbral. Tensa por encima de 15 kN. Floja por debajo de 12 kN. Entre ambos valores conserva el estado.",
+    "weight": 0.65,
+    "section": "Supervisor y planificación coordinada",
+    "backup": false,
+    "owner": "Herrera",
+    "label": "cmp30"
+  },
+  {
+    "title": "Tensión del cable e histéresis · CODESYS SFC",
+    "body": "\\begin{center}\\diagramfit{\\begin{tikzpicture}\n\\node[sfcstep,double,double distance=1pt] (n0) at (0,0.0) {CUERDA FLOJA};\n\\node[sfcstep] (n1) at (0,-1.08) {CUERDA TENSA};\n\\draw[wire] (n0.south)--(n1.north);\n\\draw[wire,line width=1.1pt] (-.2,-0.54)--(.2,-0.54);\n\\node[guard,anchor=west,text width=8.7cm] at (1.85,-0.54) {Tensión mayor que 15 kN};\n\\draw[flow] (n1.south)--(0,-1.73);\n\\node[guard,anchor=north,align=center,text width=8.3cm] at (2.8,-1.75) {Tensión menor que 12 kN: salto a CUERDA FLOJA};\n\\end{tikzpicture}}\\end{center}\\vfill\n{\\small Dos pasos SFC implementan la memoria de tensión que Stateflow calcula en una función auxiliar.\\par}\\vspace{1.5mm}{\\fontsize{9.5}{11}\\selectfont\\textcolor{muted}{La condición de cuerda tensa participa en el paso desde DESPEGUE SUAVE hacia PESAJE.}\\par}\n",
+    "note": "Dos pasos SFC implementan la memoria de tensión que Stateflow calcula en una función auxiliar. La condición de cuerda tensa participa en el paso desde DESPEGUE SUAVE hacia PESAJE.",
+    "weight": 0.65,
+    "section": "Supervisor y planificación coordinada",
+    "backup": false,
+    "owner": "Herrera",
+    "label": "cmp31"
+  },
+  {
+    "title": "Seguridad e interfaz de operación",
+    "body": "\\setbeamertemplate{frametitle}{}\n\\vfill\n{\\fontsize{25}{29}\\selectfont\\bfseries Seguridad e interfaz de operación\\par}\n\\vspace{4mm}\\textcolor{accent}{\\rule{.75\\linewidth}{1pt}}\\par\\vspace{3mm}\n{\\large Permisos, protecciones y supervisión de la maniobra.\\par}\\vfill\n",
+    "note": "Ubicar este bloque en el recorrido y anunciar su objetivo.",
+    "weight": 1,
+    "section": "Seguridad e interfaz",
+    "backup": false,
+    "owner": null,
+    "label": "seccion6"
+  },
+  {
+    "title": "Protección independiente de la maniobra",
+    "body": "\\begin{itemize}\n\\item Emergencias de carro, izaje y emergencia total.\n\\item Detección de límites, sobrevelocidad y pulsador.\n\\item Permisos por eje y autorizaciones de apertura de frenos.\n\\item Retención de emergencia hasta retirar causas y solicitar reinicio.\n\\item Watchdog de comunicación con vencimiento de 5 s.\n\\end{itemize}\n",
+    "note": "Explicar que independencia funcional no implica certificación de seguridad. En Stateflow las regiones de emergencias y watchdog se ejecutan en orden definido.",
+    "weight": 1.1,
+    "section": "Seguridad e interfaz",
+    "backup": false,
+    "owner": null,
+    "label": "slide49"
+  },
+  {
+    "title": "Organización de seguridad · Stateflow",
+    "body": "\\begin{center}\\diagramfit{\\begin{tikzpicture}\n\\node[sfstate,dashed,text width=2.2cm] (n0) at (0.0,0) {SALTOS\\\\EMERGENCIAS};\n\\node[sfstate,dashed,text width=2.2cm] (n1) at (2.75,0) {WATCHDOG};\n\\node[guard,anchor=north,align=center] at (0.0,-.75) {Orden 1};\n\\node[guard,anchor=north,align=center] at (2.75,-.75) {Orden 2};\n\\end{tikzpicture}}\\end{center}\\vfill\n{\\small Seguridad se ejecuta independientemente de la planificación y los mandos de producción.\\par}\\vspace{1.5mm}{\\fontsize{9.5}{11}\\selectfont\\textcolor{muted}{Primero evalúa SALTOS EMERGENCIAS y después WATCHDOG. El orden afecta la respuesta y el rearme.}\\par}\n",
+    "note": "Seguridad se ejecuta independientemente de la planificación y los mandos de producción. Primero evalúa SALTOS EMERGENCIAS y después WATCHDOG. El orden afecta la respuesta y el rearme.",
+    "weight": 0.65,
+    "section": "Seguridad e interfaz",
+    "backup": false,
+    "owner": "Herrera",
+    "label": "cmp32"
+  },
+  {
+    "title": "Organización de seguridad · CODESYS SFC",
+    "body": "\\begin{center}\\diagramfit{\\begin{tikzpicture}\n\\node[sfcstep,double,double distance=1pt] (init) at (1.375,1.75){INICIAL};\n\\draw[wire](init.south)--(1.375,.82);\n\\draw[wire,line width=1pt](1.175,1.05)--(1.575,1.05);\n\\node[guard,anchor=west]at(1.725,1.05){TRUE};\n\\draw[wire,line width=1pt](-1.2,0.82)--(3.95,0.82);\n\\draw[wire,line width=1pt](-1.2,0.75)--(3.95,0.75);\n\\draw[wire,line width=1pt](-1.2,-0.75)--(3.95,-0.75);\n\\draw[wire,line width=1pt](-1.2,-0.82)--(3.95,-0.82);\n\\node[sfcstep,text width=2.2cm](r0)at(0.0,0){SALTOS\\\\EMERGENCIAS};\n\\draw[wire](0.0,.75)--(r0.north);\n\\draw[wire](r0.south)--(0.0,-.75);\n\\node[sfcstep,text width=2.2cm](r1)at(2.75,0){WATCHDOG};\n\\draw[wire](2.75,.75)--(r1.north);\n\\draw[wire](r1.south)--(2.75,-.75);\n\\node[sfcstep](stop)at(1.375,-1.8){DETENIDA};\n\\draw[wire](1.375,-.82)--(stop.north);\n\\draw[wire,line width=1pt](1.175,-1.05)--(1.575,-1.05);\n\\node[guard,anchor=west]at(1.725,-1.05){FALSE};\n\\node[guard,anchor=north,align=center]at(1.375,-2.3){TRUE: salto a INICIAL};\n\\end{tikzpicture}}\\end{center}\\vfill\n{\\small La tarea evalúa los monitores SFC y después arbitra las salidas en ST.\\par}\\vspace{1.5mm}{\\fontsize{9.5}{11}\\selectfont\\textcolor{muted}{WATCHDOG precede a EMERGENCIA TOTAL para aplicar el timeout en la misma trama.}\\par}\n",
+    "note": "El contenedor muestra dos ramas. La tarea llama primero a los monitores y luego arbitra las salidas en ST. El watchdog se evalúa antes de la emergencia total para que el timeout pueda intervenir en la misma trama.",
+    "weight": 0.65,
+    "section": "Seguridad e interfaz",
+    "backup": false,
+    "owner": "Herrera",
+    "label": "cmp33"
+  },
+  {
+    "title": "Seguridad: emergencias por eje · Stateflow",
+    "body": "\\begin{center}\\diagramfit{\\begin{tikzpicture}\n\\node[sfstate](ok)at(5,1.5){NORMAL};\n\\node[sfstate,text width=3cm](t)at(.5,-.6){EMERGENCIA CARRO\\\\BRK\\_t = 0};\n\\node[sfstate,text width=3cm](h)at(9.5,-.6){EMERGENCIA IZAJE\\\\BRK\\_h = BRK\\_hE = 0};\n\\draw[flow](ok.west)-|(t.north);\\draw[flow](ok.east)-|(h.north);\n\\node[guard,align=center,text width=3.2cm]at(1.5,2.3){Prioridad 3: flanco\\\\de límite horizontal};\n\\node[guard,align=center,text width=3.9cm]at(8.5,2.3){Prioridad 2: flanco de límite\\\\vertical o sobrevelocidad};\n\\draw[wire](t.south)--(.5,-1.65)--(9.5,-1.65)--(h.south);\n\\draw[flow](5,-1.65)--(ok.south);\n\\node[guard,align=center,text width=10cm]at(5,-2.2){Rearme: flanco de reinicio y desaparición de las causas};\n\\end{tikzpicture}}\\end{center}\\vfill\n{\\small Cada emergencia retira la autorización de apertura de freno del eje afectado.\\par}\\vspace{1.5mm}{\\fontsize{9.5}{11}\\selectfont\\textcolor{muted}{Si ambos flancos coinciden desde NORMAL, la prioridad de Stateflow reconoce primero izaje.}\\par}\n",
+    "note": "Cada emergencia retira la autorización de apertura de freno del eje afectado. Si ambos flancos coinciden desde NORMAL, la prioridad de Stateflow reconoce primero izaje.",
+    "weight": 0.65,
+    "section": "Seguridad e interfaz",
+    "backup": false,
+    "owner": "Herrera",
+    "label": "cmp34"
+  },
+  {
+    "title": "Seguridad: emergencias por eje · CODESYS SFC",
+    "body": "\\begin{center}\\diagramfit{\\begin{tikzpicture}\\begin{scope}[xshift=0.0cm]\\node[font=\\small\\bfseries] at (1.5,.85){Carro};\n\\node[sfcstep,double,double distance=1pt] (n0) at (0,0.0) {CARRO SEGURO};\n\\node[sfcstep] (n1) at (0,-1.08) {EMERGENCIA CARRO};\n\\draw[wire] (n0.south)--(n1.north);\n\\draw[wire,line width=1.1pt] (-.2,-0.54)--(.2,-0.54);\n\\node[guard,anchor=west,text width=3.4cm] at (1.85,-0.54) {Flanco de límite último horizontal};\n\\draw[flow] (n1.south)--(0,-1.73);\n\\node[guard,anchor=north,align=center,text width=5.4cm] at (1.6,-1.75) {Flanco de reset y límites ausentes: retorno a CARRO SEGURO};\n\\end{scope}\\begin{scope}[xshift=7.1cm]\\node[font=\\small\\bfseries] at (1.5,.85){Izaje};\n\\node[sfcstep,double,double distance=1pt] (n0) at (0,0.0) {IZAJE SEGURO};\n\\node[sfcstep] (n1) at (0,-1.08) {EMERGENCIA IZAJE};\n\\draw[wire] (n0.south)--(n1.north);\n\\draw[wire,line width=1.1pt] (-.2,-0.54)--(.2,-0.54);\n\\node[guard,anchor=west,text width=3.4cm] at (1.85,-0.54) {Flanco de límite vertical o sobrevelocidad};\n\\draw[flow] (n1.south)--(0,-1.73);\n\\node[guard,anchor=north,align=center,text width=5.4cm] at (1.6,-1.75) {Flanco de reset, límites y sobrevelocidad ausentes: retorno a IZAJE SEGURO};\n\\end{scope}\\end{tikzpicture}}\\end{center}\\vfill\n{\\small Los dos monitores SFC pueden reconocer emergencias de carro e izaje en la misma trama.\\par}\\vspace{1.5mm}{\\fontsize{9.5}{11}\\selectfont\\textcolor{muted}{El rearme exige un nuevo flanco de Reset y que los sensores del eje hayan dejado de indicar peligro.}\\par}\n",
+    "note": "Los dos monitores SFC pueden reconocer emergencias de carro e izaje en la misma trama. El rearme exige un nuevo flanco de Reset y que los sensores del eje hayan dejado de indicar peligro.",
+    "weight": 0.65,
+    "section": "Seguridad e interfaz",
+    "backup": false,
+    "owner": "Herrera",
+    "label": "cmp35"
+  },
+  {
+    "title": "Seguridad: emergencia total · Stateflow",
+    "body": "\\begin{center}\\diagramfit{\\begin{tikzpicture}\n\\node[sfstate,text width=2.5cm] (n0) at (0.0,0) {NORMAL O\\\\EMERGENCIA PARCIAL};\n\\node[sfstate,text width=2.5cm] (n1) at (3.35,0) {EMERGENCIA\\\\TOTAL};\n\\fill[accent] (-1.8,0) circle (2pt);\n\\draw[flow] (-1.8,0)--(n0.west);\n\\draw[flow] (n0.east)--(n1.west);\n\\node[guard,text width=3.35cm,anchor=south] at (1.675,.78) {Pulsador, watchdog\\\\o escalamiento desde parcial};\n\\draw[flow] (n1.south)--++(0,-1.1) -| (n0.south);\n\\node[guard,anchor=north,align=center,text width=9cm] at (1.675,-1.6) {Todas las causas ausentes y flanco de reinicio};\n\\end{tikzpicture}}\\end{center}\\vfill\n{\\small Pulsador, watchdog o escalamiento desde una emergencia parcial retiran las tres autorizaciones.\\par}\\vspace{1.5mm}{\\fontsize{9.5}{11}\\selectfont\\textcolor{muted}{Reset sólo devuelve a NORMAL cuando desaparecieron todas las causas y los límites están libres.}\\par}\n",
+    "note": "Pulsador, watchdog o escalamiento desde una emergencia parcial retiran las tres autorizaciones. Reset sólo devuelve a NORMAL cuando desaparecieron todas las causas y los límites están libres.",
+    "weight": 0.65,
+    "section": "Seguridad e interfaz",
+    "backup": false,
+    "owner": "Herrera",
+    "label": "cmp36"
+  },
+  {
+    "title": "Seguridad: emergencia total · CODESYS SFC",
+    "body": "\\begin{center}\\diagramfit{\\begin{tikzpicture}\n\\node[sfcstep,double,double distance=1pt] (n0) at (0,0.0) {SEGURIDAD NORMAL};\n\\node[sfcstep] (n1) at (0,-1.08) {EMERGENCIA TOTAL};\n\\draw[wire] (n0.south)--(n1.north);\n\\draw[wire,line width=1.1pt] (-.2,-0.54)--(.2,-0.54);\n\\node[guard,anchor=west,text width=8.7cm] at (1.85,-0.54) {Pulsador, falla OPC UA, watchdog o emergencias de ambos ejes};\n\\draw[flow] (n1.south)--(0,-1.73);\n\\node[guard,anchor=north,align=center,text width=8.3cm] at (2.8,-1.75) {Reset y desaparición de todas las causas: retorno a SEGURIDAD NORMAL};\n\\end{tikzpicture}}\\end{center}\\vfill\n{\\small La emergencia total incorpora pulsador, watchdog, falla OPC UA y coexistencia de emergencias de ambos ejes.\\par}\\vspace{1.5mm}{\\fontsize{9.5}{11}\\selectfont\\textcolor{muted}{La salida ST anula permisos y órdenes de movimiento hasta el reconocimiento y la desaparición de las causas.}\\par}\n",
+    "note": "La emergencia total incorpora pulsador, watchdog, falla OPC UA y coexistencia de emergencias de ambos ejes. La salida ST anula permisos y órdenes de movimiento hasta el reconocimiento y la desaparición de las causas.",
+    "weight": 0.65,
+    "section": "Seguridad e interfaz",
+    "backup": false,
+    "owner": "Herrera",
+    "label": "cmp37"
+  },
+  {
+    "title": "Seguridad: watchdog · Stateflow",
+    "body": "\\begin{center}\\diagramfit{\\begin{tikzpicture}\n\\node[sfstate,text width=2.5cm] (n0) at (0.0,0) {NORMAL};\n\\node[sfstate,text width=2.5cm] (n1) at (3.35,0) {FALLO WD};\n\\fill[accent] (-1.8,0) circle (2pt);\n\\draw[flow] (-1.8,0)--(n0.west);\n\\draw[flow] (n0.east)--(n1.west);\n\\node[guard,text width=3.35cm,anchor=south] at (1.675,.78) {Sin cambios del pulso\\\\durante 5 s};\n\\draw[flow] (n1.south)--++(0,-1.1) -| (n0.south);\n\\node[guard,anchor=north,align=center,text width=9cm] at (1.675,-1.6) {Flanco de reinicio; un cambio de pulso reinicia el temporizador};\n\\end{tikzpicture}}\\end{center}\\vfill\n{\\small Cada cambio de pulso reinicia la espera. Sin cambios durante 5 s dispara FALLO WD.\\par}\\vspace{1.5mm}{\\fontsize{9.5}{11}\\selectfont\\textcolor{muted}{Reset rearma el monitor. La emergencia total puede necesitar otro flanco.}\\par}\n",
+    "note": "Cada cambio del pulso reinicia la espera. Sin cambios durante el tiempo máximo se memoriza FALLO WD. El flanco de Reset rearma el monitor. La emergencia total se evalúa antes y puede requerir otro flanco. El cambio del pulso es una autotransición que reinicia la temporización del estado NORMAL. SALTOS EMERGENCIAS se evalúa antes que WATCHDOG.",
+    "weight": 0.65,
+    "section": "Seguridad e interfaz",
+    "backup": false,
+    "owner": "Herrera",
+    "label": "cmp38"
+  },
+  {
+    "title": "Seguridad: watchdog · CODESYS SFC",
+    "body": "\\begin{center}\\diagramfit{\\begin{tikzpicture}\n\\node[sfcstep,double,double distance=1pt] (n0) at (0,0.0) {WATCHDOG OK};\n\\node[sfcstep] (n1) at (0,-1.08) {WATCHDOG DISPARADO};\n\\draw[wire] (n0.south)--(n1.north);\n\\draw[wire,line width=1.1pt] (-.2,-0.54)--(.2,-0.54);\n\\node[guard,anchor=west,text width=8.7cm] at (1.85,-0.54) {Sin cambios del pulso durante 5 s};\n\\draw[flow] (n1.south)--(0,-1.73);\n\\node[guard,anchor=north,align=center,text width=8.3cm] at (2.8,-1.75) {Flanco de reset y timeout ausente: salto a WATCHDOG OK};\n\\end{tikzpicture}}\\end{center}\\vfill\n{\\small ST mide el tiempo sin cambios del pulso y el SFC conserva el estado de watchdog disparado.\\par}\\vspace{1.5mm}{\\fontsize{9.5}{11}\\selectfont\\textcolor{muted}{El rearme exige flanco de Reset y timeout ausente. Son 5 s simulados en este banco.}\\par}\n",
+    "note": "ST mide el tiempo sin cambios del pulso y el SFC conserva el estado de watchdog disparado. El rearme exige flanco de Reset y timeout ausente. Son 5 s simulados en este banco.",
+    "weight": 0.65,
+    "section": "Seguridad e interfaz",
+    "backup": false,
+    "owner": "Herrera",
+    "label": "cmp39"
+  },
+  {
+    "title": "Pruebas aisladas de seguridad: 25 escenarios",
+    "body": "\\begin{center}\n{\\small\\renewcommand{\\arraystretch}{1.0}\n\\begin{tabular}{p{4.4cm}p{9.3cm}}\\toprule\nCaso & Resultado observado\\\\\\midrule\nRetención y reinicio & Emergencia enclavada; rearme por flanco\\\\\nFallas sucesivas & Escalamiento a emergencia total\\\\\nFallas simultáneas & Prevalece izaje; carro conserva permiso\\\\\nLímite activo desde arranque & Puede no detectar por esperar flanco\\\\\nWatchdog & 5 s + un ciclo; recuperación con dos flancos\\\\\n\\bottomrule\\end{tabular}}\\end{center}\n",
+    "note": "Las entradas fueron programadas a 20 ms y se verificaron salidas lógicas. No se ensayaron distancias físicas de detención frente a una falla integrada.",
+    "weight": 1,
+    "section": "Seguridad e interfaz",
+    "backup": false,
+    "owner": null,
+    "label": "slide50"
+  },
+  {
+    "title": "Visualización e interfaz HMI",
+    "body": "\\relax\n\\figurefooter{Representación de carga, perfil, envolvente local, línea de cruce y estados operativos.}\n\\vspace{-2mm}\\makebox[\\linewidth][c]{\\includegraphics[width=15.0cm,height=6.05cm,keepaspectratio,trim=7.00bp 7.00bp 7.00bp 7.00bp,clip]{imagenes/r_038.png}}\\par\n",
+    "note": "Mostrar mandos manuales, selección de objetivo y solicitud de modos. La HMI sirve para operar y observar la simulación; los videos se reproducirán desde archivos.",
+    "weight": 0.9,
+    "section": "Seguridad e interfaz",
+    "backup": false,
+    "owner": null,
+    "label": "slide51"
+  },
+  {
+    "title": "Implementación en CODESYS y Motion Controller",
+    "body": "\\setbeamertemplate{frametitle}{}\n\\vfill\n{\\fontsize{25}{29}\\selectfont\\bfseries Implementación en CODESYS y Motion Controller\\par}\n\\vspace{4mm}\\textcolor{accent}{\\rule{.75\\linewidth}{1pt}}\\par\\vspace{3mm}\n{\\large Ejecución de la lógica y realización discreta de los reguladores.\\par}\\vfill\n",
+    "note": "Ubicar este bloque en el recorrido y anunciar su objetivo.",
+    "weight": 1,
+    "section": "CODESYS y Motion Controller",
+    "backup": false,
+    "owner": null,
+    "label": "seccion7"
+  },
+  {
+    "title": "Co-simulación de planta y autómatas",
+    "body": "\\begin{center}\\begin{tikzpicture}[node distance=14mm,every node/.style={font=\\small},b/.style={draw=accent,text width=5cm,minimum height=25mm,align=center},a/.style={<->,thick}]\n\\node[b](sl){MATLAB / Simulink\\\\Planta, sensores, MC y HMI};\\node[b,right=of sl](plc){CODESYS\\\\Supervisor y seguridad};\\draw[a](sl)--node[above]{OPC UA}(plc);\n\\end{tikzpicture}\\end{center}\n\\begin{itemize}\\item Regulación a 1 ms; tarea PLC a 20 ms.\n\\item Referencias y permisos enviados a Simulink; mediciones enviadas al PLC.\n\\item Ensayos finales sincronizados por tramas de tiempo simulado.\n\\item Vigilancia del enlace independiente del avance de la maniobra.\\end{itemize}\n",
+    "note": "Explicar por qué una tarea periódica y una simulación acelerada no quedan sincronizadas sólo por compartir una conexión OPC UA. El banco final coordina tramas.",
+    "weight": 1.3,
+    "section": "CODESYS y Motion Controller",
+    "backup": false,
+    "owner": null,
+    "label": "slide52"
+  },
+  {
+    "title": "Implementaciones PLC: SFC manual y ST generado",
+    "body": "\\begin{center}{\\small\\renewcommand{\\arraystretch}{1.1}\n\\begin{tabular}{p{3cm}p{5.1cm}p{5.1cm}}\\toprule\nAspecto & CODESYS manual & CODESYS automático\\\\\\midrule\nSecuencia & Pasos y transiciones SFC & Estados y transiciones en ST\\\\\nAcciones & Programas ST consultan pasos activos & Bloques generados conservan memoria\\\\\nTemporización & Acumuladores de 20 ms simulados & Contadores y planificador adaptados\\\\\nDepuración & Paso activo y guardas & Estado interno y señales del FB\\\\\nPlanta & Simulink mediante OPC UA & Simulink mediante OPC UA\\\\\\bottomrule\n\\end{tabular}}\\end{center}\\vfill\nAmbas versiones ejecutan supervisor y seguridad en el PLC. La regulación y la planta siguen en Simulink.\n",
+    "note": "No confundir programación manual con conducción manual de la grúa. Ambas versiones combinan manual y automático, pero las estructuras internas no son idénticas.",
+    "weight": 1.1,
+    "section": "CODESYS y Motion Controller",
+    "backup": false,
+    "owner": null,
+    "label": "slide53"
+  },
+  {
+    "title": "Aspectos críticos de la migración",
+    "body": "\\begin{itemize}\n\\item Stateflow combina regiones paralelas, jerarquía y acciones de entrada, permanencia y salida.\n\\item SFC expresa la secuencia. ST reproduce cálculos, memorias e interbloqueos.\n\\item PLC Coder traduce la memoria de los charts a bloques funcionales ST.\n\\item La interfaz debe conservar tipos, dimensiones, inicialización y orden de ejecución.\n\\item Igualar los periodos exige revisar cuándo se evalúa cada transición.\n\\end{itemize}\\vfill\n{\\small La comparación debe verificar las órdenes y las recuperaciones, además de la secuencia nominal.}\n",
+    "note": "La implementación manual de CODESYS anula permisos globales y de ambos ejes ante emergencias parciales, a diferencia del OR global de Stateflow. Los monitores paralelos reconocen eventos simultáneos de forma diferente.",
+    "weight": 1.3,
+    "section": "CODESYS y Motion Controller",
+    "backup": false,
+    "owner": null,
+    "label": "slide54"
+  },
+  {
+    "title": "Temporizaciones: adaptar la base de ejecución",
+    "body": "\\begin{center}\n{\\small\\renewcommand{\\arraystretch}{1.0}\n\\begin{tabular}{p{4.6cm}p{4.6cm}p{4.5cm}}\\toprule\nCódigo exportado & Ejecución sin ajustar & Adaptación aplicada\\\\\\midrule\nBase 1 ms; divisor 20 & 400 ms a tarea de 20 ms & Umbral 19 → 0\\\\\nBase 1 ms; divisor 40 & 800 ms a tarea de 20 ms & Umbral 39 → 1\\\\\n\\bottomrule\\end{tabular}}\\end{center}\n\\begin{itemize}\n\\item Un divisor interno de 20 invocaciones sobre una tarea de 20 ms produce 400 ms.\n\\item El banco avanza un paso por trama de 20 ms simulados y mantiene una vigilancia independiente del enlace.\n\\end{itemize}\n",
+    "note": "Explicar el contador y su evaluación; el número de invocaciones cambia al ejecutar una exportación con base 1 ms en una tarea de 20 ms.",
+    "weight": 1.1,
+    "section": "CODESYS y Motion Controller",
+    "backup": false,
+    "owner": null,
+    "label": "slide55"
+  },
+  {
+    "title": "Motion Controller de dos ejes",
+    "body": "\\relax\n\\figurefooter{Tres funciones: estimadores, MC Carro y MC Izaje; ejecución a 1 ms.}\n\\vspace{-2mm}\\makebox[\\linewidth][c]{\\includegraphics[width=15.0cm,height=6.05cm,keepaspectratio,trim=2.00bp 2.00bp 1.00bp 0.00bp,clip]{imagenes/r_060.png}}\\par\n",
+    "note": "El MC es una distribución funcional de software emulada en Simulink. No se seleccionó ni validó hardware industrial específico.",
+    "weight": 1.1,
+    "section": "CODESYS y Motion Controller",
+    "backup": false,
+    "owner": null,
+    "label": "slide56"
+  },
+  {
+    "title": "MC: interfaces y orden de ejecución",
+    "body": "\\begin{itemize}\n\\item \\textbf{Entradas de medición:} encoders de motor, ángulo de carga y tensión del cable.\n\\item \\textbf{Entradas del supervisor:} posición, velocidad y aceleración de ambos ejes, habilitaciones y órdenes de freno.\n\\item \\textbf{Estimadores:} convierten coordenadas y actualizan velocidades antes de evaluar los reguladores.\n\\item \\textbf{MC Carro / MC Izaje:} calculan torque solicitado y señales de diagnóstico cada 1 ms.\n\\item \\textbf{Accionamientos:} aplican permisos, límites y dinámica de torque. El recorte retorna al anti-windup con 1 ms de demora.\n\\end{itemize}\n",
+    "note": "El MC es una unidad funcional emulada mediante tres MATLAB Function. Los estimadores separados evitan una dependencia artificial de las referencias. No implica una selección ni validación de hardware comercial.",
+    "weight": 1,
+    "section": "CODESYS y Motion Controller",
+    "backup": false,
+    "owner": null,
+    "label": "mcinterfaces"
+  },
+  {
+    "title": "MC: estados y actualización de los estimadores",
+    "body": "\\relax\n\\small Los estimadores continuos presentados antes de las pruebas se ejecutan con $T_s=1$ ms. Cada eje conserva sus estados y el encoder anterior.\n\\[\\boldsymbol z=[\\hat q\\;\\hat\\omega]^T,\\qquad u=\\theta_m/i\\]\n\\[\\dot{\\boldsymbol z}=A\\boldsymbol z+Bu\\]\n\\[A=\\begin{bmatrix}-2\\zeta_o\\omega_o&1\\\\-\\omega_o^2&0\\end{bmatrix},\\qquad\nB=\\begin{bmatrix}2\\zeta_o\\omega_o\\\\\\omega_o^2\\end{bmatrix}\\]\n\\begin{itemize}\n\\item Coeficientes discretos calculados una vez en configuración.\n\\item Actualización mediante productos y sumas; sin derivar directamente muestras.\n\\item Posición convertida del encoder; velocidad obtenida de $\\hat\\omega$.\n\\end{itemize}\n",
+    "note": "Este bloque desarrolla la realización, no vuelve a introducir el estimador desde cero. Mantener el mismo nombre de los estados que en el bloque previo a pruebas. Referencias del supervisor retenidas entre actualizaciones de 20 ms. En la primera muestra se almacena el encoder y se conserva velocidad cero, conforme al código.",
+    "weight": 1.7,
+    "section": "CODESYS y Motion Controller",
+    "backup": false,
+    "owner": null,
+    "label": "slide57"
+  },
+  {
+    "title": "MC: actualización discreta de los observadores",
+    "body": "\\[\n\\dot{\\boldsymbol z}=A\\boldsymbol z+Bu,\\quad \\boldsymbol z=[\\hat q\\;\\hat\\omega]^T,\\quad u=\\theta_m/i\n\\]\n{\\small\n\\[\nA_d=(I-T_sA/2)^{-1}(I+T_sA/2),\\qquad B_d=(I-T_sA/2)^{-1}T_sB/2\n\\]\n\\[\n\\boldsymbol z[n]=A_d\\boldsymbol z[n-1]+B_d(u[n-1]+u[n])\n\\]\n}\n\\begin{itemize}\n\\item Coeficientes calculados en configuración. Cada muestra ejecuta productos y sumas.\n\\item Estados y encoder anterior quedan en memoria persistente.\n\\item Inicialización coherente con velocidad cero. Polos discretos de módulo $0{,}960784<1$.\n\\end{itemize}\n",
+    "note": "Tustin con wn=40 rad/s y zeta=1. La posición se obtiene directamente del encoder, no del estado q. El estado w estima velocidad angular.",
+    "weight": 1,
+    "section": "CODESYS y Motion Controller",
+    "backup": false,
+    "owner": null,
+    "label": "mcobservadores"
+  },
+  {
+    "title": "MC del carro: integración y anti-windup",
+    "body": "\\relax\\setlength{\\parskip}{0pt}\\setlength{\\abovedisplayskip}{3pt}\\setlength{\\belowdisplayskip}{3pt}\n\\small\\setlength{\\abovedisplayskip}{3pt}\\setlength{\\belowdisplayskip}{3pt} $T_s=1$ ms. Los recortes de aceleración y torque de la muestra anterior corrigen el integrador.\n\\[K_{Ta}=\\frac{r_{td}M_{EQt}}{i_t},\\qquad\nu_I[n]=e_v[n]+\\frac{\\Delta a[n-1]+\\Delta T[n-1]/K_{Ta}}{K_{iv}T_{aw}}\\]\n\\[I_v[n]=\\operatorname{sat}_{I_{max}}\\!\\left(X[n]+\\frac{T_s}{2}u_I[n]\\right)\\]\n\\[X[n+1]=\\operatorname{sat}_{I_{max}}\\!\\left(I_v[n]+\\frac{T_s}{2}u_I[n]\\right)\\]\n\\[I_{max}=a_{max}/K_{iv},\\qquad T_{aw}=1\\ \\mathrm{s}\\]\n\\begin{itemize}\n\\item Dos medios pasos Tustin: se limitan salida integral y memoria interna.\n\\item $\\Delta a=a_c-a_u$; $\\Delta T=T_{lim}-T_{in}$ antes de la dinámica del motor.\n\\item $X[n]$ y $\\Delta a[n-1]$ permanecen entre muestras.\n\\end{itemize}\n",
+    "note": "Ecuaciones contrastadas con controlador_carro_mc_r2. No reemplazar los dos medios pasos limitados por una suma trapezoidal única: cambiaría salida y memoria al saturar. El torque recortado se entrega con demora de una muestra. La relación de anti-windup tiene Taw=1 s en el código. El regulador no recibe modo ni reset de eje: las autorizaciones se aplican fuera de este cálculo.",
+    "weight": 1,
+    "section": "CODESYS y Motion Controller",
+    "backup": false,
+    "owner": null,
+    "label": "mccarro"
+  },
+  {
+    "title": "MC del carro: cascada y salida de torque",
+    "body": "\\relax\n\\small\n\\[e_x[n]=x_{ref}[n]-\\hat x_t[n],\\qquad \\hat v_t[n]=r_{td}\\hat\\omega_{td}[n]\\]\n\\[v_c[n]=\\operatorname{sat}_{v_{max}}\\!\\left(v_{base}[n]+K_xe_x[n]\\right)\\]\n\\[e_v[n]=v_c[n]-\\hat v_t[n]\\]\n\\[a_u[n]=a_{ref}[n]+K_{pv}e_v[n]+K_{iv}I_v[n]\\]\n\\[a_c[n]=\\operatorname{sat}_{a_{max}}(a_u[n])\\]\n\\[\\boxed{T_{tm}^*[n]=\\frac{r_{td}}{i_t}\\left(M_{EQt}a_c[n]+b_{EQt}\\hat v_t[n]-2F_w[n]\\sin\\theta_l[n]\\right)}\\]\n\\figcaption{$v_{base}$ es la entrada común de velocidad, que reúne referencia y correcciones. La salida es torque solicitado; permisos y capacidad del accionamiento se aplican a continuación.}\n",
+    "note": "Mantener v_base como frontera de entrada del regulador para posponer la definición de swTransfer, según acuerdo con el usuario. No se modifica ni se elimina esa señal del código. La ecuación final reproduce el cálculo de torque del MC: aceleración, rozamiento y fuerza pendular. La forma matemática se mantiene alineada con la diapositiva inicial de cascada; aquí Iv se obtiene de la realización discreta con anti-windup.",
+    "weight": 1,
+    "section": "CODESYS y Motion Controller",
+    "backup": false,
+    "owner": null,
+    "label": "mccarrotorque"
+  },
+  {
+    "title": "MC Izaje: doble integración y torque",
+    "body": "\\[\nv_{l,ref}=-v_{h,ref},\\quad a_{l,ref}=-a_{h,ref},\\quad e_h=v_{l,ref}-\\widehat{\\dot l_h}\n\\]\n{\\small\n\\[\nz_1[n]=z_1[n-1]+\\frac{T_s}{2}(e_h[n-1]+e_h[n])\n\\]\n\\[\nz_2[n]=z_2[n-1]+\\frac{T_s}{2}(z_1[n-1]+z_1[n])\n\\]\n\\[\nT_h^*=K_{hd}e_h+K_{hp}z_1+K_{hi}z_2\n-\\frac{r_{hd}}{i_h}(M_{EQh}a_{l,ref}+b_{EQh}v_{l,ref})+\\frac{r_{hd}}{i_h}F_w\n\\]\n}\n\\small El código conserva integrales, signos y condiciones iniciales. El supervisor sigue resolviendo frenos, pesaje y transferencia de carga.\n",
+    "note": "La realización ensayada no introduce un anti-windup nuevo en izaje. z1 equivale al error de longitud sólo con inicialización coherente. Fw es tensión medida en la convención del modelo.",
+    "weight": 1,
+    "section": "CODESYS y Motion Controller",
+    "backup": false,
+    "owner": null,
+    "label": "mcizaje"
+  },
+  {
+    "title": "Prueba bloques–MC: equivalencia numérica",
+    "body": "\\begin{center}\n{\\small\\renewcommand{\\arraystretch}{1.0}\n\\begin{tabular}{lr}\\toprule\nDiferencia máxima en ciclo cerrado & Resultado\\\\\\midrule\nPosición horizontal & 0,0851 mm\\\\\nAltura & 0,6776 mm\\\\\nÁngulo & 0,0001453°\\\\\nTorque carro & 0,0442 Nm\\\\\nTorque izaje & 29,396 Nm\\\\\nTiempos de fase & Sin diferencia registrada\\\\\n\\bottomrule\\end{tabular}}\\end{center}\n137 señales comparadas; duración: 381,398 s en bloques y 381,399 s en MC.\n",
+    "note": "Las diferencias corresponden a dos realizaciones numéricas en ciclo cerrado. La equivalencia también reproduce el efecto de la anticipación limitada durante la parada.",
+    "weight": 1,
+    "section": "CODESYS y Motion Controller",
+    "backup": false,
+    "owner": null,
+    "label": "slide58"
+  },
+  {
+    "title": "Prueba bloques–MC: comparación de señales",
+    "body": "\\relax\n\\figurefooter{Diferencias en ciclo cerrado con la misma ley de anticipación limitada.}\n\\vspace{-2mm}\\makebox[\\linewidth][c]{\\includegraphics[width=15.0cm,height=6.05cm,keepaspectratio,trim=0.00bp 0.00bp 0.00bp 0.00bp,clip]{imagenes/r_061.png}}\\par\n",
+    "note": "La escala pequeña de las diferencias permite verificar la realización discreta.",
+    "weight": 0,
+    "section": "CODESYS y Motion Controller",
+    "backup": false,
+    "owner": null,
+    "label": "slide100"
+  },
+  {
+    "title": "Validación completa: MIL y SIL",
+    "body": "\\setbeamertemplate{frametitle}{}\n\\vfill\n{\\fontsize{25}{29}\\selectfont\\bfseries Validación completa: MIL y SIL\\par}\n\\vspace{4mm}\\textcolor{accent}{\\rule{.75\\linewidth}{1pt}}\\par\\vspace{3mm}\n{\\large Evaluación de la maniobra con planta, supervisor y control integrados.\\par}\\vfill\n",
+    "note": "Ubicar este bloque en el recorrido y anunciar su objetivo.",
+    "weight": 1,
+    "section": "Pruebas completas MIL y SIL",
+    "backup": false,
+    "owner": null,
+    "label": "seccion8"
+  },
+  {
+    "title": "Qué se verifica en cada banco",
+    "body": "\\begin{center}\n{\\small\\renewcommand{\\arraystretch}{1.0}\n\\begin{tabular}{p{3.6cm}p{5.0cm}p{4.9cm}}\\toprule\nPrueba & Escenario & Objetivo\\\\\\midrule\nCompleta MIL & 6 → 23; vacío → 32; 32 → 1 & Integración en Simulink\\\\\nMedio ciclo SIL & 2 → 22, perfil precargado & SFC / ST y aporte anti-sway\\\\\nCompleta SIL & 6 → 23; vacío → 32; 32 → 1 & Integración con PLC\\\\\nProductividad MIL & 2 → 22 → 2; retorno a 25 m & Requisito de ciclo cerrado\\\\\n\\bottomrule\\end{tabular}}\\end{center}\nCada tiempo se interpreta con sus fronteras, operador y condiciones de ensayo.\n",
+    "note": "Esta tabla evita extrapolar un resultado entre escenarios. La prueba completa comprueba funcionamiento; la productividad requiere además un retorno vacío al inicio.",
+    "weight": 1,
+    "section": "Pruebas completas MIL y SIL",
+    "backup": false,
+    "owner": null,
+    "label": "slide59"
+  },
+  {
+    "title": "Prueba completa MIL: escena y transferencias",
+    "body": "\\begin{center}\\includegraphics[width=.98\\linewidth,height=5.55cm,keepaspectratio]{imagenes/r_063.png}\\end{center}\\vspace{-1mm}\\figcaption{Barrido real; dos tomas y dos entregas en sentidos opuestos.}\n",
+    "note": "Describir 6→23, reposicionamiento vacío al32 y 32→1. Se actualiza el perfil en cada toma y entrega; no hay retorno vacío final.",
+    "weight": 1.1,
+    "section": "Pruebas completas MIL y SIL",
+    "backup": false,
+    "owner": null,
+    "label": "slide60"
+  },
+  {
+    "title": "Prueba completa MIL: movimiento del carro",
+    "body": "\\relax\n\\figurefooter{Posición, velocidad y aceleración reconstruidas desde el accionamiento.}\n\\vspace{-2mm}\\makebox[\\linewidth][c]{\\includegraphics[width=15.0cm,height=6.05cm,keepaspectratio,trim=0.00bp 7.00bp 7.00bp 0.00bp,clip]{imagenes/r_065.png}}\\par\n",
+    "note": "Las franjas muestran las transferencias cargadas. Leer referencias y medidas; la aceleración reconstruida no es la aceleración física del carro.",
+    "weight": 1.1,
+    "section": "Pruebas completas MIL y SIL",
+    "backup": false,
+    "owner": null,
+    "label": "slide61"
+  },
+  {
+    "title": "Prueba completa MIL: movimiento de izaje",
+    "body": "\\relax\n\\figurefooter{Altura inferida del accionamiento y sus derivadas frente a referencias.}\n\\vspace{-2mm}\\makebox[\\linewidth][c]{\\includegraphics[width=15.0cm,height=6.05cm,keepaspectratio,trim=0.00bp 7.00bp 7.00bp 0.00bp,clip]{imagenes/r_066.png}}\\par\n",
+    "note": "Relacionar los niveles con barrido, toma y entrega. Los impactos de la carga física no deben leerse a partir de esta aceleración de accionamiento.",
+    "weight": 1.1,
+    "section": "Pruebas completas MIL y SIL",
+    "backup": false,
+    "owner": null,
+    "label": "slide62"
+  },
+  {
+    "title": "Prueba completa MIL: balanceo",
+    "body": "\\relax\n\\figurefooter{El barrido y las maniobras posteriores se presentan con escalas distintas.}\n\\vspace{-2mm}\\makebox[\\linewidth][c]{\\includegraphics[width=15.0cm,height=6.05cm,keepaspectratio,trim=0.00bp 0.00bp 0.00bp 0.00bp,clip]{imagenes/r_067.png}}\\par\n",
+    "note": "Mostrar la evolución angular y la referencia durante cada traslado. Maximos en AUTO: 0,0273 y 0,0094 rad; las maniobras manuales tienen condiciones distintas.",
+    "weight": 1.1,
+    "section": "Pruebas completas MIL y SIL",
+    "backup": false,
+    "owner": null,
+    "label": "slide63"
+  },
+  {
+    "title": "Prueba completa MIL: resumen",
+    "body": "\\begin{center}\n{\\small\\renewcommand{\\arraystretch}{1.0}\n\\begin{tabular}{lr}\\toprule\nEtapa & Duración [s]\\\\\\midrule\nPrimera toma → entrega en barco & 114,04\\\\\nAUTO cargado hacia barco & 63,96\\\\\nEntrega → segunda toma & 138,56\\\\\nSegunda toma → entrega en muelle & 176,76\\\\\nAUTO cargado hacia muelle & 101,92\\\\\n\\bottomrule\\end{tabular}}\\end{center}\n\\begin{itemize}\n\\item Parada normal a 626,36 s; dos tomas y dos entregas físicas.\n\\item Balance correcto del perfil y conjunto vacío al final.\n\\item Sin emergencias ni fallas de seguimiento desde START.\n\\item Torque máximo: 1,073 kN m en carro y 15,294 kN m en izaje.\n\\end{itemize}\n",
+    "note": "Las filas AUTO están contenidas en las transferencias; no se suman nuevamente. Los tiempos no son un ciclo simple comparable con 120 s.",
+    "weight": 1.1,
+    "section": "Pruebas completas MIL y SIL",
+    "backup": false,
+    "owner": null,
+    "label": "slide64"
+  },
+  {
+    "title": "Medio ciclo SIL: condiciones comunes",
+    "body": "\\begin{itemize}\n\\item Slot 2 → 22: 48,80 m; inicio en x = −26,34 m y altura 25 m.\n\\item Contenedor: 36 863 kg; conjunto cargado: 51 863 kg.\n\\item Perfil físico de 33 alturas, precargado; máximo 18,85 m.\n\\item Misma planta, MC, ganancias y operador para SFC y ST.\n\\item Tercera prueba: SFC manual con anti-sway desactivado.\n\\end{itemize}\n",
+    "note": "Explicar que se parte con perfil válido y sin barrido. El banco sincroniza las tramas a tiempo simulado; se preservan los tiempos originales de cada corrida.",
+    "weight": 1,
+    "section": "Pruebas completas MIL y SIL",
+    "backup": false,
+    "owner": null,
+    "label": "slide65"
+  },
+  {
+    "title": "Medio ciclo SIL: seguimiento y eventos SFC/ST",
+    "body": "\\relax\n\\figurefooter{Cada ejecución conserva sus referencias y tiempos.}\n\\begin{columns}[T,onlytextwidth]\n\\column{.68\\textwidth}\n\\includegraphics[width=\\linewidth,height=5.8cm,keepaspectratio]{imagenes/r_086.png}\\par\n\n\\column{.30\\textwidth}\\vspace{5mm}\n\\fontsize{8}{9.6}\\selectfont\n\\begin{tabular}{lrr}\\toprule\nEvento & SFC [s] & ST [s]\\\\\\midrule\nSTART & 3,24 & 3,24\\\\\nToma & 49,56 & 49,52\\\\\nEntrada AUTO & 75,44 & 75,40\\\\\nLlegada $x$ & 105,84 & 105,76\\\\\nManual destino & 133,32 & 133,56\\\\\nApoyo destino & 168,92 & 169,24\\\\\\bottomrule\n\\end{tabular}\\par\\vspace{4mm}\n\\figcaption{Ambas implementaciones alcanzaron el apoyo y permitieron actuar sobre los twistlocks.}\n\\end{columns}\n",
+    "note": "Las curvas se superponen en buena parte del recorrido. No desplazar curvas para hacer coincidir eventos; mostrar la semejanza y los pequeños desfasajes. Concluir equivalencia funcional en el escenario ensayado, sin afirmar identidad de todas las guardas de seguridad. Los registros mostrados terminan en parada o apoyo según corrida.",
+    "weight": 1,
+    "section": "Pruebas completas MIL y SIL",
+    "backup": false,
+    "owner": null,
+    "label": "slide66"
+  },
+  {
+    "title": "Medio ciclo SIL: balanceo con y sin anti-sway",
+    "body": "\\relax\n\\figurefooter{Con y sin anti-sway; umbrales angulares de habilitación del descenso.}\n\\vspace{-2mm}\\makebox[\\linewidth][c]{\\includegraphics[width=15.0cm,height=6.05cm,keepaspectratio,trim=0.00bp 0.00bp 0.00bp 0.00bp,clip]{imagenes/r_092.png}}\\par\n",
+    "note": "Sin corrección llega el carro pero persiste el balanceo. La prueba termina a 187,20 s con el contenedor suspendido y sin entrega.",
+    "weight": 1,
+    "section": "Pruebas completas MIL y SIL",
+    "backup": false,
+    "owner": null,
+    "label": "slide68"
+  },
+  {
+    "title": "Medio ciclo SIL: resultado de activar el anti-sway",
+    "body": "\\begin{center}\\small\n\\begin{tabular}{lrr}\\toprule\nVentana común 120--130,72 s & Con anti-sway & Sin anti-sway\\\\\\midrule\nÁngulo RMS [$^\\circ$] & 0,0395 & 1,789\\\\\nÁngulo máximo [$^\\circ$] & 0,0826 & 2,590\\\\\nVelocidad angular RMS [$^\\circ$/s] & 0,0330 & 1,244\\\\\\bottomrule\n\\end{tabular}\\end{center}\n\\begin{itemize}\n\\item Con anti-sway se satisfacen las guardas de balanceo y continúa el descenso hacia la entrega.\n\\item Sin anti-sway el carro llega, pero queda inhibido el descenso. El ensayo termina a 187,20 s con la carga suspendida.\n\\item La reducción angular RMS es 97,8\\,\\% en esta ventana y configuración.\n\\end{itemize}\n",
+    "note": "Conversión radianes a grados de las métricas del informe. Misma planta, MC, ganancias y operador. No convertir este porcentaje en una mejora universal de todos los ciclos.",
+    "weight": 1,
+    "section": "Pruebas completas MIL y SIL",
+    "backup": false,
+    "owner": null,
+    "label": "comparacionantisway"
+  },
+  {
+    "title": "Prueba completa SIL: seguimiento horizontal",
+    "body": "\\relax\n\\figurefooter{Autómatas SFC manuales; barrido y dos transferencias; sincronización de tramas de 20 ms.}\n\\vspace{-2mm}\\makebox[\\linewidth][c]{\\includegraphics[width=15.0cm,height=6.05cm,keepaspectratio,trim=0.00bp 7.00bp 7.00bp 0.00bp,clip]{imagenes/r_074.png}}\\par\n",
+    "note": "El banco utiliza OPC UA con SignAndEncrypt. Explicar que la telemetría del operador registra eventos cada 40 ms; la tasa de tarea es20 ms.",
+    "weight": 1.1,
+    "section": "Pruebas completas MIL y SIL",
+    "backup": false,
+    "owner": null,
+    "label": "slide70"
+  },
+  {
+    "title": "Prueba completa SIL: izaje",
+    "body": "\\relax\n\\figurefooter{Magnitudes reconstruidas del accionamiento; aceleración mostrada entre ±1 m/s$^2$.}\n\\vspace{-2mm}\\makebox[\\linewidth][c]{\\includegraphics[width=15.0cm,height=6.05cm,keepaspectratio,trim=0.00bp 7.00bp 7.00bp 0.00bp,clip]{imagenes/r_075.png}}\\par\n",
+    "note": "Advertir al explicar la gráfica que la escala recorta picos: no representa ausencia de transitorios. El contacto físico vertical genera otros picos, de naturaleza diferente.",
+    "weight": 1.1,
+    "section": "Pruebas completas MIL y SIL",
+    "backup": false,
+    "owner": null,
+    "label": "slide71"
+  },
+  {
+    "title": "Prueba completa SIL: balanceo y esfuerzo",
+    "body": "\\relax\n\\figurefooter{Ángulo medido y de referencia; escalas separadas para barrido y maniobras.}\n\\vspace{-2mm}\\makebox[\\linewidth][c]{\\includegraphics[width=15.0cm,height=6.05cm,keepaspectratio,trim=0.00bp 0.00bp 0.00bp 0.00bp,clip]{imagenes/r_076.png}}\\par\n",
+    "note": "Maximos AUTO: 0,02877 y 0,01425 rad. Los torques máximos fueron1,699 y15,212kNm; si se pregunta mostrar gráfica de torques en respaldo.",
+    "weight": 1.1,
+    "section": "Pruebas completas MIL y SIL",
+    "backup": false,
+    "owner": null,
+    "label": "slide72"
+  },
+  {
+    "title": "Prueba completa SIL: resultados",
+    "body": "\\begin{center}\n{\\small\\renewcommand{\\arraystretch}{1.0}\n\\begin{tabular}{lr}\\toprule\nEtapa & Duración [s]\\\\\\midrule\nPrimera toma → entrega en barco & 112,56\\\\\nAUTO cargado hacia barco & 63,28\\\\\nEntrega → segunda toma & 131,88\\\\\nSegunda toma → entrega en muelle & 160,92\\\\\nAUTO cargado hacia muelle & 85,08\\\\\n\\bottomrule\\end{tabular}}\\end{center}\n\\begin{itemize}\n\\item Dos tomas y entregas; masa y perfiles finales coherentes.\n\\item Parada normal a 611,08 s; sin retorno vacío final.\n\\item Sin fallas ni emergencias desde START.\n\\item Los tiempos MIL/SIL no comparan directamente productividad.\n\\end{itemize}\n",
+    "note": "El desempeño temporal depende de operador, recorrido y sincronización. La primera transferencia de112,56s no incluye el regreso al origen; evitar usar3600/112,56como productividad del ciclo.",
+    "weight": 1.2,
+    "section": "Pruebas completas MIL y SIL",
+    "backup": false,
+    "owner": null,
+    "label": "slide73"
+  },
+  {
+    "title": "Productividad y optimización",
+    "body": "\\setbeamertemplate{frametitle}{}\n\\vfill\n{\\fontsize{25}{29}\\selectfont\\bfseries Productividad y optimización\\par}\n\\vspace{4mm}\\textcolor{accent}{\\rule{.75\\linewidth}{1pt}}\\par\\vspace{3mm}\n{\\large Tiempo de ciclo, ajuste de la trayectoria y verificación de resultados.\\par}\\vfill\n",
+    "note": "Ubicar este bloque en el recorrido y anunciar su objetivo.",
+    "weight": 1,
+    "section": "Estimación y mejora de productividad",
+    "backup": false,
+    "owner": null,
+    "label": "seccion9"
+  },
+  {
+    "title": "Definir un ciclo para evaluar productividad",
+    "body": "\\begin{itemize}\n\\item Inicio: spreader vacío sobre slot 2, x = −26,34 m, altura 25 m.\n\\item Perfil conocido; mismo contenedor de 36 863 kg.\n\\item Descenso, toma, pesaje, traslado al slot 22 y entrega.\n\\item Retorno vacío al slot 2 y a la altura inicial.\n\\item Cronometraje: desde inicio del descenso hasta confirmar reposo.\n\\end{itemize}\\[\nP=\\frac{3600}{T_{ciclo}},\\qquad P_{req}=30\\ \\mathrm{h^{-1}}\\Rightarrow T_{req}=120\\ \\mathrm{s}\n\\]\n",
+    "note": "Introducir un único escenario, evaluar primero el MC FF y recién después plantear la mejora. El barrido inicial y las demoras logísticas quedan fuera de este ensayo.",
+    "weight": 1.2,
+    "section": "Estimación y mejora de productividad",
+    "backup": false,
+    "owner": null,
+    "label": "slide74"
+  },
+  {
+    "title": "Condición de regreso y cierre del ciclo",
+    "body": "\\begin{center}\n{\\small\\renewcommand{\\arraystretch}{1.0}\n\\begin{tabular}{p{4.5cm}p{9.1cm}}\\toprule\nVariable & Criterio de confirmación\\\\\\midrule\nConjunto suspendido & Spreader vacío\\\\\nPosición horizontal & Error $\\leq0,08$ m\\\\\nAltura & $25\\pm0,10$ m\\\\\nVelocidades & $|v_x|<0,06$; $|v_y|<0,08$ m/s\\\\\nBalanceo & $|\\theta|\\leq0,5^\\circ$; $|\\omega|\\leq0,05$ rad/s\\\\\nPermanencia & 0,20 s\\\\\n\\bottomrule\\end{tabular}}\\end{center}\n",
+    "note": "La condición de cierre se mantiene en la repetición ajustada. Es fundamental que el regreso no sea solamente llegar a la coordenada horizontal.",
+    "weight": 1,
+    "section": "Estimación y mejora de productividad",
+    "backup": false,
+    "owner": null,
+    "label": "slide75"
+  },
+  {
+    "title": "Prueba de ciclo cerrado inicial: Motion Controller FF",
+    "body": "\\[\nT_0=219{,}92-2{,}00=217{,}92\\ \\mathrm{s}\n\\]\n\\[\nP_0=\\frac{3600}{217{,}92}=16{,}52\\ \\mathrm{contenedores/h}\n\\]\n\\begin{itemize}\n\\item Configuración FF de las pruebas previas.\n\\item Mandos manuales y esperas de 2 s antes de solicitar AUTO.\n\\item El ciclo excede el objetivo en 97,92 s.\n\\end{itemize}\\vspace{2mm}\\textcolor{accent}{\\textbf{Se requiere reducir el tiempo inicial al menos un 44,93 \\%.}}\n",
+    "note": "No anticipar la configuración corregida antes de establecer la necesidad. El resultado es problemático aunque las transferencias funcionales anteriores hayan sido exitosas.",
+    "weight": 1,
+    "section": "Estimación y mejora de productividad",
+    "backup": false,
+    "owner": null,
+    "label": "slide76"
+  },
+  {
+    "title": "Prueba de ciclo cerrado inicial: tiempos por etapa",
+    "body": "\\begin{center}\n{\\small\\renewcommand{\\arraystretch}{1.0}\n\\begin{tabular}{lr}\\toprule\nEtapa & Tiempo [s]\\\\\\midrule\nDescenso vacío hasta contacto & 37,72\\\\\nCierre de twistlocks & 1,04\\\\\nExtracción, pesaje y solicitud AUTO & 23,88\\\\\nAUTO cargado hasta solicitud MANUAL & 55,76\\\\\nManual, descenso y entrega & 30,72\\\\\nExtracción vacía y solicitud AUTO & 22,00\\\\\nAUTO vacío hasta regreso & 46,52\\\\\nConfirmación de reposo & 0,28\\\\\n\\bottomrule\\end{tabular}}\\end{center}\n\\textbf{Traslados automáticos:} 102,28 s. \\quad\\textbf{Resto de maniobras:} 115,64 s.\n",
+    "note": "La tabla contiene ocho etapas consecutivas y suma217,92s. La limitación afecta tanto transporte como toma, extracción y entrega; no se corrige sólo con una ganancia.",
+    "weight": 1,
+    "section": "Estimación y mejora de productividad",
+    "backup": false,
+    "owner": null,
+    "label": "slide77"
+  },
+  {
+    "title": "Prueba de ciclo cerrado inicial: video HMI",
+    "body": "\\begin{center}\\includegraphics[width=.98\\linewidth,height=4.6cm,keepaspectratio]{imagenes/video_inicial.png}\\end{center}\\begin{center}\\href{run:videos/productividad_inicial_5x.mp4}{\\textcolor{accent}{\\textbf{Abrir video · reproducción 5× · 44 s}}}\\end{center}\n",
+    "note": "Reproducir el video inicial y señalar las detenciones y etapas manuales. Abrir desde la carpeta videos si el visor PDF bloquea enlaces locales. La aceleración del video no altera el tiempo de simulación medido.",
+    "weight": 1,
+    "section": "Estimación y mejora de productividad",
+    "backup": false,
+    "owner": null,
+    "label": "slide78"
+  },
+  {
+    "title": "Metodología de ajuste",
+    "body": "\\begin{itemize}\n\\item 1. Revisar maniobras manuales y continuidad entre modos.\n\\item 2. Revisar márgenes geométricos y condiciones de supervisión.\n\\item 3. Ampliar límites y corregir casos del generador de trayectorias.\n\\item 4. Ajustar ganancias del carro y contribuciones anti-sway.\n\\item 5. Repetir el mismo ciclo y verificar entrega, perfil y regreso.\n\\end{itemize}\n",
+    "note": "La arquitectura regulatoria y el frenado conservan su estructura. Los resultados corresponden al conjunto de ajustes; no constituyen un barrido factorial para atribuir ahorros individuales.",
+    "weight": 1,
+    "section": "Estimación y mejora de productividad",
+    "backup": false,
+    "owner": null,
+    "label": "slide79"
+  },
+  {
+    "title": "Operación manual y pesaje",
+    "body": "\\begin{itemize}\n\\item Mayor velocidad manual con carga y en vacío; aproximación de unos 0,20 m/s.\n\\item Despegue lento de 0,15 m nominales para pesar.\n\\item Estabilidad de 0,25 s y promedio válido de 0,50 s.\n\\item Sin contacto ni cable flojo; $|v_y|<0,03$ m/s y $|a_y|<0,05$ m/s².\n\\item Solicitud de AUTO durante ascenso, cerca de 1 m/s, con referencias sincronizadas.\n\\end{itemize}\n",
+    "note": "Justificar que se evita parar antes de AUTO sin eliminar el pesaje estable. Se aplica también a la extracción vacía; el cambio de modo debe partir del estado medido.",
+    "weight": 1.2,
+    "section": "Estimación y mejora de productividad",
+    "backup": false,
+    "owner": null,
+    "label": "slide80"
+  },
+  {
+    "title": "Geometría, llegada y vigilancia de seguimiento",
+    "body": "\\begin{center}\n{\\small\\renewcommand{\\arraystretch}{1.0}\n\\begin{tabular}{lrr}\\toprule\nParámetro & Inicial & Ajustado\\\\\\midrule\nMargen local sobre perfil [m] & 2,59 & 1,00\\\\\nUmbral de ángulo & 0,005 rad & 0,5°\\\\\nUmbral de velocidad angular [rad/s] & 0,012 & 0,050\\\\\nError horizontal vigilado [m] & 2,50 & 4,00\\\\\n\\bottomrule\\end{tabular}}\\end{center}\nLa trayectoria se vuelve a verificar sobre la huella completa de la carga.\n",
+    "note": "Los umbrales angulares son condiciones de llegada, no límites globales de balanceo durante todo el traslado. La vigilancia de seguimiento más amplia debe mencionarse explícitamente.",
+    "weight": 1.2,
+    "section": "Estimación y mejora de productividad",
+    "backup": false,
+    "owner": null,
+    "label": "slide81"
+  },
+  {
+    "title": "Límites del generador y sintonía del carro",
+    "body": "\\begin{columns}[T,onlytextwidth]\n\\column{0.49\\textwidth}\\begin{center}\n{\\small\\renewcommand{\\arraystretch}{1.0}\n\\begin{tabular}{lrr}\\toprule\nGenerador & Inicial & Ajustado\\\\\\midrule\n$v_{x,max}$ [m/s] & 2,50 & 4,00\\\\\n$a_{x,max}$ [m/s²] & 0,30 & 0,45\\\\\n$a_{y,max}$ [m/s²] & 0,25 & 0,45\\\\\n$j_x$ [m/s³] & 0,50 & 0,50\\\\\n$j_y$ [m/s³] & 0,10 & 0,10\\\\\n\\bottomrule\\end{tabular}}\\end{center}\n\n\\column{0.47\\textwidth}\\begin{center}\n{\\small\\renewcommand{\\arraystretch}{1.0}\n\\begin{tabular}{lrr}\\toprule\nGanancia & Inicial & Ajustado\\\\\\midrule\n$K_x$ & 0,20 & 0,25\\\\\n$K_p$ & 2,40 & 3,20\\\\\n$K_i$ & 0,20 & 0,267\\\\\nFactor FB & 1,00 & 0,305\\\\\nFactor FF & 1,00 & 0,340\\\\\n\\bottomrule\\end{tabular}}\\end{center}\n\n\\end{columns}\\vspace{3mm}Se conservan jerk, velocidad de izaje en vacío de 3 m/s y regulación de izaje.\\par $I_{max}=0,80/K_i=2,99625$ m; ganancias constantes durante el frenado.\n",
+    "note": "Además se corrigió la rampa horizontal que no alcanza velocidad máxima y se afinó la búsqueda de duración vertical. El límite por masa y potencia permanece; no cambia la arquitectura regulatoria.",
+    "weight": 1.5,
+    "section": "Estimación y mejora de productividad",
+    "backup": false,
+    "owner": null,
+    "label": "slide82"
+  },
+  {
+    "title": "Prueba de ciclo ajustado: posiciones y velocidades",
+    "body": "\\relax\n\\figurefooter{Tiempo referido al inicio del ciclo; altura física del spreader y velocidad de izaje del accionamiento.}\n\\vspace{-2mm}\\makebox[\\linewidth][c]{\\includegraphics[width=15.0cm,height=6.05cm,keepaspectratio,trim=0.00bp 0.00bp 0.00bp 0.00bp,clip]{imagenes/r_082.png}}\\par\n",
+    "note": "Mostrar continuidad al iniciar AUTO y retorno combinado en x y altura. La confirmación de regreso ocurre a111,16 absoluto,109,16desdeinicio.",
+    "weight": 1,
+    "section": "Estimación y mejora de productividad",
+    "backup": false,
+    "owner": null,
+    "label": "slide83"
+  },
+  {
+    "title": "Prueba de ciclo ajustado: recorrido y perfil",
+    "body": "\\relax\n\\figurefooter{Traslado cargado y retorno vacío sobre perfiles actualizados.}\n\\vspace{-2mm}\\makebox[\\linewidth][c]{\\includegraphics[width=15.0cm,height=6.05cm,keepaspectratio,trim=0.00bp 0.00bp 0.00bp 0.00bp,clip]{imagenes/r_083.png}}\\par\n",
+    "note": "La base cargada se obtiene restando Hc a la altura física. Margen mínimo bajo toda la huella enAUTO:0,0417m cargado y0,4816m vacío. Indicar que se verifica el caso simulado.",
+    "weight": 1,
+    "section": "Estimación y mejora de productividad",
+    "backup": false,
+    "owner": null,
+    "label": "slide84"
+  },
+  {
+    "title": "Prueba de ciclo ajustado: balanceo y llegada",
+    "body": "\\begin{center}\\includegraphics[width=.98\\linewidth,height=5.55cm,keepaspectratio]{imagenes/r_084.png}\\end{center}\\vspace{-1mm}\\figcaption{Los umbrales dibujados se verifican en llegada junto con posición y velocidad horizontal.}\n",
+    "note": "No presentar los umbrales como una banda que deba cumplirse durante todo el transporte. Las líneas verticales identifican solicitudes de modos, entrega y retorno.",
+    "weight": 1,
+    "section": "Estimación y mejora de productividad",
+    "backup": false,
+    "owner": null,
+    "label": "slide85"
+  },
+  {
+    "title": "Prueba de ciclo cerrado: comparación por etapa",
+    "body": "\\begin{center}\n{\\small\\renewcommand{\\arraystretch}{1.0}\n\\begin{tabular}{lrr}\\toprule\nEtapa & Inicial [s] & Ajustado [s]\\\\\\midrule\nDescenso vacío & 37,72 & 14,32\\\\\nTwistlocks & 1,04 & 1,04\\\\\nExtracción y pesaje & 23,88 & 12,16\\\\\nAUTO cargado & 55,76 & 35,28\\\\\nManual y entrega & 30,72 & 13,72\\\\\nExtracción vacía & 22,00 & 7,04\\\\\nAUTO vacío & 46,52 & 25,36\\\\\nReposo final & 0,28 & 0,24\\\\\n\\textbf{Total} & \\textbf{217,92} & \\textbf{109,16}\\\\\n\\bottomrule\\end{tabular}}\\end{center}\nAhorro conjunto: 108,76 s (49,91 \\%).\n",
+    "note": "Las fronteras de etapa son las mismas que en el cálculo inicial. Resaltar que los ahorros se distribuyen entre operación y traslados, sin atribuir toda la mejora al PI.",
+    "weight": 1,
+    "section": "Estimación y mejora de productividad",
+    "backup": false,
+    "owner": null,
+    "label": "slide86"
+  },
+  {
+    "title": "Prueba de ciclo ajustado: productividad estimada",
+    "body": "\\[\nT_1=111{,}16-2{,}00=109{,}16\\ \\mathrm{s}\n\\]\n\\[\n\\boxed{P_1=\\frac{3600}{109{,}16}=32{,}98\\ \\mathrm{contenedores/h}}\n\\]\n\\begin{itemize}\n\\item Margen temporal respecto del objetivo: 10,84 s.\n\\item Entrega y cambios de perfil verificados; retorno vacío a altura 24,9886 m.\n\\item Cumplimiento para el recorrido, masa y condiciones evaluados.\n\\item Otros recorridos y demoras logísticas requieren evaluación adicional.\n\\end{itemize}\n",
+    "note": "Diferenciar productividad estimada del cicloMIL de productividad portuaria sostenida. La sintonía ajustada no queda validada en los dos traslados del ensayo completo anterior.",
+    "weight": 1,
+    "section": "Estimación y mejora de productividad",
+    "backup": false,
+    "owner": null,
+    "label": "slide87"
+  },
+  {
+    "title": "Prueba de ciclo ajustado: video HMI",
+    "body": "\\begin{center}\\includegraphics[width=.98\\linewidth,height=4.6cm,keepaspectratio]{imagenes/video_ajustado.png}\\end{center}\\begin{center}\\href{run:videos/productividad_ajustado_5x.mp4}{\\textcolor{accent}{\\textbf{Abrir video · reproducción 5× · 23 s}}}\\end{center}\n",
+    "note": "Reproducir y relacionar la continuidad entre modos con las trayectorias recién mostradas. El tiempo de reproducción es22,6s y el video contiene112,8sdesimulación.",
+    "weight": 1,
+    "section": "Estimación y mejora de productividad",
+    "backup": false,
+    "owner": null,
+    "label": "slide88"
+  },
+  {
+    "title": "Conclusiones y trabajos futuros",
+    "body": "\\setbeamertemplate{frametitle}{}\n\\vfill\n{\\fontsize{25}{29}\\selectfont\\bfseries Conclusiones y trabajos futuros\\par}\n\\vspace{4mm}\\textcolor{accent}{\\rule{.75\\linewidth}{1pt}}\\par\\vspace{3mm}\n{\\large Resultados del proyecto y próximos desarrollos.\\par}\\vfill\n",
+    "note": "Ubicar este bloque en el recorrido y anunciar su objetivo.",
+    "weight": 1,
+    "section": "Conclusiones",
+    "backup": false,
+    "owner": null,
+    "label": "seccion10"
+  },
+  {
+    "title": "Resultados principales del proyecto",
+    "body": "\\begin{itemize}\n\\item Sistema jerárquico integrado con planta no lineal, regulación y secuencias.\n\\item Control de balanceo que permite cumplir las condiciones de llegada.\n\\item Diagnóstico mecánico y corrección de la excitación en la parada manual.\n\\item Migración a CODESYS y realización equivalente de la regulación en MC.\n\\item Pruebas completas MIL y SIL; ciclo ajustado de 109,16 s.\n\\end{itemize}\n",
+    "note": "Retomar los objetivos iniciales con resultados concretos. No repetir todas las métricas: elegir0,627m/s²,97,8\\%y32,98cont/hsegúneltiempo.",
+    "weight": 1.1,
+    "section": "Conclusiones",
+    "backup": false,
+    "owner": null,
+    "label": "slide89"
+  },
+  {
+    "title": "Trabajos futuros",
+    "body": "\\relax\n\\begin{itemize}\n\\item \\textbf{Completar situaciones de seguridad pendientes:} fallas simultáneas y arranque con finales de carrera activos.\n\\item \\textbf{Ampliar la evaluación de productividad:} otras masas, recorridos y perfiles, mediante pruebas completas.\n\\item \\textbf{Optimizar la trayectoria coordinada:} iniciar antes el descenso cuando la geometría y la seguridad lo permitan, aumentando el solapamiento entre ejes.\n\\item \\textbf{Evaluar otras estrategias de control:} LQR, MPC y controles no lineales; comparar seguimiento, balanceo, esfuerzo y cumplimiento de restricciones.\n\\end{itemize}\n",
+    "note": "La optimización busca reducir el tiempo de ciclo mediante mayor simultaneidad entre traslado y descenso, respetando obstáculos y condiciones de llegada. El generador ya coordina ejes: se propone refinar el inicio de descenso, no introducir por primera vez coordinación. Comparar estrategias con las mismas maniobras y restricciones. Se retiraron los trabajos de watchdog, ruido e incertidumbre, y validación de hardware acordados con el usuario.",
+    "weight": 1,
+    "section": "Conclusiones",
+    "backup": false,
+    "owner": null,
+    "label": "trabajosfuturos"
+  },
+  {
+    "title": "Preguntas",
+    "body": "\\vfill\\textcolor{accent}{\\Large Automatización y Control de una Grúa Portuaria STS}\\par\\vspace{5mm}Matías Escobar · Martín Herrera\\par\\vfill\n",
+    "note": "Abrir el coloquio. Usar las diapositivas de respaldo para responder con ecuaciones, diagramas y gráficas adicionales.",
+    "weight": 0.2,
+    "section": "Conclusiones",
+    "backup": false,
+    "owner": null,
+    "label": "slide91"
+  },
+  {
+    "title": "Respaldo: deducción angular del carro y péndulo",
+    "body": "\\relax\n{\\small\n\\[\n\\mathcal T=\\frac{m_l}{2}\\left[\\dot x_t^2+\\dot l^2+l^2\\dot\\theta_l^2\n+2\\dot x_t\\dot l\\sin\\theta_l+2\\dot x_tl\\dot\\theta_l\\cos\\theta_l\\right]\n\\]\n\\[\n\\mathcal V=m_lg(45-l\\cos\\theta_l),\\qquad\n\\frac{d}{dt}\\frac{\\partial(\\mathcal T-\\mathcal V)}{\\partial\\dot\\theta_l}\n-\\frac{\\partial(\\mathcal T-\\mathcal V)}{\\partial\\theta_l}=0\n\\]\n\\[\nm_ll^2\\ddot\\theta_l+2m_ll\\dot l\\dot\\theta_l\n+m_ll\\ddot x_t\\cos\\theta_l+m_lgl\\sin\\theta_l=0\n\\]\n}\nDividir por $m_ll$ recupera la ecuación angular. El término radial de tensión no aporta par respecto del punto de suspensión.\n",
+    "note": "La masa se cancela en esta ecuación pendular ideal. El contacto puede agregar fuerza tangencial y el cambio de masa se trata como evento fuera de esta deducción.",
+    "weight": 1,
+    "section": "Respaldo técnico",
+    "backup": true,
+    "owner": null,
+    "label": "pendulodeduccion"
+  },
+  {
+    "title": "Respaldo: energías y ecuación pendular",
+    "body": "\\[\n\\begin{aligned}x_l&=x_t+l\\sin\\theta_l,&y_l&=45-l\\cos\\theta_l,\\\\\\dot x_l&=\\dot x_t+\\dot l\\sin\\theta_l+l\\dot\\theta_l\\cos\\theta_l,\\\\\\dot y_l&=-\\dot l\\cos\\theta_l+l\\dot\\theta_l\\sin\\theta_l.\\end{aligned}\n\\]\n\\[\n\\mathcal T=\\tfrac12m_l(\\dot x_l^2+\\dot y_l^2),\\qquad \\mathcal V=m_lg(45-l\\cos\\theta_l)\n\\]\n\\[\n\\frac{d}{dt}\\frac{\\partial(\\mathcal T-\\mathcal V)}{\\partial\\dot\\theta_l}-\\frac{\\partial(\\mathcal T-\\mathcal V)}{\\partial\\theta_l}=0\n\\]\n\\[\nl\\ddot\\theta_l+2\\dot l\\dot\\theta_l+g\\sin\\theta_l=-\\ddot x_t\\cos\\theta_l\n\\]\n",
+    "note": "Usar sólo si se pregunta por la derivación de Euler–Lagrange o por el acoplamiento del izaje con el balanceo.",
+    "weight": 0,
+    "section": "Respaldo técnico",
+    "backup": true,
+    "owner": null,
+    "label": "slide92"
+  },
+  {
+    "title": "Respaldo: polinomio y ganancias del izaje",
+    "body": "\\[\n\\alpha_h=\\frac{i_h}{r_{hd}M_{EQh}},\\quad \\beta_h=\\frac{b_{EQh}}{M_{EQh}}\n\\]\n\\[\nP_h(s)=s^3+(\\beta_h-\\alpha_hK_{hd})s^2-\\alpha_hK_{hp}s-\\alpha_hK_{hi}\n\\]\n\\[\nP_d(s)=s^3+n_h\\omega_{posh}s^2+n_h\\omega_{posh}^2s+\\omega_{posh}^3\n\\]\nLa anticipación de la trayectoria no modifica el polinomio característico de la realimentación.\n",
+    "note": "Mostrar igualdad de coeficientes y el signo negativo que aparece al formular la dinámica en longitud.",
+    "weight": 0,
+    "section": "Respaldo técnico",
+    "backup": true,
+    "owner": null,
+    "label": "slide93"
+  },
+  {
+    "title": "Respaldo: diagrama de operación",
+    "body": "\\relax\n\\figurefooter{Vista de conjunto de la operación; las etapas se desglosan en el bloque comparativo.}\n\\vspace{-2mm}\\makebox[\\linewidth][c]{\\includegraphics[width=15.0cm,height=6.35cm,keepaspectratio,trim=7.00bp 7.00bp 3.00bp 0.00bp,clip]{imagenes/r_027.png}}\\par\n",
+    "note": "Consultar las etapas desglosadas y sus guardas en el bloque comparativo.",
+    "weight": 0,
+    "section": "Respaldo técnico",
+    "backup": true,
+    "owner": null,
+    "label": "slide94"
+  },
+  {
+    "title": "Respaldo: secuencia de carga y twistlocks",
+    "body": "\\relax\n\\figurefooter{Máquina completa de toma, pesaje, entrega y retención.}\n\\vspace{-2mm}\\makebox[\\linewidth][c]{\\includegraphics[width=15.0cm,height=6.35cm,keepaspectratio,trim=7.00bp 7.00bp 7.00bp 7.00bp,clip]{imagenes/r_031.png}}\\par\n",
+    "note": "Consultar ante preguntas sobre validación de masa, tiempos o bloqueo de twistlocks.",
+    "weight": 0,
+    "section": "Respaldo técnico",
+    "backup": true,
+    "owner": null,
+    "label": "slide95"
+  },
+  {
+    "title": "Respaldo: secuencias de frenos",
+    "body": "\\relax\n\\figurefooter{Máquinas paralelas de carro e izaje.}\n\\vspace{-2mm}\\makebox[\\linewidth][c]{\\includegraphics[width=15.0cm,height=6.35cm,keepaspectratio,trim=7.00bp 7.00bp 7.00bp 7.00bp,clip]{imagenes/r_032.png}}\\par\n",
+    "note": "Explicar el orden habilitación–torque–liberación y la verificación de respuesta.",
+    "weight": 0,
+    "section": "Respaldo técnico",
+    "backup": true,
+    "owner": null,
+    "label": "slide96"
+  },
+  {
+    "title": "Respaldo: emergencias y rearme",
+    "body": "\\relax\n\\figurefooter{Stateflow: prioridades, autorizaciones de freno y recuperación enclavada.}\n\\vspace{-2mm}\\makebox[\\linewidth][c]{\\includegraphics[width=15.0cm,height=6.35cm,keepaspectratio,trim=7.00bp 7.00bp 7.00bp 7.00bp,clip]{imagenes/r_035.png}}\\par\n",
+    "note": "Consultar para explicar el defecto de eventos simultáneos y la evaluación por flancos.",
+    "weight": 0,
+    "section": "Respaldo técnico",
+    "backup": true,
+    "owner": null,
+    "label": "slide97"
+  },
+  {
+    "title": "Respaldo: SFC de operación en CODESYS",
+    "body": "\\relax\n\\figurefooter{Implementación manual: pasos, acciones y guardas exportadas.}\n\\vspace{-2mm}\\makebox[\\linewidth][c]{\\includegraphics[width=15.0cm,height=6.35cm,keepaspectratio,trim=7.00bp 7.00bp 7.00bp 7.00bp,clip]{imagenes/r_051.png}}\\par\n",
+    "note": "Contrastar con Stateflow sin afirmar equivalencia formal de todas las transiciones.",
+    "weight": 0,
+    "section": "Respaldo técnico",
+    "backup": true,
+    "owner": null,
+    "label": "slide98"
+  },
+  {
+    "title": "Respaldo: bajada de 8 m",
+    "body": "\\relax\n\\figurefooter{Ensayo aislado con carga y spreader vacío.}\n\\vspace{-2mm}\\makebox[\\linewidth][c]{\\includegraphics[width=15.0cm,height=6.35cm,keepaspectratio,trim=0.00bp 0.00bp 0.00bp 0.00bp,clip]{imagenes/r_040.png}}\\par\n",
+    "note": "Complementar los resultados de seguimiento vertical.",
+    "weight": 0,
+    "section": "Respaldo técnico",
+    "backup": true,
+    "owner": null,
+    "label": "slide99"
+  },
+  {
+    "title": "Respaldo: torques de la prueba completa MIL",
+    "body": "\\relax\n\\figurefooter{Consigna antes y después del limitador, y torque físico aplicado.}\n\\vspace{-2mm}\\makebox[\\linewidth][c]{\\includegraphics[width=15.0cm,height=6.35cm,keepaspectratio,trim=0.00bp 0.00bp 0.00bp 0.00bp,clip]{imagenes/r_071.png}}\\par\n",
+    "note": "Distinguir limitación de torque y respuesta dinámica del modulador.",
+    "weight": 0,
+    "section": "Respaldo técnico",
+    "backup": true,
+    "owner": null,
+    "label": "slide101"
+  },
+  {
+    "title": "Respaldo: torques de la prueba completa SIL",
+    "body": "\\relax\n\\figurefooter{Registros desde START; límites nominales de ambos ejes.}\n\\vspace{-2mm}\\makebox[\\linewidth][c]{\\includegraphics[width=15.0cm,height=6.35cm,keepaspectratio,trim=0.00bp 0.00bp 0.00bp 0.00bp,clip]{imagenes/r_080.png}}\\par\n",
+    "note": "Máximos1,699y15,212kNm. El torque físico no sirve por sísolo para identificar recorte.",
+    "weight": 0,
+    "section": "Respaldo técnico",
+    "backup": true,
+    "owner": null,
+    "label": "slide102"
+  },
+  {
+    "title": "Respaldo: sin anti-sway, llegada sin entrega",
+    "body": "\\relax\n\\figurefooter{Con y sin corrección: posiciones y referencias originales.}\n\\vspace{-2mm}\\makebox[\\linewidth][c]{\\includegraphics[width=15.0cm,height=6.35cm,keepaspectratio,trim=0.00bp 0.00bp 0.00bp 0.00bp,clip]{imagenes/r_093.png}}\\par\n",
+    "note": "Mostrar que el carro llega al destino pero la secuencia no continúa hacia la entrega.",
+    "weight": 0,
+    "section": "Respaldo técnico",
+    "backup": true,
+    "owner": null,
+    "label": "slide103"
+  },
+  {
+    "title": "Respaldo: métricas y escalas de aceleración",
+    "body": "\\begin{center}\n{\\small\\renewcommand{\\arraystretch}{1.0}\n\\begin{tabular}{p{5.1cm}p{8.4cm}}\\toprule\nMagnitud & Interpretación\\\\\\midrule\nAceleración de referencia & Solicitada por el generador\\\\\nMando de aceleración & Suma del PI y anticipación, limitada\\\\\nAceleración de accionamiento & Reconstruida desde encoder / observador\\\\\nAceleración física del carro & Respuesta de la transmisión flexible\\\\\nAceleración física de carga & Incluye contactos y cable elástico\\\\\n\\bottomrule\\end{tabular}}\\end{center}\nLas escalas de algunas gráficas del informe recortan transitorios; consultar los máximos documentados.\n",
+    "note": "MIL: pico vertical físico149,77m/s²encontacto. CODESYS:144,628m/s²físico; aceleración reconstruida5,938m/s²fuera del rango ±1 de la figura. Estos fenómenos son diferentes.",
+    "weight": 0,
+    "section": "Respaldo técnico",
+    "backup": true,
+    "owner": null,
+    "label": "slide104"
+  },
+  {
+    "title": "Respaldo: configuración y fuentes de evidencia",
+    "body": "\\begin{itemize}\n\\item Documentación final: ecuaciones, implementación y pruebas.\n\\item Documentación de pruebas completas MIL y SIL.\n\\item Pruebas de medio ciclo CODESYS del 08/10: comparación SFC/ST y sin anti-sway.\n\\item \\texttt{PROD\\_FINAL}: ciclos \\texttt{MC\\_prod\\_DESAP} y \\texttt{MC\\_prod\\_APROB} del 10/10.\n\\item Videos HMI acelerados 5×; se conservan sus metadatos.\n\\end{itemize}\\vspace{4mm}\\footnotesize Las imágenes de esta presentación se trazan en \\texttt{fuentes\\_figuras.json}.\n",
+    "note": "No agregar resultados de las corridas incompletas de prueba completa con el ajuste productivo. ",
+    "weight": 0,
+    "section": "Respaldo técnico",
+    "backup": true,
+    "owner": null,
+    "label": "slide105"
+  }
+]

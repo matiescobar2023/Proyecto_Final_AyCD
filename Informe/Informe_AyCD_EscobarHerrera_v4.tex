@@ -20,6 +20,9 @@
 \usepackage{float}
 \usepackage{needspace}
 \usepackage[section]{placeins}
+% Mantener las figuras y tablas dentro del apartado que las explica.
+\AddToHook{cmd/subsection/before}{\FloatBarrier\Needspace{6\baselineskip}}
+\AddToHook{cmd/subsubsection/before}{\FloatBarrier\Needspace{4\baselineskip}}
 \usepackage{multirow}
 \usepackage{textcomp}
 \usepackage{url}
@@ -111,7 +114,7 @@ aboveskip=1em,belowskip=1em,captionpos=t}
 		\thispagestyle{empty}
 		\centering
 		\vspace*{1.2cm}
-		\includegraphics[width=0.48\textwidth]{imagenes_informe/usuario/logo_ref-000.png}\par
+\par
 		\vspace{2.0cm}
 		{\LARGE\bfseries Proyecto Global Integrador\par}
 		\vspace{0.8cm}
@@ -228,10 +231,10 @@ Las variables del modelo se agrupan en posiciones y velocidades, longitud y áng
 	
 	\Needspace{5\baselineskip}
 	
-	\subsection{Alcance, hipótesis y coordenadas}
-	La planta representa, en un plano vertical, el carro, el mecanismo de izaje y el conjunto suspendido formado por el \textit{spreader} y, cuando corresponde, el contenedor. Se adopta $x$ positivo hacia el barco e $y$ positivo hacia arriba. El punto de suspensión está a la altura fija $Y_{t0}=45~\mathrm{m}$; $x_t$ es la posición del carro y $(x_l,y_l)$ la del centro de la base del \textit{spreader}. La longitud geométrica del cable es $l$ y el ángulo de balanceo $\theta_l$ se mide respecto de la vertical.
-	
-	Como en la guía del proyecto, la estructura se considera rígida, la carga se concentra en un punto y el movimiento se restringe al plano $x$--$y$. Se conservan las no linealidades que modifican el comportamiento durante una maniobra: longitud y ángulo variables, elasticidad unilateral del cable, contacto con el perfil, masa suspendida variable, saturaciones de accionamientos y aplicación de frenos. Las órdenes de control y los cambios de modo se describen en secciones posteriores; aquí se establece su efecto sobre la planta.
+\subsection{Alcance, hipótesis y coordenadas}
+La planta representa, en un plano vertical, el carro, el mecanismo de izaje y el conjunto suspendido formado por el \textit{spreader} y, cuando corresponde, el contenedor. Se adopta $x$ positivo hacia el barco e $y$ positivo hacia arriba. El punto de suspensión está a la altura fija $Y_{t0}=45~\mathrm{m}$; $x_t$ es la posición del carro y $(x_l,y_l)$ la del centro de la base del \textit{spreader}. La longitud geométrica del cable es $l$ y el ángulo de balanceo $\theta_l$ se mide respecto de la vertical.
+
+Como en la guía del proyecto, la estructura se considera rígida, la carga se concentra en un punto y el movimiento se restringe al plano $x$--$y$. Se conservan las no linealidades que modifican el comportamiento durante una maniobra: longitud y ángulo variables, elasticidad unilateral del cable, contacto con el perfil, masa suspendida variable, saturaciones de accionamientos y aplicación de frenos. 
 	
 	\begin{figure}[H]
 \centering
@@ -247,10 +250,10 @@ Las variables del modelo se agrupan en posiciones y velocidades, longitud y áng
 \label{fig:geometria_planta_visualizacion}
 \end{figure}
 	
-	\Needspace{5\baselineskip}
+\Needspace{5\baselineskip}
 	
-	\subsection{Organización y acoplamiento físico}
-	En Simulink, \texttt{Planta} reúne tres subsistemas: carga, carro e izaje. El carro entrega $x_t$ y $v_t$ para calcular la geometría del cable; el izaje determina su longitud comandada $l_h$ y la tensión por ramal $F_{hw}$; la tensión actúa simultáneamente sobre la carga y sobre el carro. La carga devuelve su posición, velocidad y ángulo, además de la condición de contacto con el perfil. Por ello los mecanismos no se modelan como movimientos independientes.
+\subsection{Organización y acoplamiento físico}
+En Simulink, \texttt{Planta} reúne tres subsistemas: carga, carro e izaje. El carro entrega $x_t$ y $v_t$ para calcular la geometría del cable; el izaje determina su longitud comandada $l_h$ y la tensión por ramal $F_{hw}$; la tensión actúa simultáneamente sobre la carga y sobre el carro. La carga devuelve su posición, velocidad y ángulo, además de la condición de contacto con el perfil. Por ello los mecanismos no se modelan como movimientos independientes.
 	
 	\begin{figure}[!htb]
 		\centering
@@ -261,14 +264,14 @@ Las variables del modelo se agrupan en posiciones y velocidades, longitud y áng
 	
 	\Needspace{5\baselineskip}
 	
-	\subsection{Carga suspendida: geometría y masa}
-	El bloque de geometría obtiene la longitud y el ángulo a partir de las posiciones calculadas por la dinámica:
-	\begin{align}
+\subsection{Carga suspendida: geometría y masa}
+El bloque de geometría obtiene la longitud y el ángulo a partir de las posiciones calculadas por la dinámica:
+\begin{align}
 		l&=\sqrt{(x_l-x_t)^2+(Y_{t0}-y_l)^2},\label{eq:l}\\
 		\dot l&=\frac{(x_l-x_t)(v_{lx}-v_t)-(Y_{t0}-y_l)v_{ly}}{l},\label{eq:ldot}\\
 		\theta_l&=\operatorname{atan2}(x_l-x_t,Y_{t0}-y_l).\label{eq:theta}
-	\end{align}
-	De forma equivalente, $x_l=x_t+l\sin\theta_l$ e $y_l=Y_{t0}-l\cos\theta_l$. La función de cuatro cuadrantes conserva el signo del balanceo. Las señales $l$ y $\dot l$ alimentan el modelo del cable de izaje; $\theta_l$ determina la dirección de la tensión y se entrega al regulador de balanceo.
+\end{align}
+De forma equivalente, $x_l=x_t+l\sin\theta_l$ e $y_l=Y_{t0}-l\cos\theta_l$. La función de cuatro cuadrantes conserva el signo del balanceo. Las señales $l$ y $\dot l$ alimentan el modelo del cable de izaje; $\theta_l$ determina la dirección de la tensión y se entrega al regulador de balanceo.
 	
 	\begin{figure}[!htb]
 		\centering
@@ -283,17 +286,17 @@ Las variables del modelo se agrupan en posiciones y velocidades, longitud y áng
 		\label{fig:angulo_carga}
 	\end{figure}
 	
-	La masa que interviene en los balances de fuerzas depende de la sujeción del contenedor. Con el \textit{spreader} vacío, $m_l=M_s$ y la altura inferior adicional es $h_c=0$; con el contenedor asegurado, $m_l=M_s+M_c$ y $h_c=H_c$. Se utilizan $M_s=15000~\mathrm{kg}$ y $H_c=2.59~\mathrm{m}$. Esta selección se realiza en el bloque de masa y longitud inferior del subsistema de carga. La estimación de $M_c$ a partir de la tensión, que sirve a la supervisión, se explica junto con esa función de control.
+La masa que interviene en los balances de fuerzas depende de la sujeción del contenedor. Con el \textit{spreader} vacío, $m_l=M_s$ y la altura inferior adicional es $h_c=0$; con el contenedor asegurado, $m_l=M_s+M_c$ y $h_c=H_c$. Se utilizan $M_s=15000~\mathrm{kg}$ y $H_c=2.59~\mathrm{m}$. Esta selección se realiza en el bloque de masa y longitud inferior del subsistema de carga. La estimación de $M_c$ a partir de la tensión, que sirve a la supervisión, se explica junto con esa función de control.
 	
 	\Needspace{5\baselineskip}
 	
-	\subsection{Carga suspendida: contacto y movimiento}
-	El perfil $y_{c0}(x_l,t)$ representa la cota de apoyo bajo la carga. La base se encuentra en $y_l-h_c$ y la penetración calculada es $\delta=y_{c0}(x_l,t)-(y_l-h_c)$. Mientras $\delta<0$ no se aplica fuerza de contacto. Para $\delta\geq0$, el bloque utiliza una reacción vertical elástica amortiguada y una fuerza horizontal que se opone al arrastre:
+\subsection{Carga suspendida: contacto y movimiento}
+El perfil $y_{c0}(x_l,t)$ representa la cota de apoyo bajo la carga. La base se encuentra en $y_l-h_c$ y la penetración calculada es $\delta=y_{c0}(x_l,t)-(y_l-h_c)$. Mientras $\delta<0$ no se aplica fuerza de contacto. Para $\delta\geq0$, el bloque utiliza una reacción vertical elástica amortiguada y una fuerza horizontal que se opone al arrastre:
 	\begin{align}
 		F_{cx}&=-b_{cx}v_{lx},\\
 		F_{cy}&=K_{cy}\delta-b_{cy}v_{ly}.
 	\end{align}
-	Se emplean $K_{cy}=1.8\times10^9~\mathrm{N/m}$, $b_{cy}=10\times10^6~\mathrm{N\,s/m}$ y $b_{cx}=1\times10^6~\mathrm{N\,s/m}$. La conmutación por contacto hace que ambas fuerzas sean nulas fuera del apoyo. El perfil que alimenta este bloque y su actualización durante la operación se describen en la \cref{sec:entorno_planta}.
+Se emplean $K_{cy}=1.8\times10^9~\mathrm{N/m}$, $b_{cy}=10\times10^6~\mathrm{N\,s/m}$ y $b_{cx}=1\times10^6~\mathrm{N\,s/m}$. La conmutación por contacto hace que ambas fuerzas sean nulas fuera del apoyo. El perfil que alimenta este bloque y su actualización durante la operación se describen en la \cref{sec:entorno_planta}.
 	
 	\begin{figure}[!htb]
 		\centering
@@ -307,7 +310,7 @@ Las variables del modelo se agrupan en posiciones y velocidades, longitud y áng
 		m_l\dot v_{lx}&=-2F_{hw}\sin\theta_l+F_{cx},\label{eq:loadx}\\
 		m_l\dot v_{ly}&=2F_{hw}\cos\theta_l+F_{cy}-m_lg.\label{eq:loady}
 	\end{align}
-	Dos integraciones sucesivas en cada eje entregan $v_{lx},x_l$ y $v_{ly},y_l$. El factor dos corresponde a los ramales equivalentes de la formulación; $F_{hw}$ es la tensión de uno de ellos. Las posiciones vuelven al cálculo geométrico, cerrando el acoplamiento entre movimiento y tensión.
+Dos integraciones sucesivas en cada eje entregan $v_{lx},x_l$ y $v_{ly},y_l$. El factor dos corresponde a los ramales equivalentes de la formulación; $F_{hw}$ es la tensión de uno de ellos. Las posiciones vuelven al cálculo geométrico, cerrando el acoplamiento entre movimiento y tensión.
 	
 	\begin{figure}[!htb]
 		\centering
@@ -318,14 +321,14 @@ Las variables del modelo se agrupan en posiciones y velocidades, longitud y áng
 	
 	\Needspace{5\baselineskip}
 	
-	\subsection{Izaje: cable, longitud y tambor}
-	Se distinguen la longitud geométrica $l$ y la longitud $l_h$ impuesta por el movimiento del tambor. La diferencia entre ambas produce la elongación del cable. Cuando el cable está tenso, la tensión por ramal se calcula como
+\subsection{Izaje: cable, longitud y tambor}
+Se distinguen la longitud geométrica $l$ y la longitud $l_h$ impuesta por el movimiento del tambor. La diferencia entre ambas produce la elongación del cable. Cuando el cable está tenso, la tensión por ramal se calcula como
 	\begin{equation}
 		F_{hw}=2K_{hw}(l_h)(l-l_h)+2b_{hw}(l_h)(\dot l-\dot l_h),\label{eq:rope}
 	\end{equation}
-	con $K_{hw}(l_h)=k_{hwu}/(2l_h+L_{h0})$ y $b_{hw}(l_h)=b_{hwu}(2l_h+L_{h0})$. En la condición de cable flojo se impone $F_{hw}=0$: el cable transmite tracción, pero no compresión. Los parámetros principales son $k_{hwu}=236\times10^6~\mathrm{N}$, $b_{hwu}=150~\mathrm{N\,s/m^2}$ y $L_{h0}=110~\mathrm{m}$.
+con $K_{hw}(l_h)=k_{hwu}/(2l_h+L_{h0})$ y $b_{hw}(l_h)=b_{hwu}(2l_h+L_{h0})$. En la condición de cable flojo se impone $F_{hw}=0$: el cable transmite tracción, pero no compresión. Los parámetros principales son $k_{hwu}=236\times10^6~\mathrm{N}$, $b_{hwu}=150~\mathrm{N\,s/m^2}$ y $L_{h0}=110~\mathrm{m}$.
 	
-	En equilibrio cuasiestático, la elongación aproximada es
+En equilibrio cuasiestático, la elongación aproximada es
 	\begin{equation}
 		\Delta l\simeq\frac{m_lg}{4K_{hw}}.\label{eq:stretch}
 	\end{equation}
@@ -414,7 +417,7 @@ La implementación conserva la división de la planta en carga, carro e izaje pr
 	\begin{figure}[!htb]
 		\centering
 		\includegraphics[width=0.78\columnwidth]{imagenes_informe/usuario/Sens_1.png}
-		\caption{Emulación sensores.}
+		\caption{Señales de medición y detecciones disponibles para el control.}
 		\label{fig:sensores_planta}
 	\end{figure}
 	
@@ -523,7 +526,192 @@ La figura~\ref{fig:cr-sistema} muestra las señales que ingresan al nivel regula
 	\Needspace{5\baselineskip}
 	
 	
-	\subsection{Modelo reducido y cascada del carro}
+	\subsection{Observadores continuos de velocidad y conversiones cinemáticas}
+\label{sec:observadores-continuos}
+
+Los reguladores del carro y del izaje requieren señales de posición y velocidad de sus respectivos accionamientos. Los encoders proporcionan las posiciones angulares de los motores, $\theta_{tm}$ y $\theta_{hm}$. Las posiciones cinemáticas se obtienen mediante las relaciones de transmisión y la geometría de los tambores. Para reconstruir las velocidades se utilizan dos observadores continuos independientes, uno por eje, con la misma estructura y los mismos parámetros de diseño.
+
+
+\subsubsection{Modelo cinemático y observabilidad}
+
+Para formular el observador se consideran el ángulo del tambor $q$ y su velocidad angular $\omega$. El modelo cinemático adoptado es:
+\begin{equation}
+\dot q=\omega,\qquad \dot\omega=0.
+\end{equation}
+La segunda ecuación constituye la hipótesis de predicción del observador. El accionamiento real puede acelerar y frenar; esos cambios se reflejan en la evolución de la medición y producen correcciones sobre los estados estimados.
+
+La lectura angular del motor se convierte en ángulo de tambor mediante:
+\begin{equation}
+u=\frac{\theta_{m,\mathrm{sens}}}{i},
+\end{equation}
+donde $i$ es la relación de transmisión. En este apartado, $u$ representa la medición que ingresa al observador. Para una medición ideal, $u=q$.
+
+Definiendo el vector de estados:
+\begin{equation}
+\boldsymbol x=\begin{bmatrix}q\\\omega\end{bmatrix},
+\end{equation}
+el modelo se expresa como:
+\begin{equation}
+\dot{\boldsymbol x}=A_0\boldsymbol x,\qquad u=C\boldsymbol x,
+\end{equation}
+con:
+\begin{equation}
+A_0=\begin{bmatrix}0&1\\0&0\end{bmatrix},\qquad
+C=\begin{bmatrix}1&0\end{bmatrix}.
+\end{equation}
+La matriz de observabilidad resulta:
+\begin{equation}
+\mathcal O=\begin{bmatrix}C\\CA_0\end{bmatrix}
+=\begin{bmatrix}1&0\\0&1\end{bmatrix}.
+\end{equation}
+Luego el modelo es observable bajo la hipótesis cinemática adoptada, y la evolución temporal del ángulo medido permite reconstruir la velocidad angular.
+
+\subsubsection{Formulación del observador}
+
+Se adopta un observador de Luenberger de la forma:
+\begin{equation}
+\dot{\hat{\boldsymbol x}}=A_0\hat{\boldsymbol x}
++L\left(u-C\hat{\boldsymbol x}\right),
+\end{equation}
+donde:
+\begin{equation}
+\hat{\boldsymbol x}=\begin{bmatrix}\hat q\\\hat\omega\end{bmatrix},\qquad
+L=\begin{bmatrix}l_1\\l_2\end{bmatrix}.
+\end{equation}
+Al desarrollar sus componentes se obtiene:
+\begin{equation}
+\boxed{\dot{\hat q}=\hat\omega+l_1(u-\hat q)},\qquad
+\boxed{\dot{\hat\omega}=l_2(u-\hat q)}.
+\label{eq:observador-continuo}
+\end{equation}
+La diferencia $u-\hat q$ es el error entre el ángulo medido y el estimado. Este error corrige la evolución del estado angular interno y de la velocidad estimada.
+
+El estado $\hat q$ se utiliza internamente para generar dicha corrección. Las posiciones empleadas por los reguladores se calculan directamente desde los encoders.
+
+\subsubsection{Asignación de polos y parámetros}
+
+En ausencia de ruido y cuando el movimiento satisface el modelo de velocidad constante, el error de estimación:
+\begin{equation}
+\boldsymbol e=\boldsymbol x-\hat{\boldsymbol x}
+\end{equation}
+evoluciona según:
+\begin{equation}
+\dot{\boldsymbol e}=(A_0-LC)\boldsymbol e =
+\begin{bmatrix}-l_1&1\\-l_2&0\end{bmatrix} \boldsymbol e
+\end{equation}
+cuyo polinomio característico resulta:
+\begin{equation}
+P_o(s)=\det(sI-A_o)=s^2+l_1s+l_2.
+\end{equation}
+Se asigna un comportamiento de segundo orden mediante:
+\begin{equation}
+P_o(s)=s^2+2\zeta_o\omega_os+\omega_o^2.
+\end{equation}
+Por comparación de coeficientes:
+\begin{equation}
+\boxed{l_1=2\zeta_o\omega_o,\qquad l_2=\omega_o^2}.
+\end{equation}
+En ambos ejes se utilizan:
+\begin{equation}
+\zeta_o=1,\qquad \omega_o=40\ \mathrm{rad/s},
+\end{equation}
+por lo que:
+\begin{equation}
+l_1=80\ \mathrm{s^{-1}},\qquad l_2=1600\ \mathrm{s^{-2}}.
+\end{equation}
+De modo que los dos polos se ubican en:
+\begin{equation}
+\boxed{p_{o1}=p_{o2}=-40\ \mathrm{s^{-1}}},
+\end{equation}
+correspondientes a un diseño críticamente amortiguado. La escala temporal asociada es $1/\omega_o=0{,}025\ \mathrm{s}$.
+
+\subsubsection{Interpretación como derivada filtrada}
+
+Aplicando la transformada de Laplace con condiciones iniciales nulas:
+\begin{align}
+s\hat Q(s)&=\hat\Omega(s)+l_1\left[U(s)-\hat Q(s)\right],\\
+s\hat\Omega(s)&=l_2\left[U(s)-\hat Q(s)\right].
+\end{align}
+Eliminando el estado angular interno se obtiene:
+\begin{equation}
+\frac{\hat\Omega(s)}{U(s)}=
+\frac{\omega_o^2s}{s^2+2\zeta_o\omega_os+\omega_o^2}.
+\end{equation}
+Por tanto, el observador equivale a una derivada acompañada por un filtro de segundo orden. Para los parámetros seleccionados:
+\begin{equation}
+\frac{\hat\Omega(s)}{U(s)}=s\,\frac{1600}{(s+40)^2}.
+\end{equation}
+A frecuencias suficientemente menores que $\omega_o$, la transferencia aproxima al operador derivada. A altas frecuencias su magnitud decrece, limitando la amplificación que produciría una derivación ideal sobre las perturbaciones de la medición.
+
+Para una medición ideal, la relación entre la velocidad estimada y la real, con condiciones iniciales nulas, es:
+\begin{equation}
+\boxed{\frac{\hat\Omega(s)}{\Omega(s)}=
+\frac{\omega_o^2}{s^2+2\zeta_o\omega_os+\omega_o^2}}.
+\end{equation}
+
+
+\subsubsection{Error de estimación durante aceleraciones}
+
+Para una medición ideal, se definen los errores entre las variables reales y las estimadas:
+\begin{equation}
+e_q=q-\hat q,\qquad e_\omega=\omega-\hat\omega,
+\end{equation}
+Considerando que la aceleración angular del tambor es \(\dot\omega=a_\theta\), la dinámica del error resulta:
+\begin{equation}
+\boxed{\dot e_q=e_\omega-l_1e_q},\qquad
+\boxed{\dot e_\omega=a_\theta-l_2e_q}.
+\end{equation}
+Los polos asignados garantizan que, a velocidad constante, los errores converjan a cero. Durante las aceleraciones, \(a_\theta\) actúa como una entrada sobre esta dinámica y puede mantener un error de seguimiento.
+
+Ante una aceleración constante sostenida, una vez extinguido el transitorio:
+
+\begin{equation}
+e_q=\frac{a_\theta}{\omega_o^2},\qquad
+e_\omega=\frac{2\zeta_o}{\omega_o}a_\theta.
+\end{equation}
+Con los parámetros adoptados:
+\begin{equation}
+\boxed{e_\omega=(0{,}05\ \mathrm{s})\,a_\theta}.
+\end{equation}
+
+Cuando la aceleración cesa, el error decae a cero. Aumentar \(\omega_o\) reduce este error de seguimiento, aunque también aumenta la sensibilidad a las variaciones rápidas y al ruido de la medición.
+
+
+\subsubsection{Conversiones cinemáticas y alcance de las estimaciones}
+
+Para el carro, la lectura reducida del encoder y la velocidad angular estimada se convierten mediante:
+\begin{equation}
+u_t=\frac{\theta_{tm,\mathrm{sens}}}{i_t},\qquad
+x_{td,\mathrm{enc}}=r_{td}u_t,\qquad
+\hat v_{td}=r_{td}\hat\omega_{td}.
+\end{equation}
+
+Para el izaje:
+\begin{equation}
+u_h=\frac{\theta_{hm,\mathrm{sens}}}{i_h},\qquad
+{l_h=l_0-\frac{r_{hd}}2u_h},\qquad
+\widehat{\dot l_h}=-\frac{r_{hd}}2\hat\omega_{hd}.
+\end{equation}
+
+El funcionamiento de los observadores continuos se verificó reproduciendo las señales de los encoders registradas durante una maniobra con movimiento de ambos ejes y comparando las velocidades estimadas con las correspondientes variables de los accionamientos de la planta simulada. Se obtuvo un buen seguimiento, con errores RMS de \(0{,}00540\ \mathrm{m/s}\) para el carro y \(0{,}00682\ \mathrm{m/s}\) para el izaje, y errores máximos absolutos de \(0{,}02957\ \mathrm{m/s}\) y \(0{,}10548\ \mathrm{m/s}\), respectivamente. Las diferencias se concentraron en los transitorios rápidos y fueron consistentes con el retraso de seguimiento propio del filtrado.
+
+
+La \cref{fig:observadores-continuos-bloques} muestra la realización de ambos observadores y las conversiones cinemáticas empleadas por los reguladores.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\linewidth]{imagenes_informe/usuario/observador_continuo_carro.png}
+\par\vspace{1mm}
+{\small (a) Observador del accionamiento del carro y conversión de posición.}
+\par\vspace{4mm}
+\includegraphics[width=\linewidth]{imagenes_informe/usuario/observador_continuo_izaje.png}
+\par\vspace{1mm}
+{\small (b) Observador del accionamiento de izaje y conversiones de longitud y velocidad.}
+\caption{Implementación en bloques de los observadores continuos de velocidad y de las conversiones cinemáticas de ambos accionamientos.}
+\label{fig:observadores-continuos-bloques}
+\end{figure}
+
+\subsection{Modelo reducido y cascada del carro}
 	Se parte de las ecuaciones de carro, cable y accionamiento de la guía (Ecs.~7.a--7.f). La fuerza transmitida por el cable de traslación es
 	\begin{equation}
 		F_{tw}=K_{tw}(x_{td}-x_t)+b_{tw}(\dot x_{td}-\dot x_t),
@@ -788,6 +976,7 @@ El paralelismo permite que las secuencias de carga y frenos continúen supervis�
     \centering
     \includegraphics[height=0.72\textheight,keepaspectratio]{imagenes_informe/otro/diagramas_automatas_revision/01_arquitectura_supervisor.pdf}
     \caption{Organización general, responsabilidades y orden de ejecución de las regiones paralelas del autómata supervisor.}
+\label{fig:supervisor_arquitectura}
 \end{figure}
 
 \Needspace{5\baselineskip}
@@ -795,6 +984,7 @@ El paralelismo permite que las secuencias de carga y frenos continúen supervis�
 \subsection{Interfaz funcional del supervisor}
 El supervisor constituye el vínculo entre las órdenes del operador, las mediciones de la planta, el nivel de seguridad y los reguladores. Sus entradas no representan mandos directos sobre los actuadores: se procesan para obtener condiciones lógicas, referencias limitadas y permisos internos. La \cref{tab:interfaz_supervisor} resume las señales que determinan las decisiones principales.
 
+\Needspace{12\baselineskip}
 \begin{longtable}{L{4.1cm} L{4.2cm} L{5.3cm}}
 \caption{Interfaz funcional principal del autómata supervisor.}\label{tab:interfaz_supervisor}\\
 \toprule
@@ -968,13 +1158,21 @@ Las operaciones indicadas se ejecutan durante cada ciclo del supervisor. En cons
 
 \Needspace{5\baselineskip}
 
+\FloatBarrier
+\Needspace{16\baselineskip}
 \subsection{Indexación de estados de operación}
 Para facilitar su utilización posterior se adopta la siguiente indexación funcional:
+\Needspace{12\baselineskip}
 \begin{longtable}{C{1.2cm} L{4.4cm} L{8.2cm}}
 \caption{Estados de la región de operación.}\\
 \toprule
 Índice & Estado & Función principal\\
 \midrule
+\endfirsthead
+\toprule
+Índice & Estado & Función principal\\
+\midrule
+\endhead
 O0 & \texttt{APAGADO} & Deshabilita reguladores y mantiene las referencias en la posición medida.\\
 O1 & \texttt{ARRANQUE} & Inicia la secuencia, conserva frenos y espera permisos estables.\\
 O2 & \texttt{LISTO} & Habilita reguladores con referencias detenidas y espera una selección.\\
@@ -1000,8 +1198,9 @@ O13 & \texttt{RETENCION\_FALLA} & Deshabilita reguladores y retiene el sistema a
 \begin{figure}[H]
 \centering
 \includegraphics[width=.98\textwidth]{imagenes_informe/otro/diagramas_automatas_revision/02a_operacion_parada.pdf}
-\caption{Región \texttt{OPERACION}: estado apagado y salidas comunes por parada o retención de falla. El arranque y los estados de maniobra se detallan en la figura siguiente.}
+\caption{Región \texttt{OPERACION}: estado apagado y salidas comunes por parada o retención de falla. El arranque y los estados de maniobra se detallan en la \cref{fig:supervisor_operacion_maniobra}.}
 
+\label{fig:supervisor_operacion_parada}
 \end{figure}
 \texttt{APAGADO} es el estado inicial. Su código de modo es cero y ambos reguladores quedan deshabilitados. La transición a \texttt{ARRANQUE} exige orden de marcha, permiso global y configuración válida.
 
@@ -1014,8 +1213,9 @@ O13 & \texttt{RETENCION\_FALLA} & Deshabilita reguladores y retiene el sistema a
 \begin{figure}[H]
 \centering
 \includegraphics[height=.83\textheight,width=.98\textwidth,keepaspectratio]{imagenes_informe/otro/diagramas_automatas_revision/02b_operacion_maniobra.pdf}
-\caption{Región \texttt{OPERACION}: arranque, modo manual, transferencias al modo automático y acceso al barrido. Las salidas comunes por parada y falla se muestran en la figura anterior.}
+\caption{Región \texttt{OPERACION}: arranque, modo manual, transferencias al modo automático y acceso al barrido. Las salidas comunes por parada y falla se muestran en la \cref{fig:supervisor_operacion_parada}.}
 
+\label{fig:supervisor_operacion_maniobra}
 \end{figure}
 
 \Needspace{5\baselineskip}
@@ -1056,6 +1256,7 @@ La transición a \texttt{MANTENER\_OBJETIVO} exige solamente un error horizontal
     \centering
     \includegraphics[height=0.75\textheight,keepaspectratio]{imagenes_informe/otro/diagramas_automatas_revision/03_automatico_interno.pdf}
     \caption{Máquina de estados interna del modo automático y acciones principales de planificación, ejecución y mantenimiento del objetivo.}
+\label{fig:supervisor_automatico}
 \end{figure}
 
 \Needspace{5\baselineskip}
@@ -1087,16 +1288,18 @@ El barrido no puede iniciarse con carga. Durante los cuatro estados se atiende l
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=.98\textwidth]{imagenes_informe/otro/diagramas_automatas_revision/04a_barrido_preparacion.pdf}
-\caption{Relevamiento LiDAR: preparación e inicialización del perfil y salidas comunes por parada o falla. La condición de altura y velocidad habilita el recorrido de la figura siguiente.}
+\includegraphics[width=.98\textwidth,clip]{imagenes_informe/otro/diagramas_automatas_revision/04a_barrido_preparacion.pdf}
+\caption{Relevamiento LiDAR: preparación e inicialización del perfil y salidas comunes por parada o falla. La condición de altura y velocidad habilita el recorrido de la \cref{fig:supervisor_barrido_recorrido}.}
 
+\label{fig:supervisor_barrido_preparacion}
 \end{figure}
 
 \begin{figure}[H]
 \centering
 \includegraphics[height=.50\textheight,width=.98\textwidth,keepaspectratio]{imagenes_informe/otro/diagramas_automatas_revision/04b_barrido_recorrido.pdf}
-\caption{Relevamiento LiDAR: aproximación al extremo derecho, barrido hacia la izquierda, validación de cobertura y retorno a \texttt{LISTO}. Las salidas comunes por parada y falla se muestran en la figura anterior.}
+\caption{Relevamiento LiDAR: aproximación al extremo derecho, barrido hacia la izquierda, validación de cobertura y retorno a \texttt{LISTO}. Las salidas comunes por parada y falla se muestran en la \cref{fig:supervisor_barrido_preparacion}.}
 
+\label{fig:supervisor_barrido_recorrido}
 \end{figure}
 
 \Needspace{5\baselineskip}
@@ -1131,10 +1334,18 @@ Si la masa estimada del contenedor no supera $50000~\mathrm{kg}$ se pasa a \text
 
 La apertura de \textit{twistlocks} se permite con contacto. El estado \texttt{ABRIENDO\_TWISTLOCKS} espera la confirmación de apertura y retorna a \texttt{VACIO}. También dispone de un tiempo máximo de 100 ciclos.
 
+\begin{figure}[!htb]
+    \centering
+    \includegraphics[width=.98\textwidth,height=.88\textheight,keepaspectratio]{imagenes_informe/otro/diagramas_automatas_revision/05_carga_twistlocks_recortado.pdf}
+    \caption{Máquina de estados completa de la región \texttt{CARGA\_Y\_TWISTLOCKS}, desde la toma hasta la liberación o retención por falla.}
+\label{fig:supervisor_carga}
+\end{figure}
+
 \Needspace{5\baselineskip}
 
+\clearpage
 \subsection{Indexación de estados de carga}
-\begin{table}[!htb]
+\begin{table}[H]
 \centering
 \caption{Índice funcional de la región de carga.}
 \begin{tabular}{C{1.2cm} L{5cm} L{7.2cm}}
@@ -1154,11 +1365,7 @@ C8 & \texttt{FALLA\_TWISTLOCK} & Retiene comandos hasta reinicio seguro.\\
 \end{tabular}
 \end{table}
 
-\begin{figure}[!htb]
-    \centering
-    \includegraphics[width=.98\textwidth,height=.88\textheight,keepaspectratio]{imagenes_informe/otro/diagramas_automatas_revision/05_carga_twistlocks_recortado.pdf}
-    \caption{Máquina de estados completa de la región \texttt{CARGA\_Y\_TWISTLOCKS}, desde la toma hasta la liberación o retención por falla.}
-\end{figure}
+
 
 \Needspace{5\baselineskip}
 
@@ -1209,8 +1416,9 @@ T3 & \texttt{TB\_APLICANDO} & Espera reposo y completa la aplicación del freno.
 
 \begin{figure}[!htb]
     \centering
-    \includegraphics[width=0.98\textwidth,height=0.72\textheight,keepaspectratio]{imagenes_informe/otro/diagramas_automatas_revision/06_frenos.pdf}
+    \includegraphics[width=0.94\textwidth,height=0.68\textheight,keepaspectratio]{imagenes_informe/otro/diagramas_automatas_revision/06_frenos.pdf}
     \caption{Máquinas paralelas de accionamiento de los frenos del carro y del izaje.}
+\label{fig:supervisor_frenos}
 \end{figure}
 
 \Needspace{5\baselineskip}
@@ -1245,19 +1453,17 @@ D2 & \texttt{FALLA} & Conserva el código correspondiente a seguimiento, carga o
     \centering
     \includegraphics[height=0.68\textheight,keepaspectratio]{imagenes_informe/otro/diagramas_automatas_revision/07_diagnostico.pdf}
     \caption{Región de diagnóstico del supervisor y condiciones de generación y recuperación de alarmas y fallas.}
+\label{fig:supervisor_diagnostico}
 \end{figure}
 
-\Needspace{5\baselineskip}
+\Needspace{8\baselineskip}
 
-\subsection{Resumen de transiciones prioritarias}
+\subsection{Transiciones y prioridades de operación}
 
-La prioridad entre condiciones simultáneas depende del orden de las transiciones salientes de cada estado. En manual y automático, algunas transiciones normales se evalúan antes que las de parada o falla; por ello, si coinciden, la atención de estas últimas puede desplazarse a la activación siguiente. La tabla siguiente resume las guardas y el orden de las transiciones principales.
-\Needspace{5\baselineskip}
-
-\subsection{Tabla consolidada de transiciones de operación}
-La \cref{tab:transiciones_operacion} resume las transiciones que definen el recorrido funcional principal. La prioridad indicada corresponde al orden relativo descrito por el modelo cuando más de una condición puede resultar verdadera en la misma activación.
+La prioridad entre condiciones simultáneas depende del orden de las transiciones salientes de cada estado. En manual y automático, algunas transiciones normales se evalúan antes que las de parada o falla; por ello, si coinciden, la atención de estas últimas puede desplazarse a la activación siguiente. La \cref{tab:transiciones_operacion} reúne las guardas de las transiciones principales y su prioridad relativa cuando más de una condición resulta verdadera en la misma activación.
 
 {\footnotesize
+\Needspace{12\baselineskip}
 \begin{longtable}{L{3.5cm} L{3.5cm} L{6.4cm} C{1.0cm}}
 \caption{Transiciones principales de la región \texttt{OPERACION}.}\label{tab:transiciones_operacion}\\
 \toprule
@@ -1369,6 +1575,7 @@ W1 & \texttt{FALLO\_WD} & Solicita parada total por pérdida de actividad.\\
     \centering
     \includegraphics[width=0.98\textwidth,height=0.70\textheight,keepaspectratio]{imagenes_informe/otro/diagramas_automatas_revision/08_seguridad_emergencias.pdf}
     \caption{Máquina de estados de la región \texttt{SALTOS\_EMERGENCIAS}, con prioridades, autorizaciones de freno y recuperación enclavada.}
+\label{fig:seguridad_emergencias}
 \end{figure}
 
 \Needspace{5\baselineskip}
@@ -1415,6 +1622,7 @@ Este mecanismo detecta tanto la detención del supervisor como una señal congel
     \centering
     \includegraphics[width=.65\textwidth,height=.43\textheight,keepaspectratio]{imagenes_informe/otro/diagramas_automatas_revision/09_watchdog.pdf}
     \caption{Región \texttt{WATCHDOG}, temporización de actividad y recuperación mediante flanco de reinicio.}
+\label{fig:seguridad_watchdog}
 \end{figure}
 
 \Needspace{5\baselineskip}
@@ -2159,7 +2367,7 @@ La planta y las mediciones permanecen en Simulink; OPC UA intercambia señales c
 \subsection{Implementación manual del supervisor}
 \label{subsec:sup_manual_codesys}
 \Needspace{5\baselineskip}
-\subsubsection{Implementación manual del supervisor en CODESYS}
+\subsubsection{Organización y ejecución de los programas}
 El supervisor se distribuye en 16 programas SFC. Las salidas y los cálculos numéricos se implementan en ST: \path{PRG_PREPROCESO} acondiciona entradas y construye las banderas comunes, mientras \path{PRG_ACCIONES_Y_SALIDAS} consulta los pasos activos, calcula referencias y aplica interbloqueos finales. Las variables compartidas pertenecen a \path{GVL_GRUA}. Un paso activo se consulta mediante \texttt{Paso.x}; su permanencia se consulta mediante \texttt{Paso.t}. Los SFC exportados no contienen bloques de acción IEC: sus efectos se materializan en los programas ST de la tarea.
 
 \path{MainTask_20ms} ejecuta una lista fija de llamadas cada $20~\mathrm{ms}$. Primero se procesa el enlace OPC UA y se ejecuta seguridad. Luego se ejecutan preprocesamiento, cuerda floja, contenedor paralelo, ciclo, modos, barrido, automático, carga, sobrecarga, fallas de carga, frenos y diagnóstico. El programa de acciones y salidas se llama al final. Por tanto, el orden entre POUs reemplaza parte del orden entre regiones paralelas de Stateflow; no debe suponerse que ambas organizaciones tienen idéntica semántica de ejecución.
@@ -2228,7 +2436,7 @@ Los SFC de freno conservan los cuatro pasos aplicado, prueba de torque, abierto 
 
 En carro se utiliza una tolerancia horizontal de $0.05~\mathrm{m}$, frente a $0.03~\mathrm{m}$ del chart. La transición desde prueba hacia abierto admite torque comprobado o cancelación de demanda, habilitación o permiso. El paso \texttt{TB\_ABIERTO} por sí solo no abre físicamente el freno: ST exige \texttt{brakeTrolleyProofLatched}, regulador habilitado, permisos y ausencia de falla de carga. La prueba queda memorizada para la maniobra vigente y se borra ante cancelación, pérdida de permiso o retorno a aplicado.
 
-El monitor de carro declara falla tras $8~\mathrm{s}$ de prueba sin torque, únicamente si persisten habilitación, permiso y demanda. Es una adaptación de la versión ensayada con el simulador, distinta del retorno por $50$ ticks del Stateflow. Los monitores de ambos frenos se incorporan a \texttt{loadSequenceFault}. Esta separación entre avance del SFC y salida física debe conservarse al interpretar los diagramas.
+
 
 \begin{figure}[!htb]
 \centering
@@ -2237,6 +2445,8 @@ El monitor de carro declara falla tras $8~\mathrm{s}$ de prueba sin torque, úni
 \label{fig:sfc_frenos_manual}
 \end{figure}
 
+
+El monitor de carro declara falla tras $8~\mathrm{s}$ de prueba sin torque, únicamente si persisten habilitación, permiso y demanda. Es una adaptación de la versión ensayada con el simulador, distinta del retorno por $50$ ticks del Stateflow. Los monitores de ambos frenos se incorporan a \texttt{loadSequenceFault}. Esta separación entre avance del SFC y salida física debe conservarse al interpretar los diagramas.
 
 \begin{figure}[!htb]
 \centering
@@ -2265,6 +2475,7 @@ El monitor de carro declara falla tras $8~\mathrm{s}$ de prueba sin torque, úni
 Ambas implementaciones comparten las señales físicas, los objetivos locales, la toma estable, la generación de referencias y los permisos de seguridad. La traducción manual distribuye la secuencia y sus acciones entre POUs; conserva el objetivo funcional, pero no constituye una equivalencia completa del grafo jerárquico ni de sus prioridades.
 
 {\footnotesize
+\Needspace{12\baselineskip}
 \begin{longtable}{L{3.0cm} L{5.8cm} L{5.8cm}}
 \caption{Correspondencias y diferencias verificadas del supervisor.}\label{tab:comparacion_sup_sfc}\\
 \toprule
@@ -2296,7 +2507,7 @@ Los diagramas SFC permiten inspeccionar la secuencia real y la tabla permite loc
 \subsection{Implementación manual de seguridad}
 \label{subsec:seg_manual_codesys}
 \Needspace{5\baselineskip}
-\subsubsection{Implementación manual del nivel de seguridad en CODESYS}
+\subsubsection{Organización del nivel de seguridad}
 La versión manual distribuye protección en cinco SFC: un contenedor paralelo y cuatro monitores de carro, izaje, watchdog y emergencia total. \path{PRG_PRESEGURIDAD} calcula los flancos y la temporización; \path{PRG_SALIDAS_SEGURIDAD} arbitra las autorizaciones y permisos. Estos programas se ejecutan antes del supervisor en \path{MainTask_20ms}.
 
 La secuencia exacta es: enlace OPC UA, preseguridad, SFC de carro, SFC de izaje, SFC de watchdog, SFC total, contenedor paralelo y salidas de seguridad. Los cuatro monitores se llaman en cada ciclo, independientemente de las acciones del contenedor. \path{SFC_AUTOMATA_SEGURIDAD} mantiene sus dos pasos de región porque la transición posterior a la convergencia tiene condición \texttt{FALSE}; su representación expresa paralelismo, pero no selecciona por sí misma las salidas de emergencia.
@@ -2367,6 +2578,7 @@ Emergencia total & 0 & 0 & 0 & 0 & 0 & 0\\
 \end{table}
 
 {\footnotesize
+\Needspace{12\baselineskip}
 \begin{longtable}{L{3.0cm} L{5.8cm} L{5.8cm}}
 \caption{Diferencias de estructura y ejecución del nivel de seguridad.}\label{tab:comparacion_seg_sfc}\\
 \toprule Aspecto & Stateflow de referencia & CODESYS manual SFC\\\midrule
@@ -2391,7 +2603,7 @@ La comparación se fundamenta en el XML y los programas ST exportados. Describe 
 \subsection{Generación automática del supervisor e integración}
 \label{subsec:sup_generado_codesys}
 \Needspace{5\baselineskip}
-\subsubsection{Implementación automática del supervisor en CODESYS}
+\subsubsection{Generación y estructura del código}
 La implementación automática del supervisor y del autómata de seguridad se realizó mediante la generación automática de código para PLC de Simulink, utilizando Simulink PLC Coder con destino CODESYS.
 
 La generación produce XML de intercambio con cuerpos en Structured Text. No produce diagramas SFC nuevos: la representación gráfica de referencia sigue siendo el chart de Stateflow de las Figuras anteriores. El bloque principal \path{FB_GEN_SUPERVISOR} representa la jerarquía mediante variables de estado, constantes, estructuras \texttt{CASE}, condiciones y funciones auxiliares. Los comentarios del ST conservan referencias a elementos del modelo. Las acciones de entrada, ejecución y salida quedan integradas en ese código, en lugar de repartirse entre pasos SFC y programas de acciones escritos manualmente.
@@ -2436,7 +2648,7 @@ Los temporizadores IEC de protección usan el reloj del runtime, mientras los co
 \subsection{Generación automática de seguridad e integración}
 \label{subsec:seg_generada_codesys}
 \Needspace{5\baselineskip}
-\subsubsection{Implementación automática de protección en ST}
+\subsubsection{Núcleo generado y adaptación al PLC}
 La protección se generó separadamente desde \path{Nivel 0 - Seguridad/Automata de proteccion} de la misma copia Stateflow. La comparación previa registró ocho estados jerárquicos, trece transiciones y catorce datos, sin funciones MATLAB internas. PLC Coder produjo el bloque principal y dos auxiliares, que se integraron con prefijo \texttt{SEG\_} y el nombre \path{FB_GEN_SEGURIDAD}. \path{PRG_AUTO_SEGURIDAD} conecta las nueve entradas y cinco salidas originales del chart, inicializa la instancia una vez y luego ejecuta su STEP antes del supervisor.
 
 El código ST conserva la región de emergencias de estados exclusivos y la región watchdog, las memorias anterior y actual para detección de cambios y las prioridades de transición del chart. El watchdog temporal utiliza un bloque IEC \texttt{Standard.TON}. Por tanto, su tiempo corresponde al runtime PLC y no al tiempo acelerado de la planta Simulink. Las máquinas de estados de las Figuras de Stateflow anteriores siguen siendo la representación de este núcleo generado; los cinco SFC manuales representan una traducción diferente.
@@ -2476,6 +2688,7 @@ Las corridas disponibles comprobaron ausencia de fallas y emergencias durante la
 La versión automática mantiene como fuente los charts jerárquicos descritos en este capítulo. Por ello conserva en el núcleo generado las ramas, prioridades y acciones de esa referencia, incluidas las salidas de cancelación de carga y los estados de falla que no aparecen como bifurcaciones dentro de la cadena SFC manual. La comparación de la fuente y la lectura del ST sustentan esa correspondencia; la integración introduce modificaciones propias que deben comprobarse por separado.
 
 {\footnotesize
+\Needspace{12\baselineskip}
 \begin{longtable}{L{3.0cm} L{5.8cm} L{5.8cm}}
 \caption{Diferencias entre implementación manual y automática.}\label{tab:manual_auto_st}\\
 \toprule Aspecto & CODESYS manual & CODESYS automático\\\midrule
@@ -2530,6 +2743,8 @@ La frontera elegida conserva la arquitectura jerárquica desarrollada previament
 
 \begin{table}[H]
 \centering
+\caption{Distribución de responsabilidades en la arquitectura de movimiento.}
+\label{tab:mc_responsabilidades}
 {\small
 \begin{tabular}{@{}L{0.34\textwidth}L{0.60\textwidth}@{}}
 \toprule
@@ -2570,6 +2785,8 @@ Las interfaces se organizan en buses tipados donde cada campo conserva un signif
 
 \begin{table}[H]
 \centering
+\caption{Interfaces y parámetros del Motion Controller.}
+\label{tab:mc_interfaces}
 {\small
 \begin{tabular}{@{}L{0.34\textwidth}L{0.60\textwidth}@{}}
 \toprule
@@ -2609,7 +2826,7 @@ Los observadores mantienen sus estados discretos y la lectura anterior del encod
 
 \subsubsection{Observadores internos de encoder}
 
-Para cada eje, la lectura angular del motor se convierte en ángulo de tambor mediante la relación de transmisión. El observador conserva la estructura original:
+Se discretizan los observadores continuos desarrollados en la sección~\ref{sec:observadores-continuos}. Para cada eje, la lectura angular del motor se convierte en ángulo de tambor mediante la relación de transmisión. Se conserva la estructura original, que se reproduce a continuación para establecer la notación de la realización discreta:
 
 \begin{equation}
 \dot q=2\zeta\omega_n(u-q)+w,\qquad
@@ -2749,6 +2966,8 @@ En primera instancia, se comparó el MC con el sistema de \textbf{bloques FF lim
 
 \Needspace{5\baselineskip}
 
+\FloatBarrier
+\Needspace{16\baselineskip}
 \subsubsection{Equivalencia entre MC FF y bloques FF en la maniobra completa}
 
 La siguiente tabla resume las máximas diferencias entre las señales de ambas simulaciones y permite apreciar el efecto de este cambio sobre el comportamiento del sistema.
@@ -2824,8 +3043,11 @@ Los posicionamientos se solicitaron en automático. Las tomas, aproximaciones fi
 
 \Needspace{5\baselineskip}
 
+\FloatBarrier
+\Needspace{16\baselineskip}
 \subsubsection{Cronología de las dos transferencias}
 
+\Needspace{12\baselineskip}
 \begin{longtable}{C{1.6cm} C{1.0cm} L{6.4cm} L{4.4cm}}
 
 \caption{Eventos efectivos de la prueba completa MIL.}\label{tab:cronologia_completa_MIL}\\
