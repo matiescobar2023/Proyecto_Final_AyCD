@@ -710,26 +710,6 @@
     "label": "cmp42"
   },
   {
-    "title": "Freno de carro · Stateflow",
-    "body": "\\begin{center}\\diagramfit{\\begin{tikzpicture}\n\\node[sfstate,text width=2.5cm] (n0) at (0.0,0) {TB APLICADO};\n\\node[sfstate,text width=2.5cm] (n1) at (3.35,0) {TB PRUEBA\\\\TORQUE};\n\\node[sfstate,text width=2.5cm] (n2) at (6.7,0) {TB ABIERTO};\n\\node[sfstate,text width=2.5cm] (n3) at (10.05,0) {TB APLICANDO};\n\\fill[accent] (-1.8,0) circle (2pt);\n\\draw[flow] (-1.8,0)--(n0.west);\n\\draw[flow] (n0.east)--(n1.west);\n\\node[guard,text width=3.35cm,anchor=south] at (1.675,.78) {Habilitación, demanda\\\\y permiso};\n\\draw[flow] (n1.east)--(n2.west);\n\\node[guard,text width=3.35cm,anchor=south] at (5.025,.78) {Torque\\\\comprobado};\n\\draw[flow] (n2.east)--(n3.west);\n\\node[guard,text width=3.35cm,anchor=south] at (8.375,.78) {Cancelar demanda\\\\o retirar permiso};\n\\draw[flow] (n1.south)--++(0,-1.1) -| (n0.south);\n\\node[guard,anchor=north,align=center,text width=9cm] at (1.675,-1.6) {Prueba sin torque: retorno tras 50 ticks};\n\\draw[flow] (n3.south)--++(0,-1.8) -| (n0.south);\n\\node[guard,anchor=north,align=center,text width=9cm] at (5.025,-2.3) {Reposo: velocidad menor que 0,03 m/s y error admisible};\n\\end{tikzpicture}}\\end{center}\\vfill\n{\\small El accionamiento debe demostrar torque antes de abrir el freno del carro.\\par}\\vspace{1.5mm}{\\fontsize{9.5}{11}\\selectfont\\textcolor{muted}{La aplicación espera velocidad menor que 0,03 m/s y error de posición de hasta 0,03 m.}\\par}\n",
-    "note": "El accionamiento debe demostrar torque antes de abrir el freno del carro. La aplicación espera velocidad menor que 0,03 m/s y error de posición de hasta 0,03 m.",
-    "weight": 0.65,
-    "section": "Supervisor y planificación coordinada",
-    "backup": false,
-    "owner": "Herrera",
-    "label": "cmp19"
-  },
-  {
-    "title": "Freno de carro · CODESYS SFC",
-    "body": "\\begin{center}\\diagramfit{\\begin{tikzpicture}\n\\node[sfcstep,double,double distance=1pt] (n0) at (0,0.0) {TB APLICADO};\n\\node[sfcstep] (n1) at (0,-1.08) {TB PRUEBA TORQUE};\n\\node[sfcstep] (n2) at (0,-2.16) {TB ABIERTO};\n\\node[sfcstep] (n3) at (0,-3.24) {TB APLICANDO};\n\\draw[wire] (n0.south)--(n1.north);\n\\draw[wire,line width=1.1pt] (-.2,-0.54)--(.2,-0.54);\n\\node[guard,anchor=west,text width=8.7cm] at (1.85,-0.54) {Habilitación, demanda y permiso};\n\\draw[wire] (n1.south)--(n2.north);\n\\draw[wire,line width=1.1pt] (-.2,-1.62)--(.2,-1.62);\n\\node[guard,anchor=west,text width=8.7cm] at (1.85,-1.62) {Torque comprobado o cancelación de la demanda/habilitación/permiso};\n\\draw[wire] (n2.south)--(n3.north);\n\\draw[wire,line width=1.1pt] (-.2,-2.7)--(.2,-2.7);\n\\node[guard,anchor=west,text width=8.7cm] at (1.85,-2.7) {Cancelación de demanda o permiso};\n\\draw[flow] (n3.south)--(0,-3.89);\n\\node[guard,anchor=north,align=center,text width=8.3cm] at (2.8,-3.91) {Reposo y error admisible: salto a TB APLICADO};\n\\end{tikzpicture}}\\end{center}\\vfill\n{\\small El carro usa tolerancia de 0,05 m y memoriza la prueba de torque para la maniobra vigente.\\par}\\vspace{1.5mm}{\\fontsize{9.5}{11}\\selectfont\\textcolor{muted}{El paso ABIERTO puede atravesarse al cancelar. La apertura física exige prueba memorizada y permisos.}\\par}\n",
-    "note": "El carro usa tolerancia de 0,05 m y memoriza la prueba de torque para la maniobra vigente. El paso ABIERTO puede atravesarse al cancelar. La apertura física exige prueba memorizada y permisos.",
-    "weight": 0.65,
-    "section": "Supervisor y planificación coordinada",
-    "backup": false,
-    "owner": "Herrera",
-    "label": "cmp20"
-  },
-  {
     "title": "Freno de izaje · Stateflow",
     "body": "\\begin{center}\\diagramfit{\\begin{tikzpicture}\n\\node[sfstate,text width=2.5cm] (n0) at (0.0,0) {HB APLICADO};\n\\node[sfstate,text width=2.5cm] (n1) at (3.35,0) {HB PRUEBA\\\\TORQUE};\n\\node[sfstate,text width=2.5cm] (n2) at (6.7,0) {HB ABIERTO};\n\\node[sfstate,text width=2.5cm] (n3) at (10.05,0) {HB APLICANDO};\n\\fill[accent] (-1.8,0) circle (2pt);\n\\draw[flow] (-1.8,0)--(n0.west);\n\\draw[flow] (n0.east)--(n1.west);\n\\node[guard,text width=3.35cm,anchor=south] at (1.675,.78) {Habilitación, demanda\\\\y permiso};\n\\draw[flow] (n1.east)--(n2.west);\n\\node[guard,text width=3.35cm,anchor=south] at (5.025,.78) {Torque\\\\comprobado};\n\\draw[flow] (n2.east)--(n3.west);\n\\node[guard,text width=3.35cm,anchor=south] at (8.375,.78) {Cancelar demanda\\\\o retirar permiso};\n\\draw[flow] (n1.south)--++(0,-1.1) -| (n0.south);\n\\node[guard,anchor=north,align=center,text width=9cm] at (1.675,-1.6) {Prueba sin torque: retorno tras 50 ticks};\n\\draw[flow] (n3.south)--++(0,-1.8) -| (n0.south);\n\\node[guard,anchor=north,align=center,text width=9cm] at (5.025,-2.3) {Reposo: velocidad menor que 0,03 m/s y error admisible};\n\\end{tikzpicture}}\\end{center}\\vfill\n{\\small La prueba de torque sostiene la carga antes de permitir abrir el freno de izaje.\\par}\\vspace{1.5mm}{\\fontsize{9.5}{11}\\selectfont\\textcolor{muted}{Durante automático, la referencia nula no basta para iniciar la aplicación del freno.}\\par}\n",
     "note": "La prueba de torque sostiene la carga antes de permitir abrir el freno de izaje. Durante automático, la referencia nula no basta para iniciar la aplicación del freno.",
@@ -820,16 +800,6 @@
     "label": "slide43"
   },
   {
-    "title": "Generador automático: entradas y referencias",
-    "body": "\\begin{itemize}\n\\item Recibe el estado medido de los ejes, el destino y el perfil de obstáculos.\n\\item Usa la masa suspendida y la presencia de contenedor para calcular el despeje y la velocidad de izaje.\n\\item Planifica al habilitar automático o cambiar el objetivo.\n\\item Entrega posición, velocidad y aceleración de referencia para cada eje.\n\\end{itemize}\n\\[ (x_r,\\dot x_r,\\ddot x_r),\\qquad (y_r,\\dot y_r,\\ddot y_r) \\]\n",
-    "note": "El supervisor captura el objetivo y reinicia el generador en PLANIFICAR. En EJECUTAR evalúa las referencias periódicamente. El izaje incorpora posición, velocidad y aceleración iniciales medidas. El perfil horizontal supone arranque en reposo, coherente con la guarda de entrada al automático. El generador proporciona consignas al control, mientras la planta determina el movimiento real.",
-    "weight": 1.2,
-    "section": "Supervisor y planificación coordinada",
-    "backup": false,
-    "owner": null,
-    "label": "slide44"
-  },
-  {
     "title": "Generador automático: etapas de cálculo",
     "body": "\\begin{enumerate}\n\\item Captura origen, destino, estado vertical, masa y perfil válido.\n\\item Calcula altura de aproximación y altura de cruce con huella, márgenes y elongación.\n\\item Construye traslado horizontal y ascenso. Busca duraciones que respeten los límites.\n\\item Verifica el despeje conjunto. Si falta altura, dilata el tiempo horizontal.\n\\item Define inicio y condiciones de descenso. Evalúa ambos ejes con un reloj común.\n\\end{enumerate}\n\\small Un plan inválido impide ejecutar el movimiento automático. Las mediciones reales y las guardas determinan cuándo termina la maniobra.\n",
     "note": "Explicar las dependencias del algoritmo antes de las fórmulas. No se trata de dos generadores independientes ni de una optimización global de tiempo. Los límites base se presentan aquí y los ajustes productivos más adelante.",
@@ -900,26 +870,6 @@
     "label": "trayectoria4"
   },
   {
-    "title": "Sincronización: un reloj para los dos ejes",
-    "body": "\\[\n(x_r,v_{x,r},a_{x,r})=F_x(t_p),\\qquad\n(y_r,v_{y,r},a_{y,r})=F_y(t_p)\n\\]\n\\[\nt_p[k+1]=\\min(t_p[k]+T_{sup},T_{plan}),\\qquad T_{sup}=20\\ \\mathrm{ms}\n\\]\n\\begin{itemize}\n\\item PLANIFICAR reinicia $t_p=0$. EJECUTAR evalúa ambas referencias en ese mismo instante.\n\\item El eje que termina un tramo mantiene su posición final con velocidad y aceleración nulas.\n\\item $T_{plan}=\\max(T_x,t_d+T_{desc})$. Los tramos pueden terminar en instantes distintos.\n\\item En una espera de estabilización se retiene el reloj común en $t_d$.\n\\end{itemize}\n",
-    "note": "La recurrencia mostrada corresponde al avance habilitado. Durante la compuerta de descenso no se aplica el incremento. El MC recibe referencias retenidas y sigue regulando cada 1 ms, incluso cuando el tiempo del plan está detenido.",
-    "weight": 1.2,
-    "section": "Supervisor y planificación coordinada",
-    "backup": false,
-    "owner": null,
-    "label": "trayectoria5"
-  },
-  {
-    "title": "Sincronización: tiempo del plan y tiempo de regulación",
-    "body": "\\begin{center}\\small\n\\begin{tabular}{lll}\\toprule\nEtapa & Reloj del plan & Acción de ambos ejes\\\\\\midrule\nInicio & $t_p=0$ & Captura y evaluación inicial\\\\\nTraslado & Avanza cada 20 ms & Ascenso y carro coordinados\\\\\nEspera en destino & $t_p=t_d$ & Mantiene consignas y amortigua balanceo\\\\\nDescenso habilitado & Continúa desde $t_d$ & Reanuda el perfil vertical\\\\\nFin & $t_p=T_{plan}$ & Mantiene posiciones finales\\\\\\bottomrule\n\\end{tabular}\\end{center}\n\\begin{itemize}\n\\item El MC sigue ejecutándose cada 1 ms durante la espera.\n\\item Dilatar $F_x$ da tiempo al ascenso antes de alcanzar un obstáculo.\n\\item Compartir $t_p$ coordina las consignas. El seguimiento real requiere regulación y mediciones.\n\\end{itemize}\n",
-    "note": "La espera mostrada corresponde al descenso condicionado al fin horizontal, td>=Tx. La pausa congela la evaluación del plan, no la integración de la planta ni el control.",
-    "weight": 1,
-    "section": "Supervisor y planificación coordinada",
-    "backup": false,
-    "owner": null,
-    "label": "relojes"
-  },
-  {
     "title": "Sincronización: tiempo para superar obstáculos",
     "body": "\\begin{enumerate}\n\\item Calcula el traslado horizontal inicial y el ascenso hasta $y_c$.\n\\item Comprueba el despeje en 401 instantes del recorrido horizontal.\n\\item Si falta altura, aumenta un 2,5\\,\\% los tiempos horizontales y reduce la velocidad.\n\\item Repite hasta conseguir despeje, con hasta 240 ajustes y 300 s horizontales.\n\\end{enumerate}\n\\[\n\\lambda=1+\\frac{2{,}5}{100}=1{,}025\n\\]\n{\\small Incremento temporal fijo de diseño: 2,5\\,\\%.\\par}\n\\[\nT_r'=\\lambda T_r,\\quad T_c'=\\lambda T_c,\\quad v_c'=v_c/\\lambda\n\\]\n",
     "note": "El factor 1,025 está fijado explícitamente en el generador. Se obtiene de escoger un incremento temporal del 2,5 por ciento: lambda=1+2,5/100. No se deduce de un cociente entre los tiempos de ambos ejes ni de una optimización. La comprobación del despeje determina cuántas veces aplicarlo. Dos ajustes multiplican la duración por 1,025 al cuadrado, igual a 1,050625: un aumento acumulado del 5,0625 por ciento. Al llegar al techo de 300 s, Tnuevo=min(300,1,025 Tanterior) y el factor efectivo es Tnuevo/Tanterior. Con ese factor efectivo se escalan ambas duraciones horizontales y se divide la velocidad de crucero para conservar distancia. La aceleración se reduce por el cuadrado del factor y el jerk por el cubo. El ascenso conserva su perfil y ambos ejes mantienen el reloj común. La comprobación compara la base de la carga, descontando elongación y altura del contenedor, con el perfil local más 2,59 m, y considera su huella de 2,44 m. El código omite los primeros 0,02 m desde el origen. Si no consigue despeje dentro de los límites, invalida el plan.",
@@ -938,16 +888,6 @@
     "backup": false,
     "owner": null,
     "label": "dilatacion"
-  },
-  {
-    "title": "Descenso: inicio previsto y espera de estabilización",
-    "body": "\\begin{itemize}\n\\item Busca cuándo la carga sale de la zona de obstáculos ampliada.\n\\item Si el destino queda dentro de esa zona, programa el descenso al finalizar el traslado horizontal.\n\\item En ese caso retiene el reloj al inicio del descenso hasta verificar llegada y balanceo.\n\\end{itemize}\n\\[\n|x-x^*|\\leq0{,}08\\ \\mathrm m,\\quad |v_x|\\leq0{,}06\\ \\mathrm{m/s}\n\\]\n\\[\n|\\theta|\\leq0{,}005\\ \\mathrm{rad},\\quad |\\dot\\theta|\\leq0{,}012\\ \\mathrm{rad/s}\n\\]\n\\small La espera depende de las mediciones reales y puede prolongar la maniobra.\n",
-    "note": "Para destino más allá de la zona ampliada, el generador estima el instante de salida con 400 intervalos y 32 iteraciones de bisección. Si no sale antes, usa t_d=Tx. La retención por balanceo se aplica cuando t_d>=Tx, no a cualquier descenso anticipado. El reloj queda fijado en t_d mientras las cuatro condiciones medidas no se cumplan. Al liberarse, continúa con el mismo reloj y las mismas referencias planificadas. Estos umbrales corresponden a la configuración base explicada aquí y las revisiones de productividad se presentan más adelante. La espera reduce movimiento durante el descenso, pero no elimina activamente el balanceo.",
-    "weight": 1.2,
-    "section": "Supervisor y planificación coordinada",
-    "backup": false,
-    "owner": null,
-    "label": "trayectoria7"
   },
   {
     "title": "Ejemplo del generador: referencia horizontal",
